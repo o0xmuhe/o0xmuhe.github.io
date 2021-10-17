@@ -1,9 +1,182 @@
-<!doctype html>
-<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump - o0xmuhe&#039;s blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="o0xmuhe&#039;s blog"><meta name="msapplication-TileImage" content="https://blogimg-10065924.cos.ap-shanghai.myqcloud.com/head.jpg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="o0xmuhe&#039;s blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="roadmap之前在 iosre看到一张比较系统的iOS逆向学习路线图，因为接触过一段时间macOS上服务的漏洞挖掘，所以对*OS安全还是挺有兴趣的，也一直想系统性地学习下iOS逆向，之前的一直不成体系，也很零碎，正好对着这个图重构下知识体系。"><meta property="og:type" content="blog"><meta property="og:title" content="iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><meta property="og:url" content="http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/"><meta property="og:site_name" content="o0xmuhe&#039;s blog"><meta property="og:description" content="roadmap之前在 iosre看到一张比较系统的iOS逆向学习路线图，因为接触过一段时间macOS上服务的漏洞挖掘，所以对*OS安全还是挺有兴趣的，也一直想系统性地学习下iOS逆向，之前的一直不成体系，也很零碎，正好对着这个图重构下知识体系。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/ios_re.png"><meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/iosre1/macho_overview.png"><meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.09.41@2x.png"><meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.17.40@2x.png"><meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.19.59@2x.png"><meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.30.45@2x.png"><meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/111.png"><meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/fix_crypto.png"><meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.47.33@2x.png"><meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.48.18@2x.png"><meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/output.png"><meta property="article:published_time" content="2021-07-11T06:48:13.000Z"><meta property="article:modified_time" content="2021-08-01T14:38:49.733Z"><meta property="article:author" content="muhe"><meta property="article:tag" content="iOS"><meta property="article:tag" content="逆向"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/ios_re.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/"},"headline":"iOS RE 4 beginners 1 - MachO && class-dump","image":["https://my-own-image.oss-cn-beijing.aliyuncs.com/img/ios_re.png","https://my-own-image.oss-cn-beijing.aliyuncs.com/img/iosre1/macho_overview.png","https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.09.41@2x.png","https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.17.40@2x.png","https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.19.59@2x.png","https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.30.45@2x.png","https://my-own-image.oss-cn-beijing.aliyuncs.com/img/111.png","https://my-own-image.oss-cn-beijing.aliyuncs.com/img/fix_crypto.png","https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.47.33@2x.png","https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.48.18@2x.png","https://my-own-image.oss-cn-beijing.aliyuncs.com/img/output.png"],"datePublished":"2021-07-11T06:48:13.000Z","dateModified":"2021-08-01T14:38:49.733Z","author":{"@type":"Person","name":"muhe"},"publisher":{"@type":"Organization","name":"o0xmuhe's blog","logo":{"@type":"ImageObject","url":"https://blogimg-10065924.cos.ap-shanghai.myqcloud.com/head.jpg"}},"description":"roadmap之前在 iosre看到一张比较系统的iOS逆向学习路线图，因为接触过一段时间macOS上服务的漏洞挖掘，所以对*OS安全还是挺有兴趣的，也一直想系统性地学习下iOS逆向，之前的一直不成体系，也很零碎，正好对着这个图重构下知识体系。"}</script><link rel="canonical" href="http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/"><link rel="alternate" href="/atom.xml" title="o0xmuhe&#039;s blog" type="application/atom+xml"><link rel="icon" href="https://blogimg-10065924.cos.ap-shanghai.myqcloud.com/head.jpg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/monokai.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=UA-170118462-1" async></script><script>window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="roadmap之前在 iosre看到一张比较系统的iOS逆向学习路线图，因为接触过一段时间macOS上服务的漏洞挖掘，所以对*OS安全还是挺有兴趣的，也一直想系统性地学习下iOS逆向，之前的一直不成体系，也很零碎，正好对着这个图重构下知识体系。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump">
+<meta property="og:url" content="http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/index.html">
+<meta property="og:site_name" content="o0xmuhe&#39;s blog">
+<meta property="og:description" content="roadmap之前在 iosre看到一张比较系统的iOS逆向学习路线图，因为接触过一段时间macOS上服务的漏洞挖掘，所以对*OS安全还是挺有兴趣的，也一直想系统性地学习下iOS逆向，之前的一直不成体系，也很零碎，正好对着这个图重构下知识体系。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/ios_re.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/iosre1/macho_overview.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.09.41@2x.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.17.40@2x.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.19.59@2x.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.30.45@2x.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/111.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/fix_crypto.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.47.33@2x.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/CleanShot%202021-07-11%20at%2015.48.18@2x.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/output.png">
+<meta property="article:published_time" content="2021-07-11T06:48:13.000Z">
+<meta property="article:modified_time" content="2021-08-01T14:38:49.733Z">
+<meta property="article:author" content="muhe">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="逆向">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/ios_re.png">
     
-        gtag('config', 'UA-170118462-1');</script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css"><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="https://blogimg-10065924.cos.ap-shanghai.myqcloud.com/head.jpg" alt="o0xmuhe&#039;s blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-07-11T06:48:13.000Z" title="7/11/2021, 2:48:13 PM">2021-07-11</time>发表</span><span class="level-item"><time dateTime="2021-08-01T14:38:49.733Z" title="8/1/2021, 10:38:49 PM">2021-08-01</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/iOS/">iOS</a></span><span class="level-item">18 分钟读完 (大约2730个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump</h1><div class="content"><h1 id="roadmap"><a href="#roadmap" class="headerlink" title="roadmap"></a>roadmap</h1><p>之前在 <a target="_blank" rel="noopener" href="https://iosre.com/">iosre</a>看到一张比较系统的iOS逆向学习路线图，因为接触过一段时间macOS上服务的漏洞挖掘，所以对*OS安全还是挺有兴趣的，也一直想系统性地学习下iOS逆向，之前的一直不成体系，也很零碎，正好对着这个图重构下知识体系。</p>
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="o0xmuhe&#39;s blog" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search">Search</a></li><!--
+     --><!--
+       --><li><a href="/atom.xml">RSS</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2021/07/11/ql-query-for-CVE-2021-30660-XNU-Kernel-Memory-Disclosure/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2021/06/01/CodeQL-JS-TS-Journey/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&text=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&title=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&is_video=false&description=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump&body=Check out this article: http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&title=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&title=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&title=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&title=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&name=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump&description=&lt;h1 id=&#34;roadmap&#34;&gt;&lt;a href=&#34;#roadmap&#34; class=&#34;headerlink&#34; title=&#34;roadmap&#34;&gt;&lt;/a&gt;roadmap&lt;/h1&gt;&lt;p&gt;之前在 &lt;a href=&#34;https://iosre.com/&#34;&gt;iosre&lt;/a&gt;看到一张比较系统的iOS逆向学习路线图，因为接触过一段时间macOS上服务的漏洞挖掘，所以对*OS安全还是挺有兴趣的，也一直想系统性地学习下iOS逆向，之前的一直不成体系，也很零碎，正好对着这个图重构下知识体系。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&t=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#roadmap"><span class="toc-number">1.</span> <span class="toc-text">roadmap</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#macho-file-format"><span class="toc-number">2.</span> <span class="toc-text">macho file format</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Overview"><span class="toc-number">2.1.</span> <span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Header"><span class="toc-number">2.2.</span> <span class="toc-text">Header</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Load-Commands"><span class="toc-number">2.3.</span> <span class="toc-text">Load Commands</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Data-Segments"><span class="toc-number">2.4.</span> <span class="toc-text">Data-Segments</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Get-class-info-from-macho-file"><span class="toc-number">2.5.</span> <span class="toc-text">Get class info from macho file</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#class-dump-read-notes"><span class="toc-number">3.</span> <span class="toc-text">class-dump read notes</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#env"><span class="toc-number">3.1.</span> <span class="toc-text">env</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#compile"><span class="toc-number">3.2.</span> <span class="toc-text">compile</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#raed-amp-amp-debug"><span class="toc-number">3.3.</span> <span class="toc-text">raed &amp;&amp; debug</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-symbolTable-loadSymbols"><span class="toc-number">3.4.</span> <span class="toc-text">1. symbolTable loadSymbols</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-dynamicSymbolTable-loadsymbols"><span class="toc-number">3.5.</span> <span class="toc-text">2. dynamicSymbolTable loadsymbols</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-loadProtocols"><span class="toc-number">3.6.</span> <span class="toc-text">3. loadProtocols</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-protocolUniquer-createUniquedProtocols"><span class="toc-number">3.7.</span> <span class="toc-text">4. protocolUniquer createUniquedProtocols</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-loadClasses"><span class="toc-number">3.8.</span> <span class="toc-text">5. loadClasses</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-loadCategories"><span class="toc-number">3.9.</span> <span class="toc-text">6. loadCategories</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%A4%84%E7%90%86-or-%E8%BE%93%E5%87%BA"><span class="toc-number">3.10.</span> <span class="toc-text">7. 处理 or 输出</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Reference"><span class="toc-number">4.</span> <span class="toc-text">Reference</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">muhe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2021-07-11T06:48:13.000Z" itemprop="datePublished">2021-07-11</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/iOS/">iOS</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/iOS/" rel="tag">iOS</a>, <a class="tag-link-link" href="/tags/%E9%80%86%E5%90%91/" rel="tag">逆向</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="roadmap"><a href="#roadmap" class="headerlink" title="roadmap"></a>roadmap</h1><p>之前在 <a target="_blank" rel="noopener" href="https://iosre.com/">iosre</a>看到一张比较系统的iOS逆向学习路线图，因为接触过一段时间macOS上服务的漏洞挖掘，所以对*OS安全还是挺有兴趣的，也一直想系统性地学习下iOS逆向，之前的一直不成体系，也很零碎，正好对着这个图重构下知识体系。</p>
 <span id="more"></span>
 
 <p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/ios_re.png" alt="ios_re"></p>
@@ -192,38 +365,180 @@
 <p><a target="_blank" rel="noopener" href="https://iosre.com/">https://iosre.com/</a></p>
 <p><a target="_blank" rel="noopener" href="https://evilpan.com/2020/09/06/macho-inside-out/">https://evilpan.com/2020/09/06/macho-inside-out/</a></p>
 <p>iOS应用逆向与安全 (刘培庆著)</p>
-</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/iOS/">iOS</a><a class="link-muted mr-2" rel="tag" href="/tags/%E9%80%86%E5%90%91/">逆向</a></div><div class="addthis_inline_share_toolbox"></div><script src="https://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5eedde461829c8d1" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>支付宝</span><span class="qrcode"><img src="https://blogimg-10065924.cos.ap-shanghai.myqcloud.com/donates/IMG_1715.jpeg" alt="支付宝"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>微信</span><span class="qrcode"><img src="https://blogimg-10065924.cos.ap-shanghai.myqcloud.com/donates/IMG_1714.jpeg" alt="微信"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/07/11/ql-query-for-CVE-2021-30660-XNU-Kernel-Memory-Disclosure/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">ql query for CVE-2021-30660 XNU Kernel Memory Disclosure</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/06/01/CodeQL-JS-TS-Journey/"><span class="level-item">CodeQL JS/TS Journey</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
-            this.page.url = 'http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/';
-            this.page.identifier = '2021/07/11/iOS-RE-4-beginners-1/';
-        };
-        (function() {
-            var d = document, s = d.createElement('script');  
-            s.src = '//' + 'o0xmuhe' + '.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/head.jpg" alt="o0xmuhe"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">o0xmuhe</p><p class="is-size-6 is-block">my own blog</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">107</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">17</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">85</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/o0xmuhe" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/o0xmuhe"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Weibo" href="http://weibo.com/2070174943"><i class="fab fa-weibo"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com/0xmuhe"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/atom.xml"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="http://blog.sycsec.com/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Syclover</span></span><span class="level-right"><span class="level-item tag">blog.sycsec.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/CTF/"><span class="level-start"><span class="level-item">CTF</span></span><span class="level-end"><span class="level-item tag">25</span></span></a></li><li><a class="level is-mobile" href="/categories/Fuzz/"><span class="level-start"><span class="level-item">Fuzz</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/POC/"><span class="level-start"><span class="level-item">POC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/PoC/"><span class="level-start"><span class="level-item">PoC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/XNU/"><span class="level-start"><span class="level-item">XNU</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/exploit/"><span class="level-start"><span class="level-item">exploit</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/iOS/"><span class="level-start"><span class="level-item">iOS</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%85%B6%E4%BB%96/"><span class="level-start"><span class="level-item">其他</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"><span class="level-start"><span class="level-item">学习记录</span></span><span class="level-end"><span class="level-item tag">23</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">工具</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"><span class="level-start"><span class="level-item">漏洞分析</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><span class="level-start"><span class="level-item">环境配置</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E8%B8%A9%E5%9D%91/"><span class="level-start"><span class="level-item">环境配置踩坑</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%BC%96%E7%A8%8B/"><span class="level-start"><span class="level-item">编程</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"><span class="level-start"><span class="level-item">论文阅读</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E8%B8%A9%E5%9D%91/"><span class="level-start"><span class="level-item">配置环境踩坑</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-23T16:05:49.000Z">2021-07-24</time></p><p class="title"><a href="/2021/07/24/iOS-RE-4-beginners-3-fishhook/">iOS RE 4 beginners 3 - fishhook</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-14T09:15:47.000Z">2021-07-14</time></p><p class="title"><a href="/2021/07/14/iOS-RE-4-beginners-2/">iOS RE 4 beginners 2 - 静态链接&amp;&amp;动态链接</a></p><p class="categories"><a href="/categories/iOS/">iOS</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-11T08:22:50.000Z">2021-07-11</time></p><p class="title"><a href="/2021/07/11/ql-query-for-CVE-2021-30660-XNU-Kernel-Memory-Disclosure/">ql query for CVE-2021-30660 XNU Kernel Memory Disclosure</a></p><p class="categories"><a href="/categories/XNU/">XNU</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-11T06:48:13.000Z">2021-07-11</time></p><p class="title"><a href="/2021/07/11/iOS-RE-4-beginners-1/">iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump</a></p><p class="categories"><a href="/categories/iOS/">iOS</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-06-01T03:43:11.000Z">2021-06-01</time></p><p class="title"><a href="/2021/06/01/CodeQL-JS-TS-Journey/">CodeQL JS/TS Journey</a></p><p class="categories"><a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/06/"><span class="level-start"><span class="level-item">六月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">五月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/10/"><span class="level-start"><span class="level-item">十月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/04/"><span class="level-start"><span class="level-item">四月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/02/"><span class="level-start"><span class="level-item">二月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/11/"><span class="level-start"><span class="level-item">十一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/10/"><span class="level-start"><span class="level-item">十月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/08/"><span class="level-start"><span class="level-item">八月 2019</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/05/"><span class="level-start"><span class="level-item">五月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/04/"><span class="level-start"><span class="level-item">四月 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/03/"><span class="level-start"><span class="level-item">三月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/03/"><span class="level-start"><span class="level-item">三月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/01/"><span class="level-start"><span class="level-item">一月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/10/"><span class="level-start"><span class="level-item">十月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/07/"><span class="level-start"><span class="level-item">七月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/06/"><span class="level-start"><span class="level-item">六月 2017</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/05/"><span class="level-start"><span class="level-item">五月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/04/"><span class="level-start"><span class="level-item">四月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/03/"><span class="level-start"><span class="level-item">三月 2017</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/02/"><span class="level-start"><span class="level-item">二月 2017</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/09/"><span class="level-start"><span class="level-item">九月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/06/"><span class="level-start"><span class="level-item">六月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/02/"><span class="level-start"><span class="level-item">二月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2015/12/"><span class="level-start"><span class="level-item">十二月 2015</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2015/11/"><span class="level-start"><span class="level-item">十一月 2015</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/1day/"><span class="tag">1day</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Adobe/"><span class="tag">Adobe</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Adobe-Acrobat-Reader/"><span class="tag">Adobe Acrobat Reader</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Adobe-Reader/"><span class="tag">Adobe Reader</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Antlr/"><span class="tag">Antlr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Bindiff/"><span class="tag">Bindiff</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CDP/"><span class="tag">CDP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CTF/"><span class="tag">CTF</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CTF-Writeup/"><span class="tag">CTF Writeup</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CVE/"><span class="tag">CVE</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Chrome/"><span class="tag">Chrome</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Cisco/"><span class="tag">Cisco</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CodeQL/"><span class="tag">CodeQL</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Compilers/"><span class="tag">Compilers</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ESXi/"><span class="tag">ESXi</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Frida/"><span class="tag">Frida</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IDA/"><span class="tag">IDA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IE/"><span class="tag">IE</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IPC/"><span class="tag">IPC</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/LLVM/"><span class="tag">LLVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MacOS/"><span class="tag">MacOS</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mach/"><span class="tag">Mach</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PANDA/"><span class="tag">PANDA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PoC/"><span class="tag">PoC</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RE/"><span class="tag">RE</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Snell/"><span class="tag">Snell</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Study/"><span class="tag">Study</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Surge/"><span class="tag">Surge</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Symbolic-Execution/"><span class="tag">Symbolic Execution</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Tools/"><span class="tag">Tools</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/UaF/"><span class="tag">UaF</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Webkit/"><span class="tag">Webkit</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/XNU/"><span class="tag">XNU</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/android/"><span class="tag">android</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/angr/"><span class="tag">angr</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/chrome/"><span class="tag">chrome</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/compiler/"><span class="tag">compiler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/config/"><span class="tag">config</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ctf/"><span class="tag">ctf</span><span class="tag">13</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ctf-writeup/"><span class="tag">ctf writeup</span><span class="tag">13</span></a></div><div class="control"><a class="tags has-addons" href="/tags/debug/"><span class="tag">debug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/env/"><span class="tag">env</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/exploit/"><span class="tag">exploit</span><span class="tag">11</span></a></div><div class="control"><a class="tags has-addons" href="/tags/fishhook/"><span class="tag">fishhook</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/frida/"><span class="tag">frida</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/fuzz/"><span class="tag">fuzz</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gdb/"><span class="tag">gdb</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/glibc%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/"><span class="tag">glibc内存管理</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/iOS/"><span class="tag">iOS</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/life/"><span class="tag">life</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux-kernel/"><span class="tag">linux kernel</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/macOS/"><span class="tag">macOS</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/mips/"><span class="tag">mips</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/office/"><span class="tag">office</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/paper/"><span class="tag">paper</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/peach/"><span class="tag">peach</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pwn/"><span class="tag">pwn</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/python/"><span class="tag">python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ret-2-dl-resolve/"><span class="tag">ret 2 dl-resolve</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shellcode/"><span class="tag">shellcode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/study/"><span class="tag">study</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/tools/"><span class="tag">tools</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/uaf/"><span class="tag">uaf</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/unicorn-engine/"><span class="tag">unicorn engine</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/v8/"><span class="tag">v8</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vbs/"><span class="tag">vbs</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vuln-analysis/"><span class="tag">vuln analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/wargame/"><span class="tag">wargame</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/webkit/"><span class="tag">webkit</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/winafl/"><span class="tag">winafl</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows-kernel/"><span class="tag">windows kernel</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/writeup/"><span class="tag">writeup</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%85%B6%E4%BB%96/"><span class="tag">其他</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%B7%A5%E5%85%B7/"><span class="tag">工具</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%84%9F%E6%82%9F/"><span class="tag">感悟</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%84%9F%E6%83%B3/"><span class="tag">感想</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"><span class="tag">漏洞分析</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><span class="tag">环境配置</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/"><span class="tag">编译原理</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%80%86%E5%90%91/"><span class="tag">逆向</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="https://blogimg-10065924.cos.ap-shanghai.myqcloud.com/head.jpg" alt="o0xmuhe&#039;s blog" height="28"></a><p class="is-size-7"><span>&copy; 2021 muhe</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
-            article: {
-                highlight: {
-                    clipboard: true,
-                    fold: 'unfolded'
-                }
-            }
-        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
-            if (typeof $.fn.lightGallery === 'function') {
-                $('.article').lightGallery({ selector: '.gallery-item' });
-            }
-            if (typeof $.fn.justifiedGallery === 'function') {
-                if ($('.justified-gallery > p > .gallery-item').length) {
-                    $('.justified-gallery > p > .gallery-item').unwrap();
-                }
-                $('.justified-gallery').justifiedGallery();
-            }
-        });</script><!--!--><!--!--><div id="outdated"><h6>Your browser is out-of-date!</h6><p>Update your browser to view this website correctly.&amp;npsb;<a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p><p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">×</a></p></div><script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script><script>window.addEventListener("load", function () {
-            outdatedBrowser({
-                bgColor: '#f25648',
-                color: '#ffffff',
-                lowerThan: 'object-fit' // display on IE11 or below
-            });
-        });</script><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
-            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
-        });</script></body></html>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/categories/">Categories</a></li>
+         
+          <li><a href="/tags/">Tags</a></li>
+         
+          <li><a href="/search">Search</a></li>
+         
+          <li><a href="/atom.xml">RSS</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#roadmap"><span class="toc-number">1.</span> <span class="toc-text">roadmap</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#macho-file-format"><span class="toc-number">2.</span> <span class="toc-text">macho file format</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Overview"><span class="toc-number">2.1.</span> <span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Header"><span class="toc-number">2.2.</span> <span class="toc-text">Header</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Load-Commands"><span class="toc-number">2.3.</span> <span class="toc-text">Load Commands</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Data-Segments"><span class="toc-number">2.4.</span> <span class="toc-text">Data-Segments</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Get-class-info-from-macho-file"><span class="toc-number">2.5.</span> <span class="toc-text">Get class info from macho file</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#class-dump-read-notes"><span class="toc-number">3.</span> <span class="toc-text">class-dump read notes</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#env"><span class="toc-number">3.1.</span> <span class="toc-text">env</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#compile"><span class="toc-number">3.2.</span> <span class="toc-text">compile</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#raed-amp-amp-debug"><span class="toc-number">3.3.</span> <span class="toc-text">raed &amp;&amp; debug</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-symbolTable-loadSymbols"><span class="toc-number">3.4.</span> <span class="toc-text">1. symbolTable loadSymbols</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-dynamicSymbolTable-loadsymbols"><span class="toc-number">3.5.</span> <span class="toc-text">2. dynamicSymbolTable loadsymbols</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-loadProtocols"><span class="toc-number">3.6.</span> <span class="toc-text">3. loadProtocols</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-protocolUniquer-createUniquedProtocols"><span class="toc-number">3.7.</span> <span class="toc-text">4. protocolUniquer createUniquedProtocols</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-loadClasses"><span class="toc-number">3.8.</span> <span class="toc-text">5. loadClasses</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-loadCategories"><span class="toc-number">3.9.</span> <span class="toc-text">6. loadCategories</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%A4%84%E7%90%86-or-%E8%BE%93%E5%87%BA"><span class="toc-number">3.10.</span> <span class="toc-text">7. 处理 or 输出</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Reference"><span class="toc-number">4.</span> <span class="toc-text">Reference</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&text=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&title=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&is_video=false&description=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump&body=Check out this article: http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&title=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&title=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&title=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&title=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&name=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump&description=&lt;h1 id=&#34;roadmap&#34;&gt;&lt;a href=&#34;#roadmap&#34; class=&#34;headerlink&#34; title=&#34;roadmap&#34;&gt;&lt;/a&gt;roadmap&lt;/h1&gt;&lt;p&gt;之前在 &lt;a href=&#34;https://iosre.com/&#34;&gt;iosre&lt;/a&gt;看到一张比较系统的iOS逆向学习路线图，因为接触过一段时间macOS上服务的漏洞挖掘，所以对*OS安全还是挺有兴趣的，也一直想系统性地学习下iOS逆向，之前的一直不成体系，也很零碎，正好对着这个图重构下知识体系。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/&t=iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2015-2021
+    muhe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search">Search</a></li><!--
+     --><!--
+       --><li><a href="/atom.xml">RSS</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-170118462-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-170118462-1');
+    </script>
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'o0xmuhe';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+
+</body>
+</html>
