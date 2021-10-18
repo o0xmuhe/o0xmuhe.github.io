@@ -15,7 +15,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/chrome_features.png">
 <meta property="article:published_time" content="2021-10-17T10:10:17.000Z">
-<meta property="article:modified_time" content="2021-10-17T14:25:59.573Z">
+<meta property="article:modified_time" content="2021-10-18T13:09:35.058Z">
 <meta property="article:author" content="muhe">
 <meta property="article:tag" content="writeup">
 <meta property="article:tag" content="pwn">
@@ -41,7 +41,7 @@
       
     
     <!-- title -->
-    <title>ByteCTF2021 chatroom writeup</title><meta name="robots" content="noindex">
+    <title>ByteCTF2021 chatroom writeup</title>
     <!-- styles -->
     
 <link rel="stylesheet" href="/css/style.css">
@@ -87,6 +87,8 @@
     <span id="actions">
       <ul>
         
+        
+        <li><a class="icon" aria-label="Next post" href="/2021/07/24/iOS-RE-4-beginners-3-fishhook/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -180,7 +182,7 @@
 <p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/chrome_features.png" alt="chrome_features"></p>
 <p>不过这个需要一些积累 &amp;&amp; 测试  :)</p>
 <p>随后判断出来版本是 M88 之后，找个合适的nday就可以打了 : )</p>
-<h2 id="题目环境"><a href="#题目环境" class="headerlink" title="题目环境"></a>题目环境</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker pull muhe/ctf_chal_chatroom:v4</span><br><span class="line"></span><br><span class="line">docker run -dit --name chatroom1 -p 3000:3000 -p 31337:31337 muhe/ctf_chal_chatroom:v4</span><br></pre></td></tr></table></figure>
+<h2 id="题目环境"><a href="#题目环境" class="headerlink" title="题目环境"></a>题目环境</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker pull muhe/ctf_chal_chatroom:v7</span><br><span class="line"></span><br><span class="line">docker run -dit --name chatroom1 -p 3000:3000 -p 31337:31337 muhe/ctf_chal_chatroom:v7</span><br></pre></td></tr></table></figure>
 
 
 
@@ -189,7 +191,7 @@
 <li>无法防止爆破这种非预期解题方式。</li>
 <li>使用nday似乎很无趣，但是塞进去一个洞，给一个 <code>patch.diff</code> 似乎又有点奇怪，偏离题目原本的出发点。</li>
 </ol>
-<!-- flag of hidden posts -->
+
   </div>
 </article>
 

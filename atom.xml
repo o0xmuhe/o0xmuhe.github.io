@@ -6,7 +6,7 @@
   <link href="http://o0xmuhe.me/atom.xml" rel="self"/>
   
   <link href="http://o0xmuhe.me/"/>
-  <updated>2021-07-23T16:19:26.859Z</updated>
+  <updated>2021-10-18T13:09:35.058Z</updated>
   <id>http://o0xmuhe.me/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ByteCTF2021 chatroom writeup</title>
+    <link href="http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/"/>
+    <id>http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/</id>
+    <published>2021-10-17T10:10:17.000Z</published>
+    <updated>2021-10-18T13:09:35.058Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>  在今年的ByteCTF中，我出了一道pwn题目，距离上一次打比赛/出题已经过去很久了，所以传统的 <code>heap trick</code> 就没有考虑，而是从我日常工作中挖掘的安全风险入手，简化场景，出了一道 <code>chatroom</code> ，看起来像一个web的奇怪题目。</p> <span id="more"></span><p>  这个题目其实背后是 <code>Headless Chrome</code> 相关的pwn，我早期的一篇博客其实已经阐述过相关风险，可以参考 <a href="https://o0xmuhe.github.io/2021/05/26/Chrome-headless-exploit/">Exploit Headless Chrome</a>。 其实这个风险暴露出来的不仅仅是：低版本、误用参数 这两个显而易见的问题，其背后的原因是一些不好的编程习惯被错误地传播：大家都在用 <code>--no-sandbox</code> 参数，好像 <code>it works</code>就够了，但是在实际场景中，这是很危险的。</p><h2 id="题目设计思路"><a href="#题目设计思路" class="headerlink" title="题目设计思路"></a>题目设计思路</h2><p>  我的本意是设计一个类似聊天室的场景，用户可以在聊天室内发送消息、多媒体文件、链接等，尽可能模拟一个真实场景。 处于风控考虑，对于非白名单的链接，需要进行检查（是否恶意，色流等）。对于URL 检查的逻辑，最好是服务端接收到内容之后，判断是否是URL，随后通过RPC调用走到URL检查的服务去。但是考虑到实际题目，我大大简化了这个场景，直接把检查放在前端了，而且我没有混淆JS，所以可以很直接看到一个HTTP请求。</p><p>  解决了场景问题，聊天室部分直接用了github的开源项目 <a href="https://github.com/cleverqin/node-websocket-Chatroom">node-websocket-Chatroom</a>，后端使用 puppeteer来抓取用户的URL。</p><p>为了提升一些难度，同时这也是我曾经遇到过的问题：UA不可靠的情况下怎么判断Chrome版本？</p><p>所以我直接在启动参数里把UA给改了：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> <span class="keyword">const</span> browser = <span class="keyword">await</span> puppeteer.launch(&#123; </span><br><span class="line">   <span class="attr">args</span>: [<span class="string">&#x27;--no-sandbox&#x27;</span>, <span class="string">&#x27;--disable-setuid-sandbox&#x27;</span>, </span><br><span class="line">          <span class="string">&#x27;--user-agent=&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)</span></span><br><span class="line"><span class="string">           AppleWebKit/537.36 (KHTML, like Gecko) Chrome/1337.13.37.0  Safari/4141.42&quot;&#x27;</span>], </span><br><span class="line"><span class="attr">ignoreHTTPSErrors</span>: <span class="literal">true</span>, <span class="attr">dumpio</span>: <span class="literal">false</span> &#125;);</span><br></pre></td></tr></table></figure><p>最终题目成型：</p><ul><li>非最新版本puppeteer</li><li>–no-sandbox</li><li>UA不准确</li></ul><h2 id="Writeup-amp-非预期"><a href="#Writeup-amp-非预期" class="headerlink" title="Writeup &amp; 非预期"></a>Writeup &amp; 非预期</h2><h3 id="非预期"><a href="#非预期" class="headerlink" title="非预期"></a>非预期</h3><p>主要是 <a href="https://twitter.com/zh1x1an2">zh1x1an2</a> 同学的做法，Exploit狂轰滥炸术，挨个挨个来，最终拿到flag。</p><h3 id="预期"><a href="#预期" class="headerlink" title="预期"></a>预期</h3><p>UA不可信，但是V8 和 Blink是可信的，不同Chrome版本会有不同的features，所以可以借助这个点，判断一个大版本，便于后续做利用。</p><p>参考 : <a href="https://chromestatus.com/features">https://chromestatus.com/features</a> </p><p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/chrome_features.png" alt="chrome_features"></p><p>不过这个需要一些积累 &amp;&amp; 测试  :)</p><p>随后判断出来版本是 M88 之后，找个合适的nday就可以打了 : )</p><h2 id="题目环境"><a href="#题目环境" class="headerlink" title="题目环境"></a>题目环境</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker pull muhe/ctf_chal_chatroom:v7</span><br><span class="line"></span><br><span class="line">docker run -dit --name chatroom1 -p 3000:3000 -p 31337:31337 muhe/ctf_chal_chatroom:v7</span><br></pre></td></tr></table></figure><p>访问 <code>http://localhost:3000</code> 就可以本地测试题目了  :)</p><h2 id="不足之处"><a href="#不足之处" class="headerlink" title="不足之处"></a>不足之处</h2><ol><li>无法防止爆破这种非预期解题方式。</li><li>使用nday似乎很无趣，但是塞进去一个洞，给一个 <code>patch.diff</code> 似乎又有点奇怪，偏离题目原本的出发点。</li></ol>]]></content>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;  在今年的ByteCTF中，我出了一道pwn题目，距离上一次打比赛/出题已经过去很久了，所以传统的 &lt;code&gt;heap trick&lt;/code&gt; 就没有考虑，而是从我日常工作中挖掘的安全风险入手，简化场景，出了一道 &lt;code&gt;chatroom&lt;/code&gt; ，看起来像一个web的奇怪题目。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="writeup" scheme="http://o0xmuhe.me/tags/writeup/"/>
+    
+    <category term="pwn" scheme="http://o0xmuhe.me/tags/pwn/"/>
+    
+    <category term="CTF" scheme="http://o0xmuhe.me/tags/CTF/"/>
+    
+  </entry>
   
   <entry>
     <title>iOS RE 4 beginners 3 - fishhook</title>
@@ -457,29 +480,6 @@
     
     
     <category term="macOS" scheme="http://o0xmuhe.me/tags/macOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Snell auto install cript</title>
-    <link href="http://o0xmuhe.me/2019/09/26/Snell-auto-install-cript/"/>
-    <id>http://o0xmuhe.me/2019/09/26/Snell-auto-install-cript/</id>
-    <published>2019-09-26T08:57:01.000Z</published>
-    <updated>2020-06-20T11:09:38.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="0x00-Snell"><a href="#0x00-Snell" class="headerlink" title="0x00 : Snell"></a>0x00 : Snell</h2><p>Snell是Surge支持的一种**协议，但是server并不开源，也就是说只有Surge客户端才能用。</p><a id="more"></a><p>琢磨了下写了个自动化的配置脚本。</p><h2 id="0x01-Script"><a href="#0x01-Script" class="headerlink" title="0x01 : Script"></a>0x01 : Script</h2><p><a href="https://gist.github.com/o0xmuhe/c8d548037f42e651595af79408e299a2">snel.sh</a></p>]]></content>
-    
-    
-    <summary type="html">&lt;h2 id=&quot;0x00-Snell&quot;&gt;&lt;a href=&quot;#0x00-Snell&quot; class=&quot;headerlink&quot; title=&quot;0x00 : Snell&quot;&gt;&lt;/a&gt;0x00 : Snell&lt;/h2&gt;&lt;p&gt;Snell是Surge支持的一种**协议，但是server并不开源，也就是说只有Surge客户端才能用。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="工具" scheme="http://o0xmuhe.me/categories/%E5%B7%A5%E5%85%B7/"/>
-    
-    
-    <category term="Snell" scheme="http://o0xmuhe.me/tags/Snell/"/>
-    
-    <category term="Surge" scheme="http://o0xmuhe.me/tags/Surge/"/>
     
   </entry>
   
