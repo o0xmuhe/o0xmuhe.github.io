@@ -5275,4 +5275,60 @@ osrloaderv30</code></pre>
         <tag>CTF</tag>
       </tags>
   </entry>
+  <entry>
+    <title>将Android/iOS上的流量转发到Wireshark分析</title>
+    <url>/2021/12/15/%E5%B0%86Android-iOS%E4%B8%8A%E7%9A%84%E6%B5%81%E9%87%8F%E8%BD%AC%E5%8F%91%E5%88%B0Wireshark%E5%88%86%E6%9E%90/</url>
+    <content><![CDATA[<h2 id="背景-amp-amp-需求"><a href="#背景-amp-amp-需求" class="headerlink" title="背景&amp;&amp;需求"></a>背景&amp;&amp;需求</h2><p>  迫于要分析一些SDK里的协议，需要抓到所有的流量来分析交互过程，所以有了这篇记录，主要是基于<a href="https://blog.csdn.net/HorkyChen/article/details/11822657?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522163955839616780265452906%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=163955839616780265452906&biz_id=0&spm=1018.2226.3001.4187">实时监控Android设备网络封包</a>做的尝试，然后使用相同的思路扩展到了iOS上。</p>
+<span id="more"></span>
+
+<p>原理图：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tcpdump---nc---端口转发---nc----wireshark</span><br><span class="line">|------手机------|	|-------PC端-------|</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h2><blockquote>
+<p>手机必须root</p>
+</blockquote>
+<ul>
+<li>adb</li>
+<li>tcpdump</li>
+<li>nc </li>
+</ul>
+<p>手机端:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tcpdump -l -n -s 0 -v -w - | nc -l -p  11233</span><br></pre></td></tr></table></figure>
+
+
+<p>PC端:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">adb forward tcp:11233 tcp:11233 &amp;&amp; nc 127.0.0.1 11233 | wireshark -k -S -i -</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="iOS"><a href="#iOS" class="headerlink" title="iOS"></a>iOS</h2><blockquote>
+<p>手机必须越狱</p>
+</blockquote>
+<ul>
+<li>nc</li>
+<li>tcpdump</li>
+<li>iproxy(<a href="https://libimobiledevice.org/">libimobiledevice</a>)</li>
+</ul>
+<p>手机端:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tcpdump -l -n -s 0 -v -w - | nc -l -p 11233</span><br></pre></td></tr></table></figure>
+
+
+<p>PC端:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">~  iproxy 11233 11233</span><br><span class="line">Creating listening port 11233 <span class="keyword">for</span> device port 11233</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">~  nc 127.0.0.1 11233 | wireshark -k -S -i -</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://blog.csdn.net/HorkyChen/article/details/11822657?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522163955839616780265452906%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=163955839616780265452906&biz_id=0&spm=1018.2226.3001.4187">实时监控Android设备网络封包</a></p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+        <tag>Android</tag>
+        <tag>流量分析</tag>
+        <tag>Wireshark</tag>
+      </tags>
+  </entry>
 </search>
