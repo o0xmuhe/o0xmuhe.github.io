@@ -5394,7 +5394,7 @@ osrloaderv30</code></pre>
 <li>把Linux kernel 和 ramdisk加载到DRAM</li>
 <li>跳转到kernel</li>
 <li>kernel执行</li>
-<li>这是在Linux启动过程中使用的一个临时根 详细参考 [[Linux initrd笔记]]</li>
+<li>这是在Linux启动过程中使用的一个临时根 </li>
 </ol>
 <h3 id="preloader-解析"><a href="#preloader-解析" class="headerlink" title="preloader 解析"></a>preloader 解析</h3><p>preloader可以看成一个特定格式的可执行文件，所以需要找入口点。</p>
 <p><code>/Users/muhe/Code/MTK6577/mediatek/platform/mt6577/preloader/src/init/init.s</code></p>
