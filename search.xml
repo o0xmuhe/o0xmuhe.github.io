@@ -5331,4 +5331,201 @@ osrloaderv30</code></pre>
         <tag>Wireshark</tag>
       </tags>
   </entry>
+  <entry>
+    <title>MTK Preloader 踩坑</title>
+    <url>/2022/03/05/MTK-Preloader-%E8%B8%A9%E5%9D%91/</url>
+    <content><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>MT6737T</li>
+<li>Android</li>
+</ul>
+<span id="more"></span>
+
+<p>前期<code>readback</code> 什么都都正常，也切出来了各个分区，并制作了scatter。</p>
+<p>折腾的时候发现<code>SP Flash Tool </code> 加载preloader的时候有报错：</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/flash_tool_error.png" alt="flash_tool_error"></p>
+<h3 id="看日志"><a href="#看日志" class="headerlink" title="看日志"></a>看日志</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">02/23/22 22:35:20.309 BROM_DLL[3848][1900]: DL_HANDLE()::Rom_Load(): ROM loaded, name = preloader (flashtool_handle_internal.cpp:4693)</span><br><span class="line"></span><br><span class="line">02/23/22 22:35:20.309 BROM_DLL[3848][1900]: DEBUG: DL_HANDLE::UpdateRomFileInfoByPreloader(): UpdateRomFileInfoByPreloader get bbchiptype : 159 (flashtool_handle_internal.cpp:4359) //chip <span class="built_in">type</span> 所以应该是强绑定的</span><br><span class="line">02/23/22 22:35:20.309 BROM_DLL[3848][1900]: DL_HANDLE()::UpdateRomFileInfoByPreloader(): Loading SV5 BL, name = preloader (flashtool_handle_internal.cpp:4374)</span><br><span class="line"></span><br><span class="line">02/23/22 22:35:20.309 BROM_DLL[3848][1900]: ERROR: DL_HANDLE(0x0BC38DE8)::UpdateRomFileInfoByPreloader(): [0]: preloader - Parse GFH_FILE_INFO error(0x00001008)!  (flashtool_handle_internal.cpp:4385)</span><br><span class="line">02/23/22 22:35:20.309 BROM_DLL[3848][1900]: ERROR: DL_HANDLE(0xB7B1A8AC)::File length not match with GFH specified file length (flashtool_handle_internal.cpp:4386) // 不匹配！ GFH 指定的文件长度不匹配</span><br><span class="line">02/23/22 22:35:20.309 BROM_DLL[3848][1900]: ERROR: File length (262160) / GFH specified file length (0) (flashtool_handle_internal.cpp:4387)  // 这里，文件长度是xxx，但是GFH里指定的不对</span><br><span class="line">02/23/22 22:35:20.309 BROM_DLL[3848][1900]: ERROR: DL_Rom_Load(): &lt;ERR_CHECKPOINT&gt;[232][error][5066]&lt;/ERR_CHECKPOINT&gt; [S_DL_PC_BL_INVALID_GFH_FILE_INFO] (flashtool_handle.cpp:941)</span><br><span class="line">02/23/22 22:35:20.309 BROM_DLL[3848][1900]: DL_Rom_Load(): DL_HANDLE-&gt;rwlock: WRITE_UNLOCK. (rwlock.cpp:476)</span><br></pre></td></tr></table></figure>
+
+<p>所以：</p>
+<ul>
+<li>DL_HANDLE()::Rom_Load() 函数</li>
+<li>这个平台校验了size字段和实际preloader文件的size</li>
+</ul>
+<h3 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ file libflashtool.v1.so</span><br><span class="line">libflashtool.v1.so: ELF 64-bit LSB shared object, x86-64, version 1 (GNU/Linux), dynamically linked, BuildID[sha1]=de4c47b0bb41c274fd42efb55ceb476bcc840d7a, not stripped</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>DL_HANDLE::UpdateRomFileInfoByPreloader</code> 方法中找到了校验的逻辑：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> ( *((_DWORD *)var48 + <span class="number">15</span>) == <span class="number">7</span> )</span><br><span class="line">&#123;</span><br><span class="line">  err_code = DL_HANDLE::<span class="built_in">UpdateRomFileInfoByPreloader</span>(<span class="keyword">this</span>, sys_index);<span class="comment">// updateROM File!</span></span><br><span class="line">  <span class="keyword">if</span> ( err_code )</span><br><span class="line">    <span class="keyword">return</span> err_code;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"> erro_code = ROM_ID_Class::<span class="built_in">LoadGFH</span>((__int64)<span class="keyword">this</span> + <span class="number">112</span>, *((_QWORD *)ROM + <span class="number">123</span>), <span class="number">0</span>, </span><br><span class="line"> (__int64)&amp;GFH);</span><br><span class="line"> <span class="keyword">if</span> ( erro_code &gt; <span class="number">0xFFF</span> )</span><br><span class="line"> &#123;</span><br><span class="line">   r12_12 = (<span class="keyword">const</span> <span class="keyword">char</span> *)std::string::<span class="built_in">c_str</span>(ROM);</span><br><span class="line">   rbx12 = g_hBROM_DEBUG;</span><br><span class="line">   MetaTrace::<span class="built_in">MetaTrace</span>(</span><br><span class="line">     (MetaTrace *)var1030,</span><br><span class="line">     <span class="string">&quot;FlashToolLib/source/common/handle/src/flashtool_handle_internal.cpp&quot;</span>,</span><br><span class="line">     <span class="number">4417</span>,</span><br><span class="line">     <span class="number">0xFF</span>u,</span><br><span class="line">     <span class="string">&quot; ERROR:&quot;</span>);</span><br><span class="line">   MetaTrace::<span class="built_in"><span class="keyword">operator</span></span>()(</span><br><span class="line">     var1030,</span><br><span class="line">     rbx12,</span><br><span class="line">     <span class="string">&quot;DL_HANDLE(0x%08X)::UpdateRomFileInfoByPreloader(): [%u]: %s - Load GFH_FILE_INFO error(0x%08X)!  &quot;</span>,</span><br><span class="line">     <span class="keyword">this</span>,</span><br><span class="line">     rom_file_name,</span><br><span class="line">     r12_12,</span><br><span class="line">     erro_code);</span><br><span class="line">   MetaTrace::~<span class="built_in">MetaTrace</span>((MetaTrace *)var1030);</span><br><span class="line">   <span class="keyword">return</span> <span class="number">5066</span>;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">if</span> ( *((_DWORD *)GFH + <span class="number">8</span>) != *((_QWORD *)ROM + <span class="number">0x7C</span>) )<span class="comment">// length check!!</span></span><br><span class="line"> &#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//.....error log</span></span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p><code>ROM + 0x7C</code> 是实际的文件大小<br><code>GFH + 8</code> 是 解析preloader 中的GFH结构中的size字段</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ROM_ID_Class::LoadGFH</span><br><span class="line">4GFH_Find(rom_buffer, <span class="built_in">type</span>, (_QWORD *)st);</span><br><span class="line">44GFH_Internal_Parser(buff_addr, 0LL, <span class="built_in">type</span>, GFG_st);</span><br><span class="line">444</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function">__int64 __fastcall <span class="title">GFH_Internal_Parser</span><span class="params">(__int64 buf_addr, __int64 flag_0, <span class="keyword">int</span> type, _QWORD *GFG_st)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line">  __int64 st; <span class="comment">// [rsp+20h] [rbp-30h]</span></span><br><span class="line">  __int64 v8; <span class="comment">// [rsp+28h] [rbp-28h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> cnt; <span class="comment">// [rsp+3Ch] [rbp-14h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v10; <span class="comment">// [rsp+40h] [rbp-10h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> i; <span class="comment">// [rsp+44h] [rbp-Ch]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> ret; <span class="comment">// [rsp+48h] [rbp-8h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> reta; <span class="comment">// [rsp+48h] [rbp-8h]</span></span><br><span class="line">  <span class="keyword">char</span> v14; <span class="comment">// [rsp+4Eh] [rbp-2h]</span></span><br><span class="line">  <span class="keyword">char</span> v15_0; <span class="comment">// [rsp+4Fh] [rbp-1h]</span></span><br><span class="line"></span><br><span class="line">  v15_0 = <span class="number">0</span>;</span><br><span class="line">  v14 = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span> ( flag_0 )</span><br><span class="line">    v15_0 = <span class="number">1</span>;</span><br><span class="line">  ret = <span class="built_in">GFH_FILE_INFO_BasicCheck</span>(buf_addr);</span><br><span class="line">  <span class="keyword">if</span> ( ret &gt; <span class="number">0xFFF</span> )</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">  cnt = *(_DWORD *)(buf_addr + <span class="number">0x28</span>);</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt; cnt; i = v10 )               <span class="comment">// parse sub struct?</span></span><br><span class="line">  &#123;</span><br><span class="line">    st = buf_addr + i;</span><br><span class="line">    <span class="keyword">if</span> ( (*(_DWORD *)st &amp; <span class="number">0xFFFFFF</span>) != <span class="number">5066061</span> )</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0x1003</span>LL;</span><br><span class="line">    v10 = i + *(<span class="keyword">unsigned</span> __int16 *)(st + <span class="number">4</span>);</span><br><span class="line">    <span class="keyword">if</span> ( cnt &lt; v10 )</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0x1005</span>LL;</span><br><span class="line">    <span class="keyword">if</span> ( v15_0 )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( *(_WORD *)(st + <span class="number">6</span>) &lt;= <span class="number">0x104</span>u )</span><br><span class="line">      &#123;</span><br><span class="line">        v8 = flag_0 + <span class="number">24LL</span> * *(<span class="keyword">unsigned</span> __int16 *)(st + <span class="number">6</span>) + <span class="number">8</span>;</span><br><span class="line">        <span class="keyword">if</span> ( *(_BYTE *)v8 )</span><br><span class="line">        &#123;</span><br><span class="line">          reta = (*(__int64 (__fastcall **)(__int64, _QWORD))(v8 + <span class="number">8</span>))(st, *(_QWORD *)(v8 + <span class="number">16</span>));</span><br><span class="line">          <span class="keyword">if</span> ( reta &gt; <span class="number">0xFFF</span> )</span><br><span class="line">            <span class="keyword">return</span> reta;</span><br><span class="line">          v14 = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> ( type == *(<span class="keyword">unsigned</span> __int16 *)(st + <span class="number">6</span>) )</span><br><span class="line">    &#123;</span><br><span class="line">      *GFG_st = st;                             <span class="comment">// [1]</span></span><br><span class="line">      <span class="keyword">return</span> <span class="number">0LL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> ( v15_0 &amp;&amp; v14 )</span><br><span class="line">    result = <span class="number">0LL</span>;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    result = <span class="number">0x1003</span>LL;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>[1]</code> 的位置 找到这个结构，然后把指针赋值，分析这段逻辑，其实就是文件头:</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/preloader_hexview.png" alt="preloader_hexview"></p>
+<p>指定preloader文件大小是 <code>0x26794</code>，修改文件大小即可。</p>
+<h3 id="解决报错"><a href="#解决报错" class="headerlink" title="解决报错"></a>解决报错</h3><p>所以只需要修改 preloader文件的长度为其 <code>+0x24</code> 处 4bytes代表size的字段即可<br>PS：不能修改这个长度字段</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/load_preloader_img.png" alt="load_preloader_img"></p>
+<h2 id="深入研究"><a href="#深入研究" class="headerlink" title="深入研究"></a>深入研究</h2><blockquote>
+<p>之前搞的平台也没注意这个问题，也没报错，但是size对不上，所以需要探究文件格式和为什么检查</p>
+</blockquote>
+<h3 id="什么是preloader"><a href="#什么是preloader" class="headerlink" title="什么是preloader"></a>什么是preloader</h3><ul>
+<li><a href="https://www.cnblogs.com/wen123456/p/14034493.html">MTK6735 pre-loader源代码分析 - luoyuna - 博客园</a></li>
+<li><a href="https://blog.csdn.net/u011784994/article/details/104898430">[MT6765]Preloader_流程分析–基于android 10_nancy的专栏-CSDN博客_android pmic</a></li>
+<li>还有leak的MT6577的基线代码参考</li>
+</ul>
+<p><code>介于boot rom 和 bootloader之间的桥梁</code>，主要工作是初始化环境，包括c环境，timer,gpio,pmic,uart,i2c等以及装载lk镜像至DRAM中,建立起最基本的运行环境,最重要的就是<strong>初始化DRAM</strong>。</p>
+<ul>
+<li>执行在 ARM  EL3</li>
+</ul>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/preloader_birdview.png" alt="preloader_birdview"></p>
+<h3 id="工作原理-–-启动过程"><a href="#工作原理-–-启动过程" class="headerlink" title="工作原理 – 启动过程"></a>工作原理 – 启动过程</h3><p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/mtk_boot.png" alt="mtk_boot"></p>
+<p>另一种情况是实现了ATF(Arm Trust Firmware)的时候：</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/boot_with_atf.png" alt="boot_with_atf"></p>
+<p><a href="https://blog.csdn.net/chenying126/article/details/78638944">ATF实现原理_chenying126的博客-CSDN博客_atf</a></p>
+<ol>
+<li>boot rom中执行boot code</li>
+<li>把preloader加载到 ISRAM中</li>
+<li>执行preloader，各种初始化的工作(DRAM初始化)</li>
+<li>把bootloader(uboot, lk)加载到DRAM</li>
+<li>跳转到lk执行</li>
+<li>lk执行</li>
+<li>把Linux kernel 和 ramdisk加载到DRAM</li>
+<li>跳转到kernel</li>
+<li>kernel执行</li>
+<li>这是在Linux启动过程中使用的一个临时根 详细参考 [[Linux initrd笔记]]</li>
+</ol>
+<h3 id="preloader-解析"><a href="#preloader-解析" class="headerlink" title="preloader 解析"></a>preloader 解析</h3><p>preloader可以看成一个特定格式的可执行文件，所以需要找入口点。</p>
+<p><code>/Users/muhe/Code/MTK6577/mediatek/platform/mt6577/preloader/src/init/init.s</code></p>
+<p>github上找的一个可能是泄漏的基线代码来参考的</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.globl _start</span><br><span class="line"></span><br><span class="line">_start :</span><br><span class="line"></span><br><span class="line">b resethandler</span><br><span class="line"></span><br><span class="line">bss_start:</span><br><span class="line"></span><br><span class="line">.word _bss_start</span><br><span class="line"></span><br><span class="line">bss_end:</span><br><span class="line"></span><br><span class="line">.word _bss_end</span><br><span class="line"></span><br><span class="line">stack :</span><br><span class="line"></span><br><span class="line">.long sys_stack</span><br><span class="line"></span><br><span class="line">stacksz:</span><br><span class="line"></span><br><span class="line">.long sys_stack_sz</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line">resethandler :</span><br><span class="line">4MOV r0, #0</span><br><span class="line">4</span><br><span class="line">4MOV r1, #0</span><br><span class="line">4</span><br><span class="line">4MOV r2, #0</span><br><span class="line">4</span><br><span class="line">4MOV r3, #0</span><br><span class="line">4</span><br><span class="line">4MOV r4, #0</span><br><span class="line">4</span><br><span class="line">4MOV r5, #0</span><br><span class="line">4</span><br><span class="line">4MOV r6, #0</span><br><span class="line">4</span><br><span class="line">4MOV r7, #0</span><br><span class="line">4</span><br><span class="line">4MOV r8, #0</span><br><span class="line">4</span><br><span class="line">4MOV r9, #0</span><br><span class="line">4</span><br><span class="line">4MOV r10, #0</span><br><span class="line">4</span><br><span class="line">4MOV r11, #0</span><br><span class="line">4</span><br><span class="line">4MOV r12, #0</span><br><span class="line">4</span><br><span class="line">4MOV sp, #0</span><br><span class="line">4</span><br><span class="line">4MOV lr, #0</span><br></pre></td></tr></table></figure>
+
+<p>这个特征还是很明显的，可以试试看:</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/preloader_init.png" alt="preloader_init"></p>
+<p>上面这个0xEA应该是 b指令，可以借由这个搞定基地址</p>
+<p>然后是到<code>main.c</code>，继续人肉找特征</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/preloader_main.png" alt="preloader_main"></p>
+<p>找到了字符串，但是没有引用关系 :( </p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/preloader_main%201.png" alt="preloader_main 1"></p>
+<p>通过Ghrida的强制整个binary的分析，然后引用关系确定了main的位置，至此就可以往下看了，对比其他平台preloader的源码，能看个七七八八了。</p>
+<p>PS : 基地址编译的时候可以指定的，比如在 <code>linux/bootloader/preloader/platform/mt6735/link_descriptor.ld</code></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">OUTPUT_ARCH(arm)</span><br><span class="line"></span><br><span class="line">ENTRY(_start)</span><br><span class="line"></span><br><span class="line">romBase = <span class="number">0x00201000</span>;</span><br><span class="line">ramBase = <span class="number">0x00102180</span>;</span><br><span class="line"></span><br><span class="line">MEMORY &#123;</span><br><span class="line">    ram : ORIGIN = ramBase, LENGTH = <span class="number">0xBA80</span></span><br><span class="line">    rom : ORIGIN = romBase, LENGTH = <span class="number">0x1F000</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>还有 : <code>linux/bootloader/preloader/platform/mt6735/default.mak</code></p>
+<p>github真是个好地方啊，还有一个完整的MT6737平台Linux based的基线代码，全套的环境和build产物都有的，可以看到：</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/mt6737_preloader_bin_list.png" alt="mt6737_preloader_bin_list"></p>
+<ul>
+<li>推测preloader应该是一个elf 经过copyobj之类的处理之后拼接上了特定的文件头</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ file *.elf</span><br><span class="line">preloader_bd6737m_35g_b_m0.elf: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), statically linked, with debug_info, not stripped</span><br></pre></td></tr></table></figure>
+
+
+<p>查看相关的makefile可以验证该猜想:</p>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line"><span class="variable">$(D_BIN)</span>/preloader.elf: <span class="variable">$(D_BIN)</span>/<span class="variable">$(PL_IMAGE_NAME)</span>.elf</span><br><span class="line"></span><br><span class="line">4<span class="variable">$(OBJCOPY)</span> -R .dram <span class="variable">$(D_BIN)</span>/<span class="variable">$(PL_IMAGE_NAME)</span>.elf -O elf32-littlearm <span class="variable">$(D_BIN)</span>/preloader.elf</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">ifeq</span> (<span class="variable">$(CFG_PRELOADER_DRAM_USE)</span>, 1)</span><br><span class="line"></span><br><span class="line"><span class="section">preloader_bin: <span class="variable">$(D_BIN)</span>/<span class="variable">$(PL_DRAM_IMAGE_NAME)</span>.bin</span></span><br><span class="line"></span><br><span class="line">4<span class="variable">$(D_BIN)</span>/<span class="variable">$(PL_DRAM_IMAGE_NAME)</span>.bin: <span class="variable">$(D_BIN)</span>/<span class="variable">$(PL_IMAGE_NAME)</span>.elf</span><br><span class="line">4</span><br><span class="line">4<span class="variable">$(hide)</span> <span class="variable">$(OBJCOPY)</span> $&#123;OBJCFLAGS&#125; <span class="variable">$(OBJSECOND_FLAG)</span> <span class="variable">$(D_BIN)</span>/<span class="variable">$(PL_IMAGE_NAME)</span>.elf -O binary <span class="variable">$(D_BIN)</span>/<span class="variable">$(PL_DRAM_IMAGE_NAME)</span>.bin</span><br></pre></td></tr></table></figure>
+
+
+<p>遂尝试：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">PL_IMG_SECOND_PARTION_SECTION :=.pl_dram.text .pl_dram.data .pl_dram.rodata .pl_dram.start</span><br><span class="line">OBJSECOND_FLAG := $(addprefix -j , $(PL_IMG_SECOND_PARTION_SECTION))</span><br><span class="line"></span><br><span class="line">objcopy --gap-fill=0xff <span class="variable">$OBJSECOND_FLAG</span> input.elf -O binary output.bin</span><br></pre></td></tr></table></figure>
+
+<p><code>addprefix</code>这个可以忽略</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/objcopy_test.png" alt="objcopy_test"></p>
+<p>当然，hash想一样还是想多了，毕竟编译环境都不一样，直接上diff：</p>
+<p>一共两处：<br><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/diff1.png" alt="diff1"></p>
+<p>这个是多了一个GFH结构（说好的 NO_GFH 难道只是说头没有)</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/diff2.png" alt="diff2"></p>
+<ul>
+<li><p><code>preloader_bd6737m_35g_b_m0_LINKED.bin</code></p>
+<ul>
+<li> 比<code>output.bin</code> 多了一个GFH在尾部</li>
+</ul>
+</li>
+<li><p><code>preloader_bd6737m_35g_b_m0_NO_GFH.bin</code></p>
+<ul>
+<li>中间与部分数据不一致</li>
+<li> 比<code>output.bin</code> 多了一个GFH在尾部</li>
+</ul>
+</li>
+<li><p><code>preloader_bd6737m_35g_b_m0.bin</code> 比 <code>preloader_bd6737m_35g_b_m0_NO_GFH.bin</code> 又多了一个GFH头和尾部的签名数据</p>
+</li>
+</ul>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/diff3.png" alt="diff3"></p>
+<p>所以这里可以认定：</p>
+<ul>
+<li>preloader是一个elf，通过copyobj处理后，头、尾添加GFH相关的数据，得到MTK平台的preloader</li>
+<li>然后MTK平台的preloader再添加EMMC BOOT头，就得到了从EMMC_BOOT_[1,2] 分区中得到的数据</li>
+</ul>
+<h4 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h4><p>这里以EMMC为例：</p>
+<p><strong>EMMC_BOOT + GFH_INFO_EMMC + WTF1 + preloader_code + WTF2</strong></p>
+<ul>
+<li><p>EMMC_BOOT </p>
+<ul>
+<li> <code>MT6737/linux/bootloader/preloader/tools/gen-preloader-img.py</code></li>
+</ul>
+</li>
+<li><p>GFH_INFO_EMMC :</p>
+<ul>
+<li><code>linux/bootloader/preloader/platform/mt6735/gfh/default/ns/GFH_INFO_EMMC.txt</code></li>
+</ul>
+</li>
+<li><p>GFH Part 2 : GFH 的另一部分，还会修改上面的size</p>
+<ul>
+<li><code>linux/bootloader/preloader/tools/pbp/*</code></li>
+</ul>
+</li>
+<li><p>preloader_code</p>
+<ul>
+<li><code>preloader.elf</code> objcopy处理之后</li>
+</ul>
+</li>
+<li><p>WTF 2 : </p>
+<ul>
+<li>?</li>
+</ul>
+</li>
+</ul>
+<p>继续看Makefile来分析：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$(D_BIN)/$(PL_IMAGE_NAME).bin: $(D_BIN)/$(PL_IMAGE_NAME)_NO_GFH.bin $(GFH_INFO) $(GFH_HASH) $(PBP_TOOL)</span><br><span class="line"></span><br><span class="line">4@<span class="built_in">echo</span> <span class="string">&quot;[ Only for Non-Secure Chip ]&quot;</span></span><br><span class="line">4</span><br><span class="line">4@<span class="built_in">echo</span> <span class="string">&quot;============================================&quot;</span></span><br><span class="line">4</span><br><span class="line">4@<span class="built_in">echo</span> <span class="string">&quot;INI_GFH_GEN=NO&quot;</span></span><br><span class="line">4</span><br><span class="line">4@<span class="built_in">echo</span> <span class="string">&quot;[ Attach <span class="subst">$(MTK_PLATFORM)</span> GFH ]&quot;</span></span><br><span class="line">4</span><br><span class="line">4@<span class="built_in">echo</span> <span class="string">&quot;============================================&quot;</span></span><br><span class="line">4</span><br><span class="line">4@<span class="built_in">echo</span> <span class="string">&quot; : GFH_INFO - <span class="subst">$(GFH_INFO)</span>&quot;</span></span><br><span class="line">4</span><br><span class="line">4@<span class="built_in">echo</span> <span class="string">&quot; : GFH_HASH - <span class="subst">$(GFH_HASH)</span>&quot;</span></span><br><span class="line">4</span><br><span class="line">4cp -f $(GFH_INFO) <span class="variable">$@</span></span><br><span class="line">4</span><br><span class="line">4@chmod 777 <span class="variable">$@</span></span><br><span class="line">4</span><br><span class="line">4cat $&lt; &gt;&gt; <span class="variable">$@</span></span><br><span class="line">4</span><br><span class="line">4cat $(GFH_HASH) &gt;&gt; <span class="variable">$@</span></span><br><span class="line">4</span><br><span class="line">4$(PBP_TOOL) <span class="variable">$@</span></span><br><span class="line">4</span><br><span class="line">4@<span class="built_in">echo</span> <span class="string">&quot;<span class="subst">$(PBP_TOOL)</span> pass !!!!&quot;</span></span><br><span class="line"></span><br><span class="line">// ...</span><br><span class="line"></span><br><span class="line">$(D_BIN)/$(PL_IMAGE_NAME).bin: $(D_BIN)/$(PL_IMAGE_NAME)_LINKED.bin</span><br><span class="line"></span><br><span class="line">4cp -f $&lt; <span class="variable">$@</span></span><br></pre></td></tr></table></figure>
+
+<p>遂可以得到：</p>
+<ul>
+<li>EMMC_BOOT<ul>
+<li>  <code>MT6737/linux/bootloader/preloader/tools/gen-preloader-img.py</code> 生成</li>
+</ul>
+</li>
+<li>GFH_INFO_EMMC<ul>
+<li>  <code>**linux/bootloader/preloader/platform/mt6735/gfh/default/ns/GFH_INFO_EMMC.txt**</code> 但是这个file size字段是0xffffffff，后续会处理</li>
+</ul>
+</li>
+<li>WTF1 : GFH_HASH<ul>
+<li>  GFH_HASH.txt // GFH部分会由PBP_TOOL再次处理</li>
+</ul>
+</li>
+<li>preloader code<ul>
+<li>  编译的elf经过objcopy处理之后的代码数据</li>
+</ul>
+</li>
+<li>  WTF2 ：preloader extension</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><p><a href="https://linux.codingbelief.com/zh/storage/flash_memory/emmc/emmc_modes.html">eMMC 工 作 模 式 · Linux Kernel Internals</a></p>
+</li>
+<li><p><a href="https://github.com/SoCXin/MT6737">https://github.com/SoCXin/MT6737</a></p>
+</li>
+<li><p><a href="https://github.com/Motorola-MT6737/android_device_motorola_mt6737-common">https://github.com/Motorola-MT6737/android_device_motorola_mt6737-common</a></p>
+</li>
+<li><p><a href="https://github.com/andr3jx/MTK6577.git">https://github.com/andr3jx/MTK6577.git</a></p>
+</li>
+<li><p><a href="https://www.cnblogs.com/wen123456/p/14034493.html">MTK6735 pre-loader源代码分析 - luoyuna - 博客园</a></p>
+</li>
+<li><p>[<a href="https://blog.csdn.net/u011784994/article/details/104898430">MT6765]Preloader_流程分析–基于android 10_nancy的专栏-CSDN博客_android pmic</a></p>
+</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>MTK</tag>
+        <tag>preloader</tag>
+        <tag>boot</tag>
+      </tags>
+  </entry>
 </search>
