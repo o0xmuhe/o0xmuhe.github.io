@@ -5235,6 +5235,182 @@ osrloaderv30</code></pre>
       </tags>
   </entry>
   <entry>
+    <title>Expand Chrome Exploit : From client to server</title>
+    <url>/2021/10/04/Expand-Chrome-From-client-to-server/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>  过去的近一年的时间(本文在21年开的头，期间一直是hidden状态)，我接触了<del>万恶的</del>浏览器安全，不过只是一个脚本小子的水平 :(  </p>
+<span id="more"></span>
+
+<p>  最开始是由于一些工作上的因素，关注了一些主流的IM客户端，难易程度不等，当然也看了不少前辈的精彩工作，比如二哥的各种奇妙的xss、伪协议打🐧啥的。无奈功夫不到家只能另辟蹊径，再加上大学时候@wuyan学长某次回学校给我们做小组分享的时候展示了当时印象笔记的一个xss的时候提了一句，很多客户端你可以把它当成一个浏览器来看；至此这才有了后来的探究和一点点成果吧，时至今日，相关漏洞早已修复，攻击手法也早已“众所周知”，所以写个记录也没有什么:D </p>
+<h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><blockquote>
+<p>主要是一些Electron和CEF客户端</p>
+</blockquote>
+<h3 id="一些背景-amp-调研工作"><a href="#一些背景-amp-调研工作" class="headerlink" title="一些背景 &amp; 调研工作"></a>一些背景 &amp; 调研工作</h3><blockquote>
+<p>主流客户端的情况，以前 &amp; 现在</p>
+</blockquote>
+<p>  关注客户端安全的同学应该会发现Electron&amp;CEF的应用越来越广泛了，从早些的时候某音乐播放器的xss2rce到后面被关注到内置浏览器本身，当然大佬可能更早的时候就这么玩了 :D </p>
+<p>其实是用浏览器框架来开发客户端是一直以来就有的东西，比如下面这张图(可能不完全): </p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image.png" alt="image"></p>
+<blockquote>
+<p>也有直接从chromium做定制开发的，即原生的方式开发，比如某先进IM</p>
+</blockquote>
+<p>这么做的好处是显而易见的:</p>
+<ul>
+<li><p>使用成熟的嵌入式浏览器框架(cef, electron等)能够快速开发应用</p>
+</li>
+<li><p>能够规避很多复杂的底层设计(c/c++)</p>
+</li>
+<li><p>前端–&gt;APP跨平台的特性，且很灵活，</p>
+</li>
+<li><p>更加方便支持自定义协议/扩展/JS对象等</p>
+</li>
+<li><p>…</p>
+<p>与此同时，浏览器的攻击面就自然而然地引入进来了，再结合客户端本身，1+1&gt;2的即视感。本文重点关注浏览器相关的内容，那按照浏览器的思路去考虑就是:</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">攻击者构造恶意页面--&gt;客户端访问--&gt;RCE</span><br><span class="line">                              |</span><br><span class="line">                        Render---(sbx)---&gt;Broker</span><br></pre></td></tr></table></figure>
+
+<p>这条攻击链路上的前置条件是**客户端可以打开任意URL(直接or间接)**，随后就是常规的浏览器Exploit，分成Render RCE+SBX两部分。</p>
+<p>妙就妙在很多客户端出于一些特殊的需求他没有开沙箱。</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/images.jpeg" alt="妙啊"></p>
+<p>这里有一份统计 : <a href="https://github.com/sickcodes/no-sandbox">https://github.com/sickcodes/no-sandbox</a>，当然也不一定对(比如微信是CEF吧)，有些客户端也发生了一些变化，不过可以通过历史记录看出来变化趋势，大家都在慢慢地开启沙箱，尝试逐渐收敛风险。</p>
+<p>  <code>--no-sandbox</code>的风险是显而易见的，另一个问题是<code>patch gap</code>，chromium那个更新频率没有几个客户端能跟上，甚至说基本跟不上，再加上功能优先，版本升级或者补丁合入并没有那么高的优先级(也有可能是风险没体现出来，不受重视)，所以大部分基于chromium的客户端多多少少都滞后一些大版本，这就造成了大量潜在的Nday影响这些客户端，甚至从RCE到SBX一条龙。</p>
+<h3 id="攻击思路"><a href="#攻击思路" class="headerlink" title="攻击思路"></a>攻击思路</h3><h4 id="是否直接打开URL"><a href="#是否直接打开URL" class="headerlink" title="是否直接打开URL"></a>是否直接打开URL</h4><ul>
+<li>直接打开，发链接点了就内置浏览器打开，这类早期IM会这样干，可能是为了“用户体验没有割裂感”</li>
+<li>特殊的消息才会内置浏览器打开，比如卡片？</li>
+<li>是否有url白名单，不能绕过的话可能需要多一个白名单域名下的xss做桥梁</li>
+<li>特殊的scheme有url参数，参考Android客户端的那种情况</li>
+<li>其他的奇奇怪怪的入口，比如监听端口，处理函数有个啥<code>openBrowser</code>的东西</li>
+</ul>
+<h4 id="Chromium版本确定"><a href="#Chromium版本确定" class="headerlink" title="Chromium版本确定"></a>Chromium版本确定</h4><ul>
+<li>UA，这个不一定准吧，毕竟启动参数是可以改的，代码里也可以改，一般情况下是可信的</li>
+<li>JS引擎特性，这个我在之前一个文章里提到过<a href="https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/">ByteCTF2021 chatroom writeup</a>，用于探测后端puppeteer的版本</li>
+</ul>
+<p>以上两种方式结合是最好的，能判断出来很精准的版本</p>
+<h4 id="选个好-quot-day-quot"><a href="#选个好-quot-day-quot" class="headerlink" title="选个好&quot;day&quot;"></a>选个好<code>&quot;day&quot;</code></h4><ul>
+<li><p>Pj0/github/twitter/v8 commits</p>
+</li>
+<li><p>@BugsChromium  </p>
+</li>
+</ul>
+<p>版本-代码commit之前互查询可以参考: <a href="https://omahaproxy.appspot.com/">https://omahaproxy.appspot.com/</a></p>
+<h3 id="case1"><a href="#case1" class="headerlink" title="case1"></a>case1</h3><blockquote>
+<p><code>xxminibrowser</code> (xx是啥我也不知道)这个洞应该在21年上半年就修复了，而且陆陆续续补掉了不少攻击的前置条件</p>
+</blockquote>
+<ul>
+<li>Open URL</li>
+</ul>
+<p>最早可以随便打开，后面就变成了特殊的消息，再后来越来越窄吧</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824215023030.png" alt="image-20220824215023030"></p>
+<ul>
+<li>版本确定</li>
+</ul>
+<p>用上面的方法确定了具体的版本，还是很准确的</p>
+<ul>
+<li><p>选个好day</p>
+<p>当然了，在那个时候这个客户端他的好兄弟“小而美”也是差不多的情况，好好选day能都打了，21年hvv爆出的RCE就是这个情况(藏洞没有好下场 - -!)</p>
+</li>
+</ul>
+<p>  当时用的是crbug659475，挺好用的，感谢keen lab的大哥 :D 为了提高成功率甚至还做了这样的事情:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> worker;</span><br><span class="line"><span class="keyword">var</span> exploitSucc = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">startExploit</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(exploitSucc)&#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    worker = <span class="keyword">new</span> Worker(<span class="string">&#x27;exp.js&#x27;</span>);</span><br><span class="line"> </span><br><span class="line">    worker.onmessage = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">        exploitSucc = e.data;</span><br><span class="line">        <span class="keyword">if</span> (exploitSucc == <span class="literal">false</span>) &#123;</span><br><span class="line">            <span class="built_in">document</span>.write(<span class="string">&quot;exploit failed, retry....&lt;hr&gt;&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">document</span>.write(<span class="string">&quot;exploit done!!!!!&lt;hr&gt;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">startExploit();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> hangMonitor = <span class="built_in">setInterval</span>(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (exploitSucc == <span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="built_in">clearInterval</span>(hangMonitor);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        startExploit();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, <span class="number">20000</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<p>2022.8 update</p>
+<p>“小而美”好像在hvv期间开了 <code>--jit-less</code>后面又下掉了 ，现在的cmdline，与此同时也升级到了M81</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/wechat_browser_render_cmdline.png" alt="wechat"></p>
+<h3 id="case2"><a href="#case2" class="headerlink" title="case2"></a>case2</h3><blockquote>
+<p>S***e</p>
+</blockquote>
+<ul>
+<li>Open URL</li>
+</ul>
+<p>这个点说来还有点故事，20年的时候发现了，直到21年吧有一个老外也发现了并且发在了推特上</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824215815171.png" alt="image-20220824215815171"></p>
+<p>说来也简单，就是个看起来是A打开确实B的问题，主要服务端也不做校验就转发是有点离谱的； 对于打开的URL也是有白名单检查的，所以特定域下的xss是攻击的桥梁 :(</p>
+<ul>
+<li>版本</li>
+</ul>
+<p>M78 这个没什么好说的 </p>
+<ul>
+<li>选个day</li>
+</ul>
+<p>m78可选的很多(比如CVE-2020-6418)，注意目标的是x86，需要做一些改造，而且之前遇到过有些洞只在x86_64 work的情况</p>
+<hr>
+<p>2022.8 update</p>
+<p>参数 &amp; 版本</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/skype_render_cmdline.png" alt="skype"></p>
+<h3 id="case3"><a href="#case3" class="headerlink" title="case3"></a>case3</h3><blockquote>
+<p>Android webview</p>
+</blockquote>
+<p>  这类其实也算个重灾区，很多厂商会选择自己定制webview，且为了方便不开沙箱，线上丰富多彩的功能也提供了很多攻击的入口，发链接、扫码、卡片消息；但是也都会在打开URL前考虑加一层拦截，提示用户“xxx不是xxxxxx，确定要打开吗”。但是21年反垄断之后，这个限制就下掉了，随之而来的就是这样的安全风险。</p>
+<p>  对于甲方来说就是，我的定制webview依赖chromium，我又没办法及时更新，沙箱也一定能开，在 nday和 <code>patch gap</code>的双重打击之下，你的SRC可能就变成“提款机”，每个月谷歌一发补丁，再加上是不是爆出个在野利用，你的SRC一定经常收到这样的报告: <code>xxxxx RCE </code>。</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/3c70b0f75f2f4b6184bb461e41adc428.jpeg" alt="sad"></p>
+<p>我也有做安全运营的朋友<del>饱受其害</del>，我只能建议他内部专项治理，定期合补丁，能上沙箱就沙箱，这个真没啥好办法。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><h4 id="作为攻击方"><a href="#作为攻击方" class="headerlink" title="作为攻击方"></a>作为攻击方</h4><ul>
+<li>搞定入口，这个比较吃经验了，见招拆招吧</li>
+<li>多盯着点commit，开发一些工具啥的也可以，方便用</li>
+<li>利用武器化，不是只弹个计算器就完了的</li>
+</ul>
+<h4 id="作为防守方"><a href="#作为防守方" class="headerlink" title="作为防守方"></a>作为防守方</h4><ul>
+<li><p>打补丁case by case，但是每个月都要来那么一次，还不能全自动化，有效但费人力。</p>
+</li>
+<li><p>开沙箱，毕竟是个浏览器，还是能打IPC穿沙箱穿出来，不过这就要看具体漏洞情况了。</p>
+</li>
+<li><p>升级到最新版，如果不稳定怎么办，这个也不是个好办法</p>
+</li>
+</ul>
+<p><code>补丁+升级+沙箱</code> 三个维度一起来，毕竟短板效应，少了哪一块都不行，甲方的话也可以搞一些白盒工具来做补丁check，确认漏洞是否存在，这块就见仁见智了，我也写过一套，效果还行:D </p>
+<h2 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h2><blockquote>
+<p>chrome headless_shell 和 puppeteer</p>
+</blockquote>
+<p>基本上还是 <a href="https://o0xmuhe.github.io/2021/05/26/Chrome-headless-exploit/">Exploit Headless Chrome</a>这篇文章的内容，核心问题还是沙箱&amp;版本过低的问题，这块比较严重的是网上很多人写教程、博客都喜欢<code>--no-sandbox</code>，我也不知道他们知不知道这个参数的影响，不过一传十十传百，你会发现很多后端无头浏览器多多少少有这类问题。</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/ae12bb08f457409763f629da49aabc8f.jpg" alt="no"></p>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><h4 id="作为防守方-1"><a href="#作为防守方-1" class="headerlink" title="作为防守方"></a>作为防守方</h4><ul>
+<li>安全开发意识提高，不要为了方便乱用参数</li>
+<li>及时更新版本or打补丁</li>
+</ul>
+<p><del>扯远一些，有些扫描器用chrome，可以使用这手段做反制，你敢爬我轻则crash重则rce。</del></p>
+<h4 id="作为攻击方-1"><a href="#作为攻击方-1" class="headerlink" title="作为攻击方"></a>作为攻击方</h4><ul>
+<li>版本探测比较重要，做这个操作前先想想银手镯</li>
+<li>什么？你还想exp？我看你想戴上银手镯</li>
+</ul>
+<h2 id="为了风险治理做了什么"><a href="#为了风险治理做了什么" class="headerlink" title="为了风险治理做了什么"></a>为了风险治理做了什么</h2><blockquote>
+<p>说到这个就想到了2022.13 那个下午弹出计算器的时候</p>
+</blockquote>
+<p>  主要是三块吧，我发现甲方里涮一圈之后思维确实不太一样了。</p>
+<ul>
+<li><p>首先要讲明白风险，这里也包含证明风险，需要强有力的证明，比如exp打穿这样，研发可能不太理解为什么这样可以RCE，这就需要沟通好让大家有相同的sense</p>
+</li>
+<li><p>其次是修复方案，不同业务线、场景不一样，这个得和业务聊明白了才好给方案，不然就是“空中楼阁”，这块就算是治理存量问题了</p>
+<ul>
+<li>沙箱开不开</li>
+<li>补丁无法自动合入，怎么处理更高效，能不能自动化节省排期</li>
+<li>以后怎么办，建立个什么流程跑这个事情</li>
+</ul>
+</li>
+<li><p>最后可以开发一些工具做一些预警工作，相当于治理增量问题</p>
+<ul>
+<li><p>存量怎么扫，补丁怎么提取，这个部分得好好设计构思</p>
+</li>
+<li><p>预警Bot，这个本质就是个爬虫+机器人，之前研究的时候自己搞过一个tg bot专门干这个，还能搞漏洞查询 </p>
+<img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824224612405.png" alt="image-20220824224612405" style="zoom:50%;" />
+
+
+
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="总结-2"><a href="#总结-2" class="headerlink" title="总结"></a>总结</h2><p>  我认为很有意思的是这个攻击面对于防守方来说简直是“折磨”，只要你的项目使用chromium，你就不得不面临各种补丁、升级，这实际上是很难做到及时补丁&amp;升级的，所以理论上存在<code>diff gap</code>，这就导致很多吸引眼球的 <code>xxx RCE</code> 传播的非常广泛。早在21年7月份，腾讯的蓝军在21年发布了<a href="https://cloud.tencent.com/developer/article/1848763">攻防启示：Chromium组件风险剖析与收敛</a>，也详细地剖析了该攻击面以及修复方案，对于我自己来说比较可惜的是在公司内部搞了这块攻击面的治理工作没有出去讲一讲or发个文章啥的，到后面这篇文章出来后已经没什么可讲的了 :( </p>
+<p>  主要想对自己的一些工作做个简单的总结，所以才有了本文，时至2022.8，这个攻击面应该已经变得众所周知，没有什么秘密可言了，想来这手法我在17年某项目上也见过，不过当时是webkit。</p>
+]]></content>
+      <tags>
+        <tag>Chrome</tag>
+        <tag>Exploit</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ByteCTF2021 chatroom writeup</title>
     <url>/2021/10/17/ByteCTF2021-chatroom-writeup/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>  在今年的ByteCTF中，我出了一道pwn题目，距离上一次打比赛/出题已经过去很久了，所以传统的 <code>heap trick</code> 就没有考虑，而是从我日常工作中挖掘的安全风险入手，简化场景，出了一道 <code>chatroom</code> ，看起来像一个web的奇怪题目。</p>
@@ -5526,6 +5702,142 @@ osrloaderv30</code></pre>
         <tag>MTK</tag>
         <tag>preloader</tag>
         <tag>boot</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>weggli debug</title>
+    <url>/2022/08/24/weggli-debug/</url>
+    <content><![CDATA[<h2 id="关于Weggli"><a href="#关于Weggli" class="headerlink" title="关于Weggli"></a>关于Weggli</h2><blockquote>
+<p>AST Pattern Search</p>
+</blockquote>
+<p>核心是使用和 <code>tree-sitter</code> 库，然后搞了 <code>query-tree</code> 来在 <code>AST</code>上进行搜索，这只能说是匹配特定的代码片段，还达不到程序分析的那个级别，所以理论上只能过程内分析，而且没有上下文啥的 :D  直白点说的话，像是<code>AST</code>的正则表达式，不过某种意义上来说对于使用白盒方案快速召回一些漏洞也是一种借鉴吧。</p>
+<span id="more"></span>
+
+<p>当然我也用这个工具做了一些扩展，结合其他工具解决了一些问题，目前看来这个东西还是具有一定的可玩性的 :D </p>
+<h2 id="Weggli如何工作"><a href="#Weggli如何工作" class="headerlink" title="Weggli如何工作"></a>Weggli如何工作</h2><blockquote>
+<p>看代码，调试分析</p>
+</blockquote>
+<h3 id="idea配置"><a href="#idea配置" class="headerlink" title="idea配置"></a>idea配置</h3><p>安装<code>Rust</code>插件，调试的话，会默认再去安装<code>Native Debugging Support</code>，有了这俩东西就可以调试了</p>
+<p>配置传递给weggli的参数的话跟在 <code>--</code> 后面即可 : </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">run --package weggli --bin weggli --  <span class="string">&quot;&#123;<span class="variable">$func</span>(<span class="variable">$b</span>);system(<span class="variable">$b</span>);&#125;&quot;</span> -R <span class="string">&quot;func=printf$&quot;</span> /path/to/src</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h3><blockquote>
+<p>只描述核心流程</p>
+</blockquote>
+<h4 id="query-tree-构建"><a href="#query-tree-构建" class="headerlink" title="query-tree 构建"></a>query-tree 构建</h4><p>参考 <a href="https://tree-sitter.github.io/tree-sitter/">tree-sitter文档</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> work: <span class="built_in">Vec</span>&lt;WorkItem&gt; = args</span><br><span class="line">        .pattern</span><br><span class="line">        .iter()</span><br><span class="line">        .map(|pattern| &#123;</span><br><span class="line">            <span class="keyword">match</span> parse_search_pattern(pattern, args.cpp, args.force_query, &amp;regex_constraints) &#123;</span><br><span class="line">                <span class="literal">Ok</span>(qt) =&gt; &#123;</span><br><span class="line">                    <span class="keyword">let</span> identifiers = qt.identifiers();</span><br><span class="line">                    variables.extend(qt.variables());</span><br><span class="line">                    WorkItem &#123; qt, identifiers &#125;</span><br><span class="line">        <span class="comment">// ....</span></span><br></pre></td></tr></table></figure>
+
+<p>构造 <code>WorkItem&#123;qt, identifiers&#125;</code></p>
+<ul>
+<li>qt : query-tree, tree-sitter的Tree对象</li>
+<li>identifiers : 标识符，query中”终结符” </li>
+</ul>
+<p>调用链:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">main</span><br><span class="line">    parse_search_pattern</span><br><span class="line">        weggli::parse(pattern, is_cpp) // 返回Tree对象</span><br><span class="line">        //修正pattern</span><br><span class="line">        validate_query</span><br><span class="line">        build_query_tree</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p> 修正pattern : weggli处理了“不合法的”格式，如:</p>
+</blockquote>
+<ul>
+<li><code>memcpy(a,b,size)</code> -&gt; <code>memcpy(a,b,size);</code></li>
+<li><code>memcpy(a,b,size);</code> -&gt; <code>&#123;memcpy(a,b,size);&#125;</code></li>
+</ul>
+<blockquote>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line">validate_query(&amp;tree, p, force_query)? <span class="comment">// 返回 TreeCursor对象，用于遍历AST</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>语法合法性检查，如果 <code>force_query</code>为<code>True</code>，意味着忽略这些语法错误</p>
+<p>如 : </p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220707154439731.png" alt="image-20220707154439731"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;&#123;$func($b);_($b);&#125;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>对应 : </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(translation_unit </span><br><span class="line">    (</span><br><span class="line">        compound_statement </span><br><span class="line">        (</span><br><span class="line">            expression_statement (call_expression function: (identifier) arguments: (argument_list (identifier)))</span><br><span class="line">        ) </span><br><span class="line">        (</span><br><span class="line">            expression_statement (call_expression function: (identifier) arguments: (argument_list (identifier)))</span><br><span class="line">        )</span><br><span class="line">    )</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>同时还不允许 : </p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220707155732813.png" alt="image-20220707155732813"></p>
+<p>返回的是 : <code>c.goto_first_child();</code>，即 花括号中间的内容</p>
+<blockquote>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="literal">Ok</span>(build_query_tree(</span><br><span class="line"> p,</span><br><span class="line"> &amp;<span class="keyword">mut</span> c,</span><br><span class="line"> is_cpp,</span><br><span class="line"> <span class="literal">Some</span>(regex_constraints.clone()),</span><br><span class="line">))</span><br><span class="line"></span><br><span class="line">_build_query_tree(source, cursor, <span class="number">0</span>, is_cpp, <span class="literal">false</span>, <span class="literal">false</span>, regex_constraints)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>QueryTree数据结构:</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">QueryTree</span></span> &#123;</span><br><span class="line">    query: Query,</span><br><span class="line">    captures: <span class="built_in">Vec</span>&lt;Capture&gt;,</span><br><span class="line">    negations: <span class="built_in">Vec</span>&lt;NegativeQuery&gt;,</span><br><span class="line">    variables: HashSet&lt;<span class="built_in">String</span>&gt;,</span><br><span class="line">    id: <span class="built_in">usize</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>转换的<code>tree_sitter query</code> (核心逻辑都在 <code>builder.rs</code> 的 <code>QueryBuilder.build</code>) </p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Translate the tree below `c` into a tree-sitter query string.</span><br><span class="line">&quot;&#123;$func($b);_($b);&#125;&quot;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tree_sitter query 1: ((call_expression function:[(identifier) (field_expression) (field_identifier)] @0 arguments:(argument_list [(identifier) (field_expression) (field_identifier)] @1)) )([(identifier) (field_expression) (field_identifier)] @2 )</span><br><span class="line">tree_sitter query 0: (function_definition body: (compound_statement) @0) @1</span><br></pre></td></tr></table></figure>
+
+<p>深度优先的方式递归生成query tree string，按照AST解析出来不同的节点，后面跟着的 <code>@x</code> 用来区分不同的 <code>identifier</code>，方便后面做匹配。</p>
+<hr>
+<p>如简单的 <code>&#123;printf(var, bar);&#125;</code> 生成的 <code>query-tree</code>是 : </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">((call_expression         </span><br><span class="line">        function:  [(field_expression field: (field_identifier)@0) (identifier) @0] </span><br><span class="line">        arguments: (argument_list </span><br><span class="line">                        . (identifier) @1 </span><br><span class="line">                        . (identifier) @2)</span><br><span class="line">                    ) </span><br><span class="line">                        </span><br><span class="line">                        (#eq? @0 &quot;printf&quot;)(#eq? @1 &quot;var&quot;)(#eq? @2 &quot;bar&quot;)) // captures</span><br></pre></td></tr></table></figure>
+
+<p>结合tree-sitter的playground来看就很容易看明白了:</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/tree-sitter-playground.png" alt="tree-sitter-playground"></p>
+<h4 id="query执行-pattern-匹配"><a href="#query执行-pattern-匹配" class="headerlink" title="query执行(pattern 匹配)"></a>query执行(pattern 匹配)</h4><p>在执行query之前会做</p>
+<ul>
+<li><p>对于需要正则匹配的 <code>identifer</code>做合法性确认</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> v <span class="keyword">in</span> regex_constraints.variables() &#123;</span><br><span class="line">        <span class="keyword">if</span> !variables.contains(v) &#123;</span><br><span class="line">            eprintln!(<span class="string">&quot;&#x27;&#123;&#125;&#x27; is not a valid query variable&quot;</span>, v.red());</span><br><span class="line">            std::process::exit(<span class="number">1</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>确定待解析源码文件(<code>Verify that the --include and --exclude regexes are valid.</code>) 主要是根据后缀来</p>
+</li>
+</ul>
+<p>随后就是通过管道来处理，分为：</p>
+<ul>
+<li>文件读取 &amp; AST解析 <code>let (ast_tx, ast_rx) = mpsc::channel();</code></li>
+<li>QueryTree 匹配 &amp; 结果输出 <code>let (results_tx, results_rx) = mpsc::channel();</code></li>
+</ul>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Spawn worker to iterate through files, parse potential matches and forward ASTs</span></span><br><span class="line">s.spawn(<span class="keyword">move</span> |_| parse_files_worker(files, ast_tx, w, cpp));</span><br><span class="line"></span><br><span class="line"><span class="comment">// Run search queries on ASTs and apply CLI constraints</span></span><br><span class="line"><span class="comment">// on the results. For single query executions, we can</span></span><br><span class="line"><span class="comment">// directly print any remaining matches. For multi</span></span><br><span class="line"><span class="comment">// query runs we forward them to our next worker function</span></span><br><span class="line">s.spawn(<span class="keyword">move</span> |_| execute_queries_worker(ast_rx, results_tx, w, &amp;args));</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> w.len() &gt; <span class="number">1</span> &#123;</span><br><span class="line">    s.spawn(<span class="keyword">move</span> |_| multi_query_worker(results_rx, w.len(), before, after));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>**这玩意描述起来就像个流水线 :D **</p>
+<p>详细描述的话就是：在有了 <code>query-tree</code>就需要把目标文件，解析(<code>parse_files_worker</code>)成 <code>(Tree, source_code)</code>，结果发送到 <code>ast_tx</code>，然后从<code>ast_rx</code>获取这些信息来执行查询操作(<code>execute_queries_worker</code>)；结果放在 <code>result_tx</code>，后面处理结果的函数会从<code>result_rx</code>获取，然后输出。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line">parse_files_worker(files, ast_tx, w, cpp);</span><br><span class="line">    weggli::parse(....);</span><br><span class="line">execute_queries_worker(ast_rx, results_tx, w, &amp;args); <span class="comment">// w  WorkItem，里面有query-tree</span></span><br><span class="line">    qt.matches(tree.root_node(), &amp;source);</span><br><span class="line">    match_internal(...);</span><br><span class="line">    QueryCursor.matches(...);</span><br><span class="line">    QueryTree.process_match(...);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>TODO: 需要细读逻辑</p>
+</blockquote>
+<p>这里简单的加一句print之类的可以来看看每次query的时候目标tree是啥样的(生成过程和query tree类似)</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Run query</span></span><br><span class="line"><span class="keyword">let</span> tmp_tree = tree.root_node().to_sexp();</span><br><span class="line"><span class="keyword">let</span> matches = qt.matches(tree.root_node(), &amp;source);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220801202121736.png" alt="image-20220801202121736"></p>
+<p>所以这就转换成了一个字符串匹配的问题，结合之前的 <code>-R</code> ，能支持正则匹配，<strong>所以说weggli是在AST上搞正则匹配一点都没说错 :D</strong></p>
+<h4 id="multi-query-p-参数"><a href="#multi-query-p-参数" class="headerlink" title="multi-query(-p 参数)"></a>multi-query(<code>-p</code> 参数)</h4><h5 id="漏洞模型测试"><a href="#漏洞模型测试" class="headerlink" title="漏洞模型测试"></a>漏洞模型测试</h5><p><a href="https://github.com/googleprojectzero/weggli/issues/21">Question - query construction </a> 这个issue里提到了这个场景，先还原一下场景 : </p>
+<p><code>vuln.c</code> 是个类似的情况，尝试query</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">wtf</span><span class="params">(<span class="keyword">int</span> a)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + <span class="number">1337</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span> bar)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    wtf(bar);</span><br><span class="line"></span><br><span class="line">    system(bar);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">vuln</span><span class="params">(<span class="keyword">char</span> *data)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> cmd[<span class="number">2048</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">sprintf</span>(cmd, <span class="string">&quot;/bin/bash %s &gt; /tmp&quot;</span>, data);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> system(cmd);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>*argv[])</span></span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (argc &lt; <span class="number">2</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    foo(<span class="number">11111</span>);</span><br><span class="line">    vuln(argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220803130012370.png" alt="image-20220803130012370"></p>
+<ul>
+<li>匹配函数定义(<code>vuln</code>)</li>
+<li>匹配func call <code>vuln(argv[1])</code></li>
+</ul>
+<p>假如没有对vuln的调用，那就不回返回结果</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220803130323523.png" alt="image-20220803130323523"></p>
+<h5 id="multi-query-实现"><a href="#multi-query-实现" class="headerlink" title="multi-query 实现"></a>multi-query 实现</h5><p>这块逻辑主要在 <code>multi_query_worker</code> ，即存在多个workitem的时候会触发，就是在匹配的时候会结合这些query，即将第一个query匹配到的结果先收集起来</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> query_results = <span class="built_in">Vec</span>::with_capacity(num_queries);</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="number">0</span>..num_queries &#123;</span><br><span class="line">    query_results.push(<span class="built_in">Vec</span>::new());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// collect all results</span></span><br><span class="line"><span class="keyword">for</span> ctx <span class="keyword">in</span> results_rx &#123;</span><br><span class="line">    query_results[ctx.query_index].push(ctx);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后根据后面的query去做过滤，找到满足的pattern就打印出来</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> filter = |x: &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;ResultsCtx&gt;, y: &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;ResultsCtx&gt;| &#123;</span><br><span class="line">        x.retain(|r| &#123;</span><br><span class="line">            y.iter()</span><br><span class="line">                .any(|f| r.result.chainable(&amp;r.source, &amp;f.result, &amp;f.source))</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..query_results.len() &#123;</span><br><span class="line">        <span class="keyword">let</span> (part1, part2) = query_results.split_at_mut(i + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">let</span> a = part1.last_mut().unwrap();</span><br><span class="line">        <span class="keyword">for</span> b <span class="keyword">in</span> part2 &#123;</span><br><span class="line">            filter(a, b);</span><br><span class="line">            filter(b, a);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="方便调试做的修改"><a href="#方便调试做的修改" class="headerlink" title="方便调试做的修改"></a>方便调试做的修改</h2><h3 id="1-打印-query-tree-和-源码-AST方便定位问题"><a href="#1-打印-query-tree-和-源码-AST方便定位问题" class="headerlink" title="1. 打印 query-tree 和 源码 AST方便定位问题"></a>1. 打印 query-tree 和 源码 AST方便定位问题</h3><p>query-tree的话增加一个 <code>-v</code> 参数就行，会把query tree打印出来</p>
+<p><strong>少量代码测试这样是可以的</strong>，也可以使用log模块把信息打出来，不过数据太多了。</p>
+<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line"><span class="comment">diff --git a/src/main.rs b/src/main.rs</span></span><br><span class="line"><span class="comment">index a819c5c..caf9a51 100644</span></span><br><span class="line"><span class="comment">--- a/src/main.rs</span></span><br><span class="line"><span class="comment">+++ b/src/main.rs</span></span><br><span class="line"><span class="meta">@@ -468,6 +468,8 @@</span> fn execute_queries_worker(</span><br><span class="line">                 .enumerate()</span><br><span class="line">                 .for_each(|(i, WorkItem &#123; qt, identifiers: _ &#125;)| &#123;</span><br><span class="line">                     // Run query</span><br><span class="line"><span class="addition">+                    let tmp_tree = tree.root_node().to_sexp();</span></span><br><span class="line"><span class="addition">+                    info!(&quot;AST : &#123;&#125;&quot;, tmp_tree);</span></span><br><span class="line">                     let matches = qt.matches(tree.root_node(), &amp;source);</span><br><span class="line"> </span><br><span class="line">                     if matches.is_empty() &#123;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>直观多了 : </p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220802153714210.png" alt="image-20220802153714210"></p>
+]]></content>
+      <tags>
+        <tag>weggli</tag>
       </tags>
   </entry>
 </search>
