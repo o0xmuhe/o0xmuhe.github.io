@@ -5376,7 +5376,7 @@ osrloaderv30</code></pre>
 <li>什么？你还想exp？我看你想戴上银手镯</li>
 </ul>
 <h2 id="为了风险治理做了什么"><a href="#为了风险治理做了什么" class="headerlink" title="为了风险治理做了什么"></a>为了风险治理做了什么</h2><blockquote>
-<p>说到这个就想到了2022.13 那个下午弹出计算器的时候</p>
+<p>说到这个就想到了2020.11.13 那个下午弹出计算器的时候</p>
 </blockquote>
 <p>  主要是三块吧，我发现甲方里涮一圈之后思维确实不太一样了。</p>
 <ul>
@@ -5935,5 +5935,10 @@ osrloaderv30</code></pre>
         <tag>honggfuzz</tag>
         <tag>trapfuzz</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>optee学习</title>
+    <url>/2022/08/24/optee%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[]]></content>
   </entry>
 </search>
