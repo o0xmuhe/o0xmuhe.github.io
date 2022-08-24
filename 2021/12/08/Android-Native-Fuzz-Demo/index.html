@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="BackgroundTrapFuzz的思路Fuzzing Android native库，这就是个简单的Demo，只针对黑盒的库。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Native Fuzz Demo">
+<meta property="og:url" content="http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/index.html">
+<meta property="og:site_name" content="o0xmuhe&#39;s blog">
+<meta property="og:description" content="BackgroundTrapFuzz的思路Fuzzing Android native库，这就是个简单的Demo，只针对黑盒的库。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225631169.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225705237.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225722034.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225744530.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225756287.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225812164.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225828132.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824230049472.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824230115528.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824230125768.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824230138101.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824230152707.png">
+<meta property="article:published_time" content="2021-12-08T14:54:18.000Z">
+<meta property="article:modified_time" content="2022-08-24T15:05:07.048Z">
+<meta property="article:author" content="muhe">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="native">
+<meta property="article:tag" content="jni">
+<meta property="article:tag" content="honggfuzz">
+<meta property="article:tag" content="trapfuzz">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225631169.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Android Native Fuzz Demo</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="o0xmuhe&#39;s blog" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search">Search</a></li><!--
+     --><!--
+       --><li><a href="/atom.xml">RSS</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2021/12/15/%E5%B0%86Android-iOS%E4%B8%8A%E7%9A%84%E6%B5%81%E9%87%8F%E8%BD%AC%E5%8F%91%E5%88%B0Wireshark%E5%88%86%E6%9E%90/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2021/10/17/ByteCTF2021-chatroom-writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&text=Android Native Fuzz Demo"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&title=Android Native Fuzz Demo"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&is_video=false&description=Android Native Fuzz Demo"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android Native Fuzz Demo&body=Check out this article: http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&title=Android Native Fuzz Demo"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&title=Android Native Fuzz Demo"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&title=Android Native Fuzz Demo"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&title=Android Native Fuzz Demo"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&name=Android Native Fuzz Demo&description=&lt;h1 id=&#34;&#34;&gt;&lt;a href=&#34;#&#34; class=&#34;headerlink&#34; title=&#34;&#34;&gt;&lt;/a&gt;&lt;/h1&gt;&lt;h2 id=&#34;Background&#34;&gt;&lt;a href=&#34;#Background&#34; class=&#34;headerlink&#34; title=&#34;Background&#34;&gt;&lt;/a&gt;Background&lt;/h2&gt;&lt;p&gt;TrapFuzz的思路Fuzzing Android native库，这就是个简单的Demo，只针对黑盒的库。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&t=Android Native Fuzz Demo"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text"></span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Background"><span class="toc-number">1.1.</span> <span class="toc-text">Background</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#honggfuzz-on-Android"><span class="toc-number">1.2.</span> <span class="toc-text">honggfuzz on Android</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#write-harness-for-so"><span class="toc-number">1.3.</span> <span class="toc-text">write harness for .so</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8native-harness-target"><span class="toc-number">1.3.1.</span> <span class="toc-text">使用native-harness-target</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#libpl-droidsonroids-gif-so%E6%B5%8B%E8%AF%95"><span class="toc-number">1.3.2.</span> <span class="toc-text">libpl_droidsonroids_gif.so测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#work-with-honggfuzz"><span class="toc-number">1.4.</span> <span class="toc-text">work with honggfuzz</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#get-all-JUMP-INS"><span class="toc-number">1.4.1.</span> <span class="toc-text">get all JUMP INS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Patch-or-hook-INS"><span class="toc-number">1.4.2.</span> <span class="toc-text">Patch or hook INS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E7%BB%AD-amp-%E9%97%AE%E9%A2%98"><span class="toc-number">1.5.</span> <span class="toc-text">后续&amp;问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">1.6.</span> <span class="toc-text">参考</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Android Native Fuzz Demo
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">muhe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2021-12-08T14:54:18.000Z" itemprop="datePublished">2021-12-08</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Android/" rel="tag">Android</a>, <a class="tag-link-link" href="/tags/honggfuzz/" rel="tag">honggfuzz</a>, <a class="tag-link-link" href="/tags/jni/" rel="tag">jni</a>, <a class="tag-link-link" href="/tags/native/" rel="tag">native</a>, <a class="tag-link-link" href="/tags/trapfuzz/" rel="tag">trapfuzz</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id=""><a href="#" class="headerlink" title=""></a></h1><h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>TrapFuzz的思路Fuzzing Android native库，这就是个简单的Demo，只针对黑盒的库。</p>
+<span id="more"></span>
+
+<h2 id="honggfuzz-on-Android"><a href="#honggfuzz-on-Android" class="headerlink" title="honggfuzz on Android"></a>honggfuzz on Android</h2><ul>
+<li>设置好NDK路径</li>
+<li><code>brew install automake</code></li>
+</ul>
+<p>构建所有的arch(arm64-v8a, armeabi, armeabi-v7a, x86, x86_64)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make android-all</span><br></pre></td></tr></table></figure>
+
+<p>坑1: libunwind编译的各种问题:</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225631169.png" alt="image-20220824225631169"></p>
+<p>macos不好使，换linux去编译，然后用ndk r20.</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225705237.png" alt="image-20220824225705237"></p>
+<p>传到手机上试试看：</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225722034.png" alt="image-20220824225722034"></p>
+<p>然后就是写个demo，在手机上跑一下看看情况</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/google/honggfuzz/issues/341">hfuzz-cc is missing on android build · Issue #341 · google/honggfuzz</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/google/honggfuzz/issues/342">No coverage information on android · Issue #342 · google/honggfuzz</a></p>
+<p>参数 <code>fsanitize-coverage=trace-pc-guard,trace-cmp,trace-div,indirect-calls</code></p>
+<p>这个参数的话会有警告信息，应该是clang 参数的问题。</p>
+<p>后面参考了谷歌的文档，替换了参数，结果没警告了，但是cov还是0.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># muhe @ muhe-Parallels-Virtual-Platform in ~/ndk_fuzzing_demo [14:51:59] </span></span><br><span class="line">$ cat Android.mk </span><br><span class="line">LOCAL_PATH:= $(call my-dir)</span><br><span class="line"></span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line">LOCAL_PATH = .</span><br><span class="line">LOCAL_MODULE := hfuzz</span><br><span class="line">LOCAL_EXPORT_C_INCLUDES := <span class="variable">$HOME</span>/honggfuzz/includes</span><br><span class="line">LOCAL_SRC_FILES := /home/muhe/honggfuzz/libs/arm64-v8a/libhfuzz.a</span><br><span class="line">LOCAL_ARM_MODE := arm</span><br><span class="line">include $(PREBUILT_STATIC_LIBRARY)</span><br><span class="line"></span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line">LOCAL_PATH = .</span><br><span class="line">LOCAL_MODULE := hfuzzcommon</span><br><span class="line">LOCAL_EXPORT_C_INCLUDES := <span class="variable">$HOME</span>/honggfuzz/includes</span><br><span class="line">LOCAL_SRC_FILES := /home/muhe/honggfuzz/obj/<span class="built_in">local</span>/arm64-v8a/libcommon.a</span><br><span class="line">LOCAL_ARM_MODE := arm</span><br><span class="line">include $(PREBUILT_STATIC_LIBRARY)</span><br><span class="line"></span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line">LOCAL_STATIC_LIBRARIES := hfuzz hfuzzcommon</span><br><span class="line">LOCAL_SRC_FILES := fuzz_test.c</span><br><span class="line">LOCAL_MODULE := fuzz_test</span><br><span class="line">LOCAL_ARM_MODE := arm</span><br><span class="line"></span><br><span class="line">include $(BUILD_EXECUTABLE)</span><br><span class="line"></span><br><span class="line"><span class="comment"># muhe @ muhe-Parallels-Virtual-Platform in ~/ndk_fuzzing_demo [14:52:01] </span></span><br><span class="line">$ cat Application.mk </span><br><span class="line">APP_BUILD_SCRIPT := ./Android.mk</span><br><span class="line">APP_STL := c++_shared <span class="comment"># Or system, or none.</span></span><br><span class="line">APP_CFLAGS := -fsanitize=address  -fno-omit-frame-pointer</span><br><span class="line">APP_LDFLAGS := -fsanitize=address </span><br><span class="line"></span><br><span class="line"><span class="comment"># muhe @ muhe-Parallels-Virtual-Platform in ~/ndk_fuzzing_demo [14:52:03] </span></span><br><span class="line">$</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225744530.png" alt="image-20220824225744530"></p>
+<hr>
+<p>退回到<strong>honggfuzz 2.2</strong> 然后用最开始 #342 那个issue的编译参数是可以的</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225756287.png" alt="image-20220824225756287"></p>
+<p>完整项目:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># muhe @ muhe-Parallels-Virtual-Platform in ~/ndk_fuzzing_demo [15:53:52] C:130</span></span><br><span class="line">$ cat Android.mk </span><br><span class="line">LOCAL_PATH:= $(call my-dir)</span><br><span class="line"></span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line">LOCAL_PATH = .</span><br><span class="line">LOCAL_MODULE := hfuzz</span><br><span class="line">LOCAL_EXPORT_C_INCLUDES := <span class="variable">$HOME</span>/honggfuzz/includes</span><br><span class="line">LOCAL_SRC_FILES := /home/muhe/honggfuzz/libs/arm64-v8a/libhfuzz.a</span><br><span class="line">include $(PREBUILT_STATIC_LIBRARY)</span><br><span class="line"></span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line">LOCAL_PATH = .</span><br><span class="line">LOCAL_MODULE := hfuzzcommon</span><br><span class="line">LOCAL_EXPORT_C_INCLUDES := <span class="variable">$HOME</span>/honggfuzz/includes</span><br><span class="line">LOCAL_SRC_FILES := /home/muhe/honggfuzz/obj/<span class="built_in">local</span>/arm64-v8a/libcommon.a</span><br><span class="line">include $(PREBUILT_STATIC_LIBRARY)</span><br><span class="line"></span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line">LOCAL_STATIC_LIBRARIES := hfuzz hfuzzcommon</span><br><span class="line">LOCAL_SRC_FILES := fuzz_test.c</span><br><span class="line">LOCAL_MODULE := fuzz_test</span><br><span class="line">LOCAL_CFLAGS := -fsanitize-coverage=trace-pc-guard,trace-cmp,trace-div,indirect-calls</span><br><span class="line">LOCAL_LD_FLAGS := -fsanitize-coverage=trace-pc-guard,trace-cmp,trace-div,indirect-calls</span><br><span class="line"></span><br><span class="line">include $(BUILD_EXECUTABLE)</span><br><span class="line"></span><br><span class="line"><span class="comment"># muhe @ muhe-Parallels-Virtual-Platform in ~/ndk_fuzzing_demo [15:53:53] </span></span><br><span class="line">$ cat Application.mk </span><br><span class="line">APP_BUILD_SCRIPT := ./Android.mk</span><br><span class="line"><span class="comment">#APP_STL := c++_shared # Or system, or none.</span></span><br><span class="line"><span class="comment">#APP_CFLAGS := -fsanitize-coverage=trace-pc-guard,trace-cmp,trace-div,indirect-calls </span></span><br><span class="line"><span class="comment">#APP_LDFLAGS := -fsanitize-coverage=trace-pc-guard,trace-cmp,trace-div,indirect-calls</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># muhe @ muhe-Parallels-Virtual-Platform in ~/ndk_fuzzing_demo [15:53:55] </span></span><br><span class="line">$ cat fuzz_test.c </span><br><span class="line"></span><br><span class="line"><span class="comment">#include &lt;stdio.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;stdlib.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;string.h&gt;</span></span><br><span class="line"></span><br><span class="line">int test_target(char* input_file_path, char* argv_0)</span><br><span class="line">&#123;</span><br><span class="line">4char *crash = NULL;</span><br><span class="line">4FILE *fp = fopen(input_file_path, <span class="string">&quot;rb&quot;</span>);</span><br><span class="line">4char c;</span><br><span class="line">4<span class="keyword">if</span> (!fp) &#123;</span><br><span class="line">44<span class="built_in">printf</span>(<span class="string">&quot;Error opening file\\n&quot;</span>);</span><br><span class="line">44<span class="built_in">return</span> 0;</span><br><span class="line">4&#125;</span><br><span class="line">4<span class="keyword">if</span> (fread(&amp;c, 1, 1, fp) != 1) &#123;</span><br><span class="line">44<span class="built_in">printf</span>(<span class="string">&quot;Error reading file\\n&quot;</span>);</span><br><span class="line">44fclose(fp);</span><br><span class="line">44<span class="built_in">return</span> 0;</span><br><span class="line">4&#125;</span><br><span class="line">4<span class="keyword">if</span> (c != <span class="string">&#x27;t&#x27;</span>) &#123;</span><br><span class="line">44<span class="built_in">printf</span>(<span class="string">&quot;Error 1\\n&quot;</span>);</span><br><span class="line">44fclose(fp);</span><br><span class="line">44<span class="built_in">return</span> 0;</span><br><span class="line">4&#125;</span><br><span class="line">4<span class="keyword">if</span> (fread(&amp;c, 1, 1, fp) != 1) &#123;</span><br><span class="line">44<span class="built_in">printf</span>(<span class="string">&quot;Error reading file\\n&quot;</span>);</span><br><span class="line">44fclose(fp);</span><br><span class="line">44<span class="built_in">return</span> 0;</span><br><span class="line">4&#125;</span><br><span class="line">4<span class="keyword">if</span> (c != <span class="string">&#x27;e&#x27;</span>) &#123;</span><br><span class="line">44<span class="built_in">printf</span>(<span class="string">&quot;Error 2\\n&quot;</span>);</span><br><span class="line">44fclose(fp);</span><br><span class="line">44<span class="built_in">return</span> 0;</span><br><span class="line">4&#125;</span><br><span class="line">4<span class="keyword">if</span> (fread(&amp;c, 1, 1, fp) != 1) &#123;</span><br><span class="line">44<span class="built_in">printf</span>(<span class="string">&quot;Error reading file\\n&quot;</span>);</span><br><span class="line">44fclose(fp);</span><br><span class="line">44<span class="built_in">return</span> 0;</span><br><span class="line">4&#125;</span><br><span class="line">4<span class="keyword">if</span> (c != <span class="string">&#x27;s&#x27;</span>) &#123;</span><br><span class="line">44<span class="built_in">printf</span>(<span class="string">&quot;Error 3\\n&quot;</span>);</span><br><span class="line">44fclose(fp);</span><br><span class="line">44<span class="built_in">return</span> 0;</span><br><span class="line">4&#125;</span><br><span class="line">4<span class="keyword">if</span> (fread(&amp;c, 1, 1, fp) != 1) &#123;</span><br><span class="line">44<span class="built_in">printf</span>(<span class="string">&quot;Error reading file\\n&quot;</span>);</span><br><span class="line">44fclose(fp);</span><br><span class="line">44<span class="built_in">return</span> 0;</span><br><span class="line">4&#125;</span><br><span class="line">4<span class="keyword">if</span> (c != <span class="string">&#x27;t&#x27;</span>) &#123;</span><br><span class="line">44<span class="built_in">printf</span>(<span class="string">&quot;Error 4\\n&quot;</span>);</span><br><span class="line">44fclose(fp);</span><br><span class="line">44<span class="built_in">return</span> 0;</span><br><span class="line">4&#125;</span><br><span class="line">4<span class="built_in">printf</span>(<span class="string">&quot;!!!!!!!!!!OK!!!!!!!!!!\\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">4<span class="keyword">if</span> (fread(&amp;c, 1, 1, fp) != 1) &#123;</span><br><span class="line">44<span class="built_in">printf</span>(<span class="string">&quot;Error reading file\\n&quot;</span>);</span><br><span class="line">44fclose(fp);</span><br><span class="line">44<span class="built_in">return</span> 0;</span><br><span class="line">4&#125;</span><br><span class="line">4<span class="keyword">if</span> (c == <span class="string">&#x27;1&#x27;</span>) &#123;</span><br><span class="line">44// cause a crash</span><br><span class="line">44crash[0] = 1;</span><br><span class="line">4&#125;</span><br><span class="line">4<span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;2&#x27;</span>) &#123;</span><br><span class="line">44char buffer[5] = &#123; 0 &#125;;</span><br><span class="line">44// stack-based overflow to trigger the GS cookie corruption</span><br><span class="line">44<span class="keyword">for</span> (int i = 0; i &lt; 5; ++i)</span><br><span class="line">444strcat(buffer, argv_0);</span><br><span class="line">44<span class="built_in">printf</span>(<span class="string">&quot;buffer: %s\\n&quot;</span>, buffer);</span><br><span class="line">4&#125;</span><br><span class="line">4<span class="keyword">else</span> &#123;</span><br><span class="line">44<span class="built_in">printf</span>(<span class="string">&quot;Error 5\\n&quot;</span>);</span><br><span class="line">4&#125;</span><br><span class="line">4fclose(fp);</span><br><span class="line">4<span class="built_in">return</span> 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(int argc, char** argv)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(argc &lt; 2) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Usage: %s &lt;input file&gt;\\n&quot;</span>, argv[0]);</span><br><span class="line">        <span class="built_in">return</span> 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">44//regular single target call</span><br><span class="line">    <span class="built_in">return</span> test_target(argv[1], argv[0]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ndk构建命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ndk-build NDK_PROJECT_PATH=. NDK_APPLICATION_MK=Application.mk TARGET_ARCH_ABI=arm64-v8a</span><br></pre></td></tr></table></figure>
+
+<h2 id="write-harness-for-so"><a href="#write-harness-for-so" class="headerlink" title="write harness for .so"></a>write harness for <code>.so</code></h2><h3 id="使用native-harness-target"><a href="#使用native-harness-target" class="headerlink" title="使用native-harness-target"></a>使用native-harness-target</h3><p>参考项目 : <a target="_blank" rel="noopener" href="https://github.com/CalebFenton/native-harness-target">https://github.com/CalebFenton/native-harness-target</a></p>
+<p>Android 7.1.1</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225812164.png" alt="image-20220824225812164"></p>
+<p>可以使用这个方式跑起来，不过速度及其的慢。</p>
+<p><strong>TODO :</strong></p>
+<ol>
+<li>速度问题，考虑docker Android或者qemu-kvm</li>
+<li>port 到 Android 10</li>
+</ol>
+<p>Android 10 :</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/rednaga/native-shim">rednaga/native-shim</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=`<span class="built_in">pwd</span>`:/apex/com.android.runtime/lib::<span class="variable">$LD_LIBRARY_PATH</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=`<span class="built_in">pwd</span>`:/apex/com.android.runtime/lib64:<span class="variable">$LD_LIBRARY_PATH</span></span><br><span class="line">255|walleye:/data/<span class="built_in">local</span>/tmp <span class="comment"># ./shim libstr-crypt.so</span></span><br><span class="line">[*] native-shim - diff</span><br><span class="line"> [+] Attempting to load : [ libstr-crypt.so ]</span><br><span class="line"> [+] Library Loaded!</span><br><span class="line"> [+] Initializing JavaVM Instance</span><br><span class="line"> [+] Initialization success (vm=0x74eb6901c0, env=0x74eb6e06c0)</span><br><span class="line"> [+] Found JNI_OnLoad, attempting to call</span><br><span class="line"> [+] Closing library</span><br><span class="line">walleye:/data/<span class="built_in">local</span>/tmp <span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="libpl-droidsonroids-gif-so测试"><a href="#libpl-droidsonroids-gif-so测试" class="headerlink" title="libpl_droidsonroids_gif.so测试"></a>libpl_droidsonroids_gif.so测试</h3><p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824225828132.png" alt="image-20220824225828132"></p>
+<h2 id="work-with-honggfuzz"><a href="#work-with-honggfuzz" class="headerlink" title="work with honggfuzz"></a>work with honggfuzz</h2><blockquote>
+<p>经典的 patch 跳转指令，实现一个debugger来获取覆盖率的方案</p>
+</blockquote>
+<ul>
+<li><p>使用之前 patch跳转的方式搞覆盖率，修改honggfuzz即可</p>
+<p>问题 ： 创建JVM相关的操作耗时，影响效率</p>
+</li>
+<li><p>为了解决效率问题，如果可以自己写一个，初始化之后，fork，然后疯狂搞fork出来的子进程即可，这样效率就上去了。</p>
+</li>
+</ul>
+<h3 id="get-all-JUMP-INS"><a href="#get-all-JUMP-INS" class="headerlink" title="get all JUMP INS"></a>get all JUMP INS</h3><p>获取patch需要patch的指令地址，直接从p0tools里抄</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> idautils</span><br><span class="line"><span class="keyword">import</span> idaapi</span><br><span class="line"><span class="keyword">import</span> ida_nalt</span><br><span class="line"><span class="keyword">import</span> idc</span><br><span class="line"></span><br><span class="line"><span class="comment"># See &lt;https://www.hex-rays.com/products/ida/support/ida74_idapython_no_bc695_porting_guide.shtml&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> os.path <span class="keyword">import</span> expanduser</span><br><span class="line">home = expanduser(<span class="string">&quot;~&quot;</span>)</span><br><span class="line"></span><br><span class="line">patchpoints = <span class="built_in">set</span>()</span><br><span class="line"></span><br><span class="line">max_offset = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> seg_ea <span class="keyword">in</span> idautils.Segments():</span><br><span class="line">    name = idc.get_segm_name(seg_ea)</span><br><span class="line">    <span class="keyword">if</span> name != <span class="string">&quot;.text&quot;</span>:</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">    start = idc.get_segm_start(seg_ea)</span><br><span class="line">    end = idc.get_segm_end(seg_ea)</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">hex</span>(start), <span class="built_in">hex</span>(end))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> func_ea <span class="keyword">in</span> idautils.Functions(start, end):</span><br><span class="line">        f = idaapi.get_func(func_ea)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> f:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        <span class="keyword">for</span> block <span class="keyword">in</span> idaapi.FlowChart(f):</span><br><span class="line">            <span class="keyword">if</span> start &lt;= block.start_ea &lt; end:</span><br><span class="line">                max_offset = <span class="built_in">max</span>(max_offset, block.start_ea)</span><br><span class="line">                patchpoints.add(block.start_ea)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&quot;Warning, broken CFG?&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Round up max_offset to page size</span></span><br><span class="line">size = max_offset</span><br><span class="line">rem = size % <span class="number">0x1000</span></span><br><span class="line"><span class="keyword">if</span> rem != <span class="number">0</span>:</span><br><span class="line">    size += <span class="number">0x1000</span> - rem</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(home + <span class="string">&quot;/Desktop/patches.txt&quot;</span>, <span class="string">&quot;w&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.write(ida_nalt.get_root_filename() + <span class="string">&#x27;:&#x27;</span> + <span class="built_in">hex</span>(size) + <span class="string">&#x27;\\n&#x27;</span>)</span><br><span class="line">    f.write(<span class="string">&#x27;\\n&#x27;</span>.join(<span class="built_in">map</span>(<span class="built_in">hex</span>, <span class="built_in">sorted</span>(patchpoints))))</span><br><span class="line">    f.write(<span class="string">&#x27;\\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Done, found &#123;&#125; patchpoints&quot;</span>.<span class="built_in">format</span>(<span class="built_in">len</span>(patchpoints)))</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824230049472.png" alt="image-20220824230049472"></p>
+<h3 id="Patch-or-hook-INS"><a href="#Patch-or-hook-INS" class="headerlink" title="Patch or hook INS"></a>Patch or hook INS</h3><p>问题 ： 需要想办法做到 hfuzzcc一样的效果，即 把 libhfuzz.a 链接进目标binary，不然没有桩信息。</p>
+<ul>
+<li>看看hfuzzcc是怎么工作的</li>
+</ul>
+<p>看起来就是一层wrapper，给clang/gcc编译的时候增加了 <code>CFLAGS</code> 和 <code>LDFLAGS</code>，看起来只需要按照需求把参数放到 <code>Android.mk</code>即可。</p>
+<p>这里参考ImageIO例子中的编译的参数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">cc</span><br><span class="line">-I/Users/vuln_test/honggfuzz/includes/</span><br><span class="line">-Wno-unused-command-line-argument</span><br><span class="line">-fsanitize-coverage=trace-pc-guard,trace-cmp,trace-div,indirect-calls</span><br><span class="line">-mllvm</span><br><span class="line">-sanitizer-coverage-prune-blocks=1</span><br><span class="line">-fno-inline</span><br><span class="line">-fno-builtin</span><br><span class="line">-fno-omit-frame-pointer</span><br><span class="line">-D__NO_STRING_INLINES</span><br><span class="line"></span><br><span class="line">-DHFND_FUZZING_ENTRY_FUNCTION_CXX(x,y)=extern const char* LIBHFNETDRIVER_module_netdriver;const char** LIBHFNETDRIVER_tmp1 = &amp;LIBHFNETDRIVER_module_netdriver;extern <span class="string">&quot;C&quot;</span> int HonggfuzzNetDriver_main(x,y);int HonggfuzzNetDriver_main(x,y)</span><br><span class="line"></span><br><span class="line">-DHFND_FUZZING_ENTRY_FUNCTION(x,y)=extern const char* LIBHFNETDRIVER_module_netdriver;const char** LIBHFNETDRIVER_tmp1 = &amp;LIBHFNETDRIVER_module_netdriver;int HonggfuzzNetDriver_main(x,y);int HonggfuzzNetDriver_main(x,y)</span><br><span class="line"></span><br><span class="line">-Wl,-U,_HonggfuzzNetDriver_main</span><br><span class="line">-Wl,-U,_LIBHFUZZ_module_instrument</span><br><span class="line">-Wl,-U,_LIBHFUZZ_module_memorycmp</span><br><span class="line">**-o</span><br><span class="line">runner**</span><br><span class="line">**runner.m**</span><br><span class="line">-framework</span><br><span class="line">Foundation</span><br><span class="line">-framework</span><br><span class="line">CoreGraphics</span><br><span class="line">-framework</span><br><span class="line">AppKit</span><br><span class="line">/tmp/libhfnetdriver.501.7140081f7cd58e92.a</span><br><span class="line">/tmp/**libhfuzz**.501.2fdc27091cd8b54d.a</span><br><span class="line">/tmp/libhfuzz.501.a5556386f906dc80.a</span><br><span class="line">-pthread</span><br><span class="line">-ldl</span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line">LOCAL_STATIC_LIBRARIES := hfuzz hfuzzcommon </span><br><span class="line">LOCAL_SRC_FILES := fuzz_test.c</span><br><span class="line">LOCAL_MODULE := fuzz_test</span><br><span class="line">LOCAL_CFLAGS :=  -fsanitize-coverage=trace-pc-guard,trace-cmp,trace-div,indirect-calls \\</span><br><span class="line">4444 -fno-omit-frame-pointer -fno-inline -fno-builtin \\</span><br><span class="line">4444 -fno-omit-frame-pointer -Wl,-u,_LIBHFUZZ_module_instrument -Wl,-u,_LIBHFUZZ_module_memorycmp -ldl</span><br><span class="line"></span><br><span class="line">LOCAL_LDFLAGS :=  -fsanitize-coverage=trace-pc-guard,trace-cmp,trace-div,indirect-calls \\</span><br><span class="line">4444   -fno-inline -fno-builtin \\</span><br><span class="line">4444   -fno-omit-frame-pointer -Wl,-u,_LIBHFUZZ_module_instrument -Wl,-u,_LIBHFUZZ_module_memorycm</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824230115528.png" alt="image-20220824230115528"></p>
+<p>harness里需要主动调用 <code>initializeTrapfuzz()</code></p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824230125768.png" alt="image-20220824230125768"></p>
+<p>看起来一切都不错！</p>
+<p>获取指定so地址也有了：</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824230138101.png" alt="image-20220824230138101"></p>
+<ul>
+<li>Patch</li>
+</ul>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220824230152707.png" alt="image-20220824230152707"></p>
+<p>参考这里修改honggfuzz的代码即可</p>
+<h2 id="后续-amp-问题"><a href="#后续-amp-问题" class="headerlink" title="后续&amp;问题"></a>后续&amp;问题</h2><p>这个方案主要是效率实在是太差了，性能损耗都在jvm获取那里了，本来也是工作之余的一个小点子，后面也没深入去看了，个人最开始的想法是 winafl模式搬到安卓上 lol…</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://googleprojectzero.blogspot.com/2020/04/fuzzing-imageio.html">https://googleprojectzero.blogspot.com/2020/04/fuzzing-imageio.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/googleprojectzero/p0tools/blob/master/TrapFuzz/trapfuzz.patch">https://github.com/googleprojectzero/p0tools/blob/master/TrapFuzz/trapfuzz.patch</a></p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/categories/">Categories</a></li>
+         
+          <li><a href="/tags/">Tags</a></li>
+         
+          <li><a href="/search">Search</a></li>
+         
+          <li><a href="/atom.xml">RSS</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text"></span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Background"><span class="toc-number">1.1.</span> <span class="toc-text">Background</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#honggfuzz-on-Android"><span class="toc-number">1.2.</span> <span class="toc-text">honggfuzz on Android</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#write-harness-for-so"><span class="toc-number">1.3.</span> <span class="toc-text">write harness for .so</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8native-harness-target"><span class="toc-number">1.3.1.</span> <span class="toc-text">使用native-harness-target</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#libpl-droidsonroids-gif-so%E6%B5%8B%E8%AF%95"><span class="toc-number">1.3.2.</span> <span class="toc-text">libpl_droidsonroids_gif.so测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#work-with-honggfuzz"><span class="toc-number">1.4.</span> <span class="toc-text">work with honggfuzz</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#get-all-JUMP-INS"><span class="toc-number">1.4.1.</span> <span class="toc-text">get all JUMP INS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Patch-or-hook-INS"><span class="toc-number">1.4.2.</span> <span class="toc-text">Patch or hook INS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E7%BB%AD-amp-%E9%97%AE%E9%A2%98"><span class="toc-number">1.5.</span> <span class="toc-text">后续&amp;问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">1.6.</span> <span class="toc-text">参考</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&text=Android Native Fuzz Demo"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&title=Android Native Fuzz Demo"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&is_video=false&description=Android Native Fuzz Demo"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android Native Fuzz Demo&body=Check out this article: http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&title=Android Native Fuzz Demo"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&title=Android Native Fuzz Demo"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&title=Android Native Fuzz Demo"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&title=Android Native Fuzz Demo"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&name=Android Native Fuzz Demo&description=&lt;h1 id=&#34;&#34;&gt;&lt;a href=&#34;#&#34; class=&#34;headerlink&#34; title=&#34;&#34;&gt;&lt;/a&gt;&lt;/h1&gt;&lt;h2 id=&#34;Background&#34;&gt;&lt;a href=&#34;#Background&#34; class=&#34;headerlink&#34; title=&#34;Background&#34;&gt;&lt;/a&gt;Background&lt;/h2&gt;&lt;p&gt;TrapFuzz的思路Fuzzing Android native库，这就是个简单的Demo，只针对黑盒的库。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/&t=Android Native Fuzz Demo"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2015-2022
+    muhe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search">Search</a></li><!--
+     --><!--
+       --><li><a href="/atom.xml">RSS</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-170118462-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-170118462-1');
+    </script>
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'o0xmuhe';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+
+</body>
+</html>
