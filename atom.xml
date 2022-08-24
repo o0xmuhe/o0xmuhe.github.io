@@ -6,7 +6,7 @@
   <link href="http://o0xmuhe.me/atom.xml" rel="self"/>
   
   <link href="http://o0xmuhe.me/"/>
-  <updated>2022-08-24T15:15:33.261Z</updated>
+  <updated>2022-08-24T15:25:22.963Z</updated>
   <id>http://o0xmuhe.me/</id>
   
   <author>
@@ -15,19 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>optee学习</title>
-    <link href="http://o0xmuhe.me/2022/08/24/optee%E5%AD%A6%E4%B9%A0/"/>
-    <id>http://o0xmuhe.me/2022/08/24/optee%E5%AD%A6%E4%B9%A0/</id>
-    <published>2022-08-24T15:15:33.000Z</published>
-    <updated>2022-08-24T15:15:33.261Z</updated>
-    
-    
-    
-    
-    
-  </entry>
   
   <entry>
     <title>weggli debug</title>
@@ -475,6 +462,29 @@
     <category term="exploit" scheme="http://o0xmuhe.me/tags/exploit/"/>
     
     <category term="chrome" scheme="http://o0xmuhe.me/tags/chrome/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>crbug1051017 exploit</title>
+    <link href="http://o0xmuhe.me/2020/06/05/crbug1051017-exploit/"/>
+    <id>http://o0xmuhe.me/2020/06/05/crbug1051017-exploit/</id>
+    <published>2020-06-05T11:30:27.000Z</published>
+    <updated>2020-06-20T11:07:34.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="about"><a href="#about" class="headerlink" title="about"></a>about</h2><p>最近看到<a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1051017">crbug 1051017</a>公开了poc，这是一个品相很好的类型混淆，具体可以看原作者的漏洞报告，写得十分详细。</p><a id="more"></a><h2 id="how2exploit"><a href="#how2exploit" class="headerlink" title="how2exploit"></a>how2exploit</h2><p>因为<code>glazunov</code>的poc已经做到了oob array阶段了，所以通过布局一个BigUint64Array来任意地址读写即可，即利用方式参考<code>CVE-2020-6418</code>就可以了。</p><h2 id="full-exploit"><a href="#full-exploit" class="headerlink" title="full exploit"></a>full exploit</h2><p><a href="https://github.com/o0xmuhe/RealWorldPwn/tree/master/chrome_M80_crbug1051017">exploit</a></p><h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1051017">crbug 1051017</a><br><a href="https://ray-cp.github.io/archivers/browser-pwn-cve-2020-6418%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90">browser-pwn-cve-2020-6418漏洞分析</a></p>]]></content>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;about&quot;&gt;&lt;a href=&quot;#about&quot; class=&quot;headerlink&quot; title=&quot;about&quot;&gt;&lt;/a&gt;about&lt;/h2&gt;&lt;p&gt;最近看到&lt;a href=&quot;https://bugs.chromium.org/p/chromium/issues/detail?id=1051017&quot;&gt;crbug 1051017&lt;/a&gt;公开了poc，这是一个品相很好的类型混淆，具体可以看原作者的漏洞报告，写得十分详细。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="漏洞分析" scheme="http://o0xmuhe.me/categories/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"/>
+    
+    
+    <category term="v8" scheme="http://o0xmuhe.me/tags/v8/"/>
+    
+    <category term="exploit" scheme="http://o0xmuhe.me/tags/exploit/"/>
     
   </entry>
   
