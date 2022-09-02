@@ -9,7 +9,7 @@
     <meta name="description" content="0x01 : 简介分析一些情况比较复杂的UAF漏洞时，比如很多次分配、使用内存，费力寻找被UAF的对象的释放点，是比较麻烦的(对于我这种菜逼来说)，这时候可以使用pykd来辅助这个工作，能使得漏洞分析工作变得更轻松。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="UAF analysis : using pykd">
-<meta property="og:url" content="http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/index.html">
+<meta property="og:url" content="https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/index.html">
 <meta property="og:site_name" content="o0xmuhe&#39;s blog">
 <meta property="og:description" content="0x01 : 简介分析一些情况比较复杂的UAF漏洞时，比如很多次分配、使用内存，费力寻找被UAF的对象的释放点，是比较麻烦的(对于我这种菜逼来说)，这时候可以使用pykd来辅助这个工作，能使得漏洞分析工作变得更轻松。">
 <meta property="og:locale" content="en_US">
@@ -100,17 +100,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&text=UAF analysis : using pykd"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&is_video=false&description=UAF analysis : using pykd"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=UAF analysis : using pykd&body=Check out this article: http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&name=UAF analysis : using pykd&description=&lt;h4 id=&#34;0x01-简介&#34;&gt;&lt;a href=&#34;#0x01-简介&#34; class=&#34;headerlink&#34; title=&#34;0x01 : 简介&#34;&gt;&lt;/a&gt;0x01 : 简介&lt;/h4&gt;&lt;p&gt;分析一些情况比较复杂的UAF漏洞时，比如很多次分配、使用内存，费力寻找被UAF的对象的释放点，是比较麻烦的(对于我这种菜逼来说)，这时候可以使用pykd来辅助这个工作，能使得漏洞分析工作变得更轻松。 &lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&t=UAF analysis : using pykd"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&text=UAF analysis : using pykd"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&is_video=false&description=UAF analysis : using pykd"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=UAF analysis : using pykd&body=Check out this article: https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&name=UAF analysis : using pykd&description=&lt;h4 id=&#34;0x01-简介&#34;&gt;&lt;a href=&#34;#0x01-简介&#34; class=&#34;headerlink&#34; title=&#34;0x01 : 简介&#34;&gt;&lt;/a&gt;0x01 : 简介&lt;/h4&gt;&lt;p&gt;分析一些情况比较复杂的UAF漏洞时，比如很多次分配、使用内存，费力寻找被UAF的对象的释放点，是比较麻烦的(对于我这种菜逼来说)，这时候可以使用pykd来辅助这个工作，能使得漏洞分析工作变得更轻松。 &lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&t=UAF analysis : using pykd"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -224,17 +224,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&text=UAF analysis : using pykd"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&is_video=false&description=UAF analysis : using pykd"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=UAF analysis : using pykd&body=Check out this article: http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&name=UAF analysis : using pykd&description=&lt;h4 id=&#34;0x01-简介&#34;&gt;&lt;a href=&#34;#0x01-简介&#34; class=&#34;headerlink&#34; title=&#34;0x01 : 简介&#34;&gt;&lt;/a&gt;0x01 : 简介&lt;/h4&gt;&lt;p&gt;分析一些情况比较复杂的UAF漏洞时，比如很多次分配、使用内存，费力寻找被UAF的对象的释放点，是比较麻烦的(对于我这种菜逼来说)，这时候可以使用pykd来辅助这个工作，能使得漏洞分析工作变得更轻松。 &lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://o0xmuhe.me/2018/11/07/UAF-analysis-using-pykd/&t=UAF analysis : using pykd"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&text=UAF analysis : using pykd"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&is_video=false&description=UAF analysis : using pykd"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=UAF analysis : using pykd&body=Check out this article: https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&title=UAF analysis : using pykd"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&name=UAF analysis : using pykd&description=&lt;h4 id=&#34;0x01-简介&#34;&gt;&lt;a href=&#34;#0x01-简介&#34; class=&#34;headerlink&#34; title=&#34;0x01 : 简介&#34;&gt;&lt;/a&gt;0x01 : 简介&lt;/h4&gt;&lt;p&gt;分析一些情况比较复杂的UAF漏洞时，比如很多次分配、使用内存，费力寻找被UAF的对象的释放点，是比较麻烦的(对于我这种菜逼来说)，这时候可以使用pykd来辅助这个工作，能使得漏洞分析工作变得更轻松。 &lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://o0xmuhe.github.io/2018/11/07/UAF-analysis-using-pykd/&t=UAF analysis : using pykd"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>

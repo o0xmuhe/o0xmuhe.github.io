@@ -3,11 +3,11 @@
   <title>o0xmuhe&#39;s blog</title>
   
   <subtitle>0x414243444546 ????</subtitle>
-  <link href="http://o0xmuhe.me/atom.xml" rel="self"/>
+  <link href="https://o0xmuhe.github.io/atom.xml" rel="self"/>
   
-  <link href="http://o0xmuhe.me/"/>
+  <link href="https://o0xmuhe.github.io/"/>
   <updated>2022-09-02T05:46:49.964Z</updated>
-  <id>http://o0xmuhe.me/</id>
+  <id>https://o0xmuhe.github.io/</id>
   
   <author>
     <name>muhe</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>HW OTA unpack</title>
-    <link href="http://o0xmuhe.me/2022/09/02/HW-OTA-unpack/"/>
-    <id>http://o0xmuhe.me/2022/09/02/HW-OTA-unpack/</id>
+    <link href="https://o0xmuhe.github.io/2022/09/02/HW-OTA-unpack/"/>
+    <id>https://o0xmuhe.github.io/2022/09/02/HW-OTA-unpack/</id>
     <published>2022-09-02T05:43:15.000Z</published>
     <updated>2022-09-02T05:46:49.964Z</updated>
     
@@ -31,14 +31,14 @@
     
     
     
-    <category term="EROFS" scheme="http://o0xmuhe.me/tags/EROFS/"/>
+    <category term="EROFS" scheme="https://o0xmuhe.github.io/tags/EROFS/"/>
     
   </entry>
   
   <entry>
     <title>weggli debug</title>
-    <link href="http://o0xmuhe.me/2022/07/24/weggli-debug/"/>
-    <id>http://o0xmuhe.me/2022/07/24/weggli-debug/</id>
+    <link href="https://o0xmuhe.github.io/2022/07/24/weggli-debug/"/>
+    <id>https://o0xmuhe.github.io/2022/07/24/weggli-debug/</id>
     <published>2022-07-24T01:19:32.000Z</published>
     <updated>2022-08-24T15:25:22.963Z</updated>
     
@@ -53,14 +53,14 @@
     
     
     
-    <category term="weggli" scheme="http://o0xmuhe.me/tags/weggli/"/>
+    <category term="weggli" scheme="https://o0xmuhe.github.io/tags/weggli/"/>
     
   </entry>
   
   <entry>
     <title>MTK Preloader 踩坑</title>
-    <link href="http://o0xmuhe.me/2022/03/05/MTK-Preloader-%E8%B8%A9%E5%9D%91/"/>
-    <id>http://o0xmuhe.me/2022/03/05/MTK-Preloader-%E8%B8%A9%E5%9D%91/</id>
+    <link href="https://o0xmuhe.github.io/2022/03/05/MTK-Preloader-%E8%B8%A9%E5%9D%91/"/>
+    <id>https://o0xmuhe.github.io/2022/03/05/MTK-Preloader-%E8%B8%A9%E5%9D%91/</id>
     <published>2022-03-05T13:07:17.000Z</published>
     <updated>2022-03-05T13:30:20.339Z</updated>
     
@@ -75,18 +75,18 @@
     
     
     
-    <category term="MTK" scheme="http://o0xmuhe.me/tags/MTK/"/>
+    <category term="MTK" scheme="https://o0xmuhe.github.io/tags/MTK/"/>
     
-    <category term="preloader" scheme="http://o0xmuhe.me/tags/preloader/"/>
+    <category term="preloader" scheme="https://o0xmuhe.github.io/tags/preloader/"/>
     
-    <category term="boot" scheme="http://o0xmuhe.me/tags/boot/"/>
+    <category term="boot" scheme="https://o0xmuhe.github.io/tags/boot/"/>
     
   </entry>
   
   <entry>
     <title>将Android/iOS上的流量转发到Wireshark分析</title>
-    <link href="http://o0xmuhe.me/2021/12/15/%E5%B0%86Android-iOS%E4%B8%8A%E7%9A%84%E6%B5%81%E9%87%8F%E8%BD%AC%E5%8F%91%E5%88%B0Wireshark%E5%88%86%E6%9E%90/"/>
-    <id>http://o0xmuhe.me/2021/12/15/%E5%B0%86Android-iOS%E4%B8%8A%E7%9A%84%E6%B5%81%E9%87%8F%E8%BD%AC%E5%8F%91%E5%88%B0Wireshark%E5%88%86%E6%9E%90/</id>
+    <link href="https://o0xmuhe.github.io/2021/12/15/%E5%B0%86Android-iOS%E4%B8%8A%E7%9A%84%E6%B5%81%E9%87%8F%E8%BD%AC%E5%8F%91%E5%88%B0Wireshark%E5%88%86%E6%9E%90/"/>
+    <id>https://o0xmuhe.github.io/2021/12/15/%E5%B0%86Android-iOS%E4%B8%8A%E7%9A%84%E6%B5%81%E9%87%8F%E8%BD%AC%E5%8F%91%E5%88%B0Wireshark%E5%88%86%E6%9E%90/</id>
     <published>2021-12-15T08:50:53.000Z</published>
     <updated>2021-12-15T09:03:41.061Z</updated>
     
@@ -98,20 +98,20 @@
     
     
     
-    <category term="iOS" scheme="http://o0xmuhe.me/tags/iOS/"/>
+    <category term="iOS" scheme="https://o0xmuhe.github.io/tags/iOS/"/>
     
-    <category term="Android" scheme="http://o0xmuhe.me/tags/Android/"/>
+    <category term="Android" scheme="https://o0xmuhe.github.io/tags/Android/"/>
     
-    <category term="流量分析" scheme="http://o0xmuhe.me/tags/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90/"/>
+    <category term="流量分析" scheme="https://o0xmuhe.github.io/tags/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90/"/>
     
-    <category term="Wireshark" scheme="http://o0xmuhe.me/tags/Wireshark/"/>
+    <category term="Wireshark" scheme="https://o0xmuhe.github.io/tags/Wireshark/"/>
     
   </entry>
   
   <entry>
     <title>Android Native Fuzz Demo</title>
-    <link href="http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/"/>
-    <id>http://o0xmuhe.me/2021/12/08/Android-Native-Fuzz-Demo/</id>
+    <link href="https://o0xmuhe.github.io/2021/12/08/Android-Native-Fuzz-Demo/"/>
+    <id>https://o0xmuhe.github.io/2021/12/08/Android-Native-Fuzz-Demo/</id>
     <published>2021-12-08T14:54:18.000Z</published>
     <updated>2022-08-24T15:11:59.433Z</updated>
     
@@ -123,22 +123,22 @@
     
     
     
-    <category term="Android" scheme="http://o0xmuhe.me/tags/Android/"/>
+    <category term="Android" scheme="https://o0xmuhe.github.io/tags/Android/"/>
     
-    <category term="native" scheme="http://o0xmuhe.me/tags/native/"/>
+    <category term="native" scheme="https://o0xmuhe.github.io/tags/native/"/>
     
-    <category term="jni" scheme="http://o0xmuhe.me/tags/jni/"/>
+    <category term="jni" scheme="https://o0xmuhe.github.io/tags/jni/"/>
     
-    <category term="honggfuzz" scheme="http://o0xmuhe.me/tags/honggfuzz/"/>
+    <category term="honggfuzz" scheme="https://o0xmuhe.github.io/tags/honggfuzz/"/>
     
-    <category term="trapfuzz" scheme="http://o0xmuhe.me/tags/trapfuzz/"/>
+    <category term="trapfuzz" scheme="https://o0xmuhe.github.io/tags/trapfuzz/"/>
     
   </entry>
   
   <entry>
     <title>ByteCTF2021 chatroom writeup</title>
-    <link href="http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/"/>
-    <id>http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/</id>
+    <link href="https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/"/>
+    <id>https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/</id>
     <published>2021-10-17T10:10:17.000Z</published>
     <updated>2021-10-18T13:09:35.058Z</updated>
     
@@ -150,18 +150,18 @@
     
     
     
-    <category term="writeup" scheme="http://o0xmuhe.me/tags/writeup/"/>
+    <category term="writeup" scheme="https://o0xmuhe.github.io/tags/writeup/"/>
     
-    <category term="pwn" scheme="http://o0xmuhe.me/tags/pwn/"/>
+    <category term="pwn" scheme="https://o0xmuhe.github.io/tags/pwn/"/>
     
-    <category term="CTF" scheme="http://o0xmuhe.me/tags/CTF/"/>
+    <category term="CTF" scheme="https://o0xmuhe.github.io/tags/CTF/"/>
     
   </entry>
   
   <entry>
     <title>Expand Chrome Exploit : From client to server</title>
-    <link href="http://o0xmuhe.me/2021/10/04/Expand-Chrome-From-client-to-server/"/>
-    <id>http://o0xmuhe.me/2021/10/04/Expand-Chrome-From-client-to-server/</id>
+    <link href="https://o0xmuhe.github.io/2021/10/04/Expand-Chrome-From-client-to-server/"/>
+    <id>https://o0xmuhe.github.io/2021/10/04/Expand-Chrome-From-client-to-server/</id>
     <published>2021-10-03T16:30:35.000Z</published>
     <updated>2022-08-24T15:24:25.088Z</updated>
     
@@ -173,16 +173,16 @@
     
     
     
-    <category term="Chrome" scheme="http://o0xmuhe.me/tags/Chrome/"/>
+    <category term="Chrome" scheme="https://o0xmuhe.github.io/tags/Chrome/"/>
     
-    <category term="Exploit" scheme="http://o0xmuhe.me/tags/Exploit/"/>
+    <category term="Exploit" scheme="https://o0xmuhe.github.io/tags/Exploit/"/>
     
   </entry>
   
   <entry>
     <title>iOS RE 4 beginners 3 - fishhook</title>
-    <link href="http://o0xmuhe.me/2021/07/24/iOS-RE-4-beginners-3-fishhook/"/>
-    <id>http://o0xmuhe.me/2021/07/24/iOS-RE-4-beginners-3-fishhook/</id>
+    <link href="https://o0xmuhe.github.io/2021/07/24/iOS-RE-4-beginners-3-fishhook/"/>
+    <id>https://o0xmuhe.github.io/2021/07/24/iOS-RE-4-beginners-3-fishhook/</id>
     <published>2021-07-23T16:05:49.000Z</published>
     <updated>2021-07-23T16:19:26.859Z</updated>
     
@@ -194,18 +194,18 @@
     
     
     
-    <category term="RE" scheme="http://o0xmuhe.me/tags/RE/"/>
+    <category term="RE" scheme="https://o0xmuhe.github.io/tags/RE/"/>
     
-    <category term="iOS" scheme="http://o0xmuhe.me/tags/iOS/"/>
+    <category term="iOS" scheme="https://o0xmuhe.github.io/tags/iOS/"/>
     
-    <category term="fishhook" scheme="http://o0xmuhe.me/tags/fishhook/"/>
+    <category term="fishhook" scheme="https://o0xmuhe.github.io/tags/fishhook/"/>
     
   </entry>
   
   <entry>
     <title>iOS RE 4 beginners 2 - 静态链接&amp;&amp;动态链接</title>
-    <link href="http://o0xmuhe.me/2021/07/14/iOS-RE-4-beginners-2/"/>
-    <id>http://o0xmuhe.me/2021/07/14/iOS-RE-4-beginners-2/</id>
+    <link href="https://o0xmuhe.github.io/2021/07/14/iOS-RE-4-beginners-2/"/>
+    <id>https://o0xmuhe.github.io/2021/07/14/iOS-RE-4-beginners-2/</id>
     <published>2021-07-14T09:15:47.000Z</published>
     <updated>2021-07-20T08:08:05.162Z</updated>
     
@@ -216,19 +216,19 @@
     
     
     
-    <category term="iOS" scheme="http://o0xmuhe.me/categories/iOS/"/>
+    <category term="iOS" scheme="https://o0xmuhe.github.io/categories/iOS/"/>
     
     
-    <category term="RE" scheme="http://o0xmuhe.me/tags/RE/"/>
+    <category term="RE" scheme="https://o0xmuhe.github.io/tags/RE/"/>
     
-    <category term="iOS" scheme="http://o0xmuhe.me/tags/iOS/"/>
+    <category term="iOS" scheme="https://o0xmuhe.github.io/tags/iOS/"/>
     
   </entry>
   
   <entry>
     <title>ql query for CVE-2021-30660 XNU Kernel Memory Disclosure</title>
-    <link href="http://o0xmuhe.me/2021/07/11/ql-query-for-CVE-2021-30660-XNU-Kernel-Memory-Disclosure/"/>
-    <id>http://o0xmuhe.me/2021/07/11/ql-query-for-CVE-2021-30660-XNU-Kernel-Memory-Disclosure/</id>
+    <link href="https://o0xmuhe.github.io/2021/07/11/ql-query-for-CVE-2021-30660-XNU-Kernel-Memory-Disclosure/"/>
+    <id>https://o0xmuhe.github.io/2021/07/11/ql-query-for-CVE-2021-30660-XNU-Kernel-Memory-Disclosure/</id>
     <published>2021-07-11T08:22:50.000Z</published>
     <updated>2021-07-11T08:29:13.743Z</updated>
     
@@ -239,19 +239,19 @@
     
     
     
-    <category term="XNU" scheme="http://o0xmuhe.me/categories/XNU/"/>
+    <category term="XNU" scheme="https://o0xmuhe.github.io/categories/XNU/"/>
     
     
-    <category term="XNU" scheme="http://o0xmuhe.me/tags/XNU/"/>
+    <category term="XNU" scheme="https://o0xmuhe.github.io/tags/XNU/"/>
     
-    <category term="CodeQL" scheme="http://o0xmuhe.me/tags/CodeQL/"/>
+    <category term="CodeQL" scheme="https://o0xmuhe.github.io/tags/CodeQL/"/>
     
   </entry>
   
   <entry>
     <title>iOS RE 4 beginners 1 - MachO &amp;&amp; class-dump</title>
-    <link href="http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/"/>
-    <id>http://o0xmuhe.me/2021/07/11/iOS-RE-4-beginners-1/</id>
+    <link href="https://o0xmuhe.github.io/2021/07/11/iOS-RE-4-beginners-1/"/>
+    <id>https://o0xmuhe.github.io/2021/07/11/iOS-RE-4-beginners-1/</id>
     <published>2021-07-11T06:48:13.000Z</published>
     <updated>2021-08-01T14:38:49.733Z</updated>
     
@@ -262,19 +262,19 @@
     
     
     
-    <category term="iOS" scheme="http://o0xmuhe.me/categories/iOS/"/>
+    <category term="iOS" scheme="https://o0xmuhe.github.io/categories/iOS/"/>
     
     
-    <category term="iOS" scheme="http://o0xmuhe.me/tags/iOS/"/>
+    <category term="iOS" scheme="https://o0xmuhe.github.io/tags/iOS/"/>
     
-    <category term="逆向" scheme="http://o0xmuhe.me/tags/%E9%80%86%E5%90%91/"/>
+    <category term="逆向" scheme="https://o0xmuhe.github.io/tags/%E9%80%86%E5%90%91/"/>
     
   </entry>
   
   <entry>
     <title>CodeQL JS/TS Journey</title>
-    <link href="http://o0xmuhe.me/2021/06/01/CodeQL-JS-TS-Journey/"/>
-    <id>http://o0xmuhe.me/2021/06/01/CodeQL-JS-TS-Journey/</id>
+    <link href="https://o0xmuhe.github.io/2021/06/01/CodeQL-JS-TS-Journey/"/>
+    <id>https://o0xmuhe.github.io/2021/06/01/CodeQL-JS-TS-Journey/</id>
     <published>2021-06-01T03:43:11.000Z</published>
     <updated>2021-06-09T14:33:55.580Z</updated>
     
@@ -285,17 +285,17 @@
     
     
     
-    <category term="笔记" scheme="http://o0xmuhe.me/categories/%E7%AC%94%E8%AE%B0/"/>
+    <category term="笔记" scheme="https://o0xmuhe.github.io/categories/%E7%AC%94%E8%AE%B0/"/>
     
     
-    <category term="CodeQL" scheme="http://o0xmuhe.me/tags/CodeQL/"/>
+    <category term="CodeQL" scheme="https://o0xmuhe.github.io/tags/CodeQL/"/>
     
   </entry>
   
   <entry>
     <title>Exploit Headless Chrome</title>
-    <link href="http://o0xmuhe.me/2021/05/26/Chrome-headless-exploit/"/>
-    <id>http://o0xmuhe.me/2021/05/26/Chrome-headless-exploit/</id>
+    <link href="https://o0xmuhe.github.io/2021/05/26/Chrome-headless-exploit/"/>
+    <id>https://o0xmuhe.github.io/2021/05/26/Chrome-headless-exploit/</id>
     <published>2021-05-26T07:26:26.000Z</published>
     <updated>2021-06-23T09:53:13.448Z</updated>
     
@@ -306,19 +306,19 @@
     
     
     
-    <category term="exploit" scheme="http://o0xmuhe.me/categories/exploit/"/>
+    <category term="exploit" scheme="https://o0xmuhe.github.io/categories/exploit/"/>
     
     
-    <category term="exploit" scheme="http://o0xmuhe.me/tags/exploit/"/>
+    <category term="exploit" scheme="https://o0xmuhe.github.io/tags/exploit/"/>
     
-    <category term="Chrome" scheme="http://o0xmuhe.me/tags/Chrome/"/>
+    <category term="Chrome" scheme="https://o0xmuhe.github.io/tags/Chrome/"/>
     
   </entry>
   
   <entry>
     <title>SockPuppet学习记录(一) : 漏洞分析</title>
-    <link href="http://o0xmuhe.me/2021/02/28/SockPuppet%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95-%E4%B8%80-%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"/>
-    <id>http://o0xmuhe.me/2021/02/28/SockPuppet%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95-%E4%B8%80-%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/</id>
+    <link href="https://o0xmuhe.github.io/2021/02/28/SockPuppet%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95-%E4%B8%80-%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"/>
+    <id>https://o0xmuhe.github.io/2021/02/28/SockPuppet%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95-%E4%B8%80-%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/</id>
     <published>2021-02-27T16:01:01.000Z</published>
     <updated>2021-08-01T14:35:13.331Z</updated>
     
@@ -329,25 +329,25 @@
     
     
     
-    <category term="漏洞分析" scheme="http://o0xmuhe.me/categories/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"/>
+    <category term="漏洞分析" scheme="https://o0xmuhe.github.io/categories/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"/>
     
     
-    <category term="漏洞分析" scheme="http://o0xmuhe.me/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"/>
+    <category term="漏洞分析" scheme="https://o0xmuhe.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"/>
     
-    <category term="macOS" scheme="http://o0xmuhe.me/tags/macOS/"/>
+    <category term="macOS" scheme="https://o0xmuhe.github.io/tags/macOS/"/>
     
-    <category term="XNU" scheme="http://o0xmuhe.me/tags/XNU/"/>
+    <category term="XNU" scheme="https://o0xmuhe.github.io/tags/XNU/"/>
     
-    <category term="CodeQL" scheme="http://o0xmuhe.me/tags/CodeQL/"/>
+    <category term="CodeQL" scheme="https://o0xmuhe.github.io/tags/CodeQL/"/>
     
-    <category term="iOS" scheme="http://o0xmuhe.me/tags/iOS/"/>
+    <category term="iOS" scheme="https://o0xmuhe.github.io/tags/iOS/"/>
     
   </entry>
   
   <entry>
     <title>CodeQL + XNU From 0 to 1</title>
-    <link href="http://o0xmuhe.me/2021/02/15/CodeQL-XNU-From-0-to-1/"/>
-    <id>http://o0xmuhe.me/2021/02/15/CodeQL-XNU-From-0-to-1/</id>
+    <link href="https://o0xmuhe.github.io/2021/02/15/CodeQL-XNU-From-0-to-1/"/>
+    <id>https://o0xmuhe.github.io/2021/02/15/CodeQL-XNU-From-0-to-1/</id>
     <published>2021-02-15T09:04:33.000Z</published>
     <updated>2021-07-30T15:58:29.027Z</updated>
     
@@ -359,19 +359,19 @@
     
     
     
-    <category term="笔记" scheme="http://o0xmuhe.me/categories/%E7%AC%94%E8%AE%B0/"/>
+    <category term="笔记" scheme="https://o0xmuhe.github.io/categories/%E7%AC%94%E8%AE%B0/"/>
     
     
-    <category term="XNU" scheme="http://o0xmuhe.me/tags/XNU/"/>
+    <category term="XNU" scheme="https://o0xmuhe.github.io/tags/XNU/"/>
     
-    <category term="CodeQL" scheme="http://o0xmuhe.me/tags/CodeQL/"/>
+    <category term="CodeQL" scheme="https://o0xmuhe.github.io/tags/CodeQL/"/>
     
   </entry>
   
   <entry>
     <title>SHELLCODE on macOS</title>
-    <link href="http://o0xmuhe.me/2020/11/28/shell-code-on-macos/"/>
-    <id>http://o0xmuhe.me/2020/11/28/shell-code-on-macos/</id>
+    <link href="https://o0xmuhe.github.io/2020/11/28/shell-code-on-macos/"/>
+    <id>https://o0xmuhe.github.io/2020/11/28/shell-code-on-macos/</id>
     <published>2020-11-27T16:25:17.000Z</published>
     <updated>2020-11-27T17:08:29.631Z</updated>
     
@@ -382,21 +382,21 @@
     
     
     
-    <category term="exploit" scheme="http://o0xmuhe.me/categories/exploit/"/>
+    <category term="exploit" scheme="https://o0xmuhe.github.io/categories/exploit/"/>
     
     
-    <category term="macOS" scheme="http://o0xmuhe.me/tags/macOS/"/>
+    <category term="macOS" scheme="https://o0xmuhe.github.io/tags/macOS/"/>
     
-    <category term="exploit" scheme="http://o0xmuhe.me/tags/exploit/"/>
+    <category term="exploit" scheme="https://o0xmuhe.github.io/tags/exploit/"/>
     
-    <category term="shellcode" scheme="http://o0xmuhe.me/tags/shellcode/"/>
+    <category term="shellcode" scheme="https://o0xmuhe.github.io/tags/shellcode/"/>
     
   </entry>
   
   <entry>
     <title>NAS折腾记录</title>
-    <link href="http://o0xmuhe.me/2020/10/07/NAS%E6%8A%98%E8%85%BE%E8%AE%B0%E5%BD%95/"/>
-    <id>http://o0xmuhe.me/2020/10/07/NAS%E6%8A%98%E8%85%BE%E8%AE%B0%E5%BD%95/</id>
+    <link href="https://o0xmuhe.github.io/2020/10/07/NAS%E6%8A%98%E8%85%BE%E8%AE%B0%E5%BD%95/"/>
+    <id>https://o0xmuhe.github.io/2020/10/07/NAS%E6%8A%98%E8%85%BE%E8%AE%B0%E5%BD%95/</id>
     <published>2020-10-07T12:13:21.000Z</published>
     <updated>2021-06-09T14:35:02.457Z</updated>
     
@@ -407,17 +407,17 @@
     
     
     
-    <category term="其他" scheme="http://o0xmuhe.me/categories/%E5%85%B6%E4%BB%96/"/>
+    <category term="其他" scheme="https://o0xmuhe.github.io/categories/%E5%85%B6%E4%BB%96/"/>
     
     
-    <category term="其他" scheme="http://o0xmuhe.me/tags/%E5%85%B6%E4%BB%96/"/>
+    <category term="其他" scheme="https://o0xmuhe.github.io/tags/%E5%85%B6%E4%BB%96/"/>
     
   </entry>
   
   <entry>
     <title>exploit for crbug1086890</title>
-    <link href="http://o0xmuhe.me/2020/08/27/exploit-for-crbug1086890/"/>
-    <id>http://o0xmuhe.me/2020/08/27/exploit-for-crbug1086890/</id>
+    <link href="https://o0xmuhe.github.io/2020/08/27/exploit-for-crbug1086890/"/>
+    <id>https://o0xmuhe.github.io/2020/08/27/exploit-for-crbug1086890/</id>
     <published>2020-08-27T07:07:08.000Z</published>
     <updated>2020-08-27T07:25:27.000Z</updated>
     
@@ -428,19 +428,19 @@
     
     
     
-    <category term="exploit" scheme="http://o0xmuhe.me/categories/exploit/"/>
+    <category term="exploit" scheme="https://o0xmuhe.github.io/categories/exploit/"/>
     
     
-    <category term="exploit" scheme="http://o0xmuhe.me/tags/exploit/"/>
+    <category term="exploit" scheme="https://o0xmuhe.github.io/tags/exploit/"/>
     
-    <category term="chrome" scheme="http://o0xmuhe.me/tags/chrome/"/>
+    <category term="chrome" scheme="https://o0xmuhe.github.io/tags/chrome/"/>
     
   </entry>
   
   <entry>
     <title>make-script-to-macOS App</title>
-    <link href="http://o0xmuhe.me/2020/08/07/make-script-to-macOS-App/"/>
-    <id>http://o0xmuhe.me/2020/08/07/make-script-to-macOS-App/</id>
+    <link href="https://o0xmuhe.github.io/2020/08/07/make-script-to-macOS-App/"/>
+    <id>https://o0xmuhe.github.io/2020/08/07/make-script-to-macOS-App/</id>
     <published>2020-08-07T04:46:24.000Z</published>
     <updated>2020-08-07T04:56:04.000Z</updated>
     
@@ -451,17 +451,17 @@
     
     
     
-    <category term="环境配置" scheme="http://o0xmuhe.me/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"/>
+    <category term="环境配置" scheme="https://o0xmuhe.github.io/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"/>
     
     
-    <category term="tools" scheme="http://o0xmuhe.me/tags/tools/"/>
+    <category term="tools" scheme="https://o0xmuhe.github.io/tags/tools/"/>
     
   </entry>
   
   <entry>
     <title>Chrome M73 issue 941743</title>
-    <link href="http://o0xmuhe.me/2020/06/20/Chrome-M73-issue-941743/"/>
-    <id>http://o0xmuhe.me/2020/06/20/Chrome-M73-issue-941743/</id>
+    <link href="https://o0xmuhe.github.io/2020/06/20/Chrome-M73-issue-941743/"/>
+    <id>https://o0xmuhe.github.io/2020/06/20/Chrome-M73-issue-941743/</id>
     <published>2020-06-19T16:41:53.000Z</published>
     <updated>2020-06-20T11:07:18.000Z</updated>
     
@@ -473,14 +473,14 @@
     
     
     
-    <category term="漏洞分析" scheme="http://o0xmuhe.me/categories/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"/>
+    <category term="漏洞分析" scheme="https://o0xmuhe.github.io/categories/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"/>
     
     
-    <category term="v8" scheme="http://o0xmuhe.me/tags/v8/"/>
+    <category term="v8" scheme="https://o0xmuhe.github.io/tags/v8/"/>
     
-    <category term="exploit" scheme="http://o0xmuhe.me/tags/exploit/"/>
+    <category term="exploit" scheme="https://o0xmuhe.github.io/tags/exploit/"/>
     
-    <category term="chrome" scheme="http://o0xmuhe.me/tags/chrome/"/>
+    <category term="chrome" scheme="https://o0xmuhe.github.io/tags/chrome/"/>
     
   </entry>
   

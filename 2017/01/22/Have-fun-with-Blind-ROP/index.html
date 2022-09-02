@@ -9,7 +9,7 @@
     <meta name="description" content="0x00: 关于BROP第一次遇到BROP是在HCTF 2016，当时并没有搞定这个东西，前一段时间花了点时间研究了下这种利用方式，搞定了那个题目，顺便也看了下关于BROP的论文和slide，实践了下使用BROP技术搞低版本的ngnix。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Have fun with Blind ROP">
-<meta property="og:url" content="http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/index.html">
+<meta property="og:url" content="https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/index.html">
 <meta property="og:site_name" content="o0xmuhe&#39;s blog">
 <meta property="og:description" content="0x00: 关于BROP第一次遇到BROP是在HCTF 2016，当时并没有搞定这个东西，前一段时间花了点时间研究了下这种利用方式，搞定了那个题目，顺便也看了下关于BROP的论文和slide，实践了下使用BROP技术搞低版本的ngnix。">
 <meta property="og:locale" content="en_US">
@@ -101,17 +101,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&text=Have fun with Blind ROP"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&is_video=false&description=Have fun with Blind ROP"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Have fun with Blind ROP&body=Check out this article: http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&name=Have fun with Blind ROP&description=&lt;h4 id=&#34;0x00-关于BROP&#34;&gt;&lt;a href=&#34;#0x00-关于BROP&#34; class=&#34;headerlink&#34; title=&#34;0x00: 关于BROP&#34;&gt;&lt;/a&gt;0x00: 关于BROP&lt;/h4&gt;&lt;p&gt;第一次遇到BROP是在HCTF 2016，当时并没有搞定这个东西，前一段时间花了点时间研究了下这种利用方式，搞定了那个题目，顺便也看了下关于BROP的论文和slide，实践了下使用BROP技术搞低版本的ngnix。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&t=Have fun with Blind ROP"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&text=Have fun with Blind ROP"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&is_video=false&description=Have fun with Blind ROP"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Have fun with Blind ROP&body=Check out this article: https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&name=Have fun with Blind ROP&description=&lt;h4 id=&#34;0x00-关于BROP&#34;&gt;&lt;a href=&#34;#0x00-关于BROP&#34; class=&#34;headerlink&#34; title=&#34;0x00: 关于BROP&#34;&gt;&lt;/a&gt;0x00: 关于BROP&lt;/h4&gt;&lt;p&gt;第一次遇到BROP是在HCTF 2016，当时并没有搞定这个东西，前一段时间花了点时间研究了下这种利用方式，搞定了那个题目，顺便也看了下关于BROP的论文和slide，实践了下使用BROP技术搞低版本的ngnix。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&t=Have fun with Blind ROP"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -234,17 +234,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&text=Have fun with Blind ROP"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&is_video=false&description=Have fun with Blind ROP"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Have fun with Blind ROP&body=Check out this article: http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&name=Have fun with Blind ROP&description=&lt;h4 id=&#34;0x00-关于BROP&#34;&gt;&lt;a href=&#34;#0x00-关于BROP&#34; class=&#34;headerlink&#34; title=&#34;0x00: 关于BROP&#34;&gt;&lt;/a&gt;0x00: 关于BROP&lt;/h4&gt;&lt;p&gt;第一次遇到BROP是在HCTF 2016，当时并没有搞定这个东西，前一段时间花了点时间研究了下这种利用方式，搞定了那个题目，顺便也看了下关于BROP的论文和slide，实践了下使用BROP技术搞低版本的ngnix。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://o0xmuhe.me/2017/01/22/Have-fun-with-Blind-ROP/&t=Have fun with Blind ROP"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&text=Have fun with Blind ROP"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&is_video=false&description=Have fun with Blind ROP"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Have fun with Blind ROP&body=Check out this article: https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&title=Have fun with Blind ROP"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&name=Have fun with Blind ROP&description=&lt;h4 id=&#34;0x00-关于BROP&#34;&gt;&lt;a href=&#34;#0x00-关于BROP&#34; class=&#34;headerlink&#34; title=&#34;0x00: 关于BROP&#34;&gt;&lt;/a&gt;0x00: 关于BROP&lt;/h4&gt;&lt;p&gt;第一次遇到BROP是在HCTF 2016，当时并没有搞定这个东西，前一段时间花了点时间研究了下这种利用方式，搞定了那个题目，顺便也看了下关于BROP的论文和slide，实践了下使用BROP技术搞低版本的ngnix。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://o0xmuhe.github.io/2017/01/22/Have-fun-with-Blind-ROP/&t=Have fun with Blind ROP"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>

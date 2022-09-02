@@ -9,7 +9,7 @@
     <meta name="description" content="前言  在今年的ByteCTF中，我出了一道pwn题目，距离上一次打比赛&#x2F;出题已经过去很久了，所以传统的 heap trick 就没有考虑，而是从我日常工作中挖掘的安全风险入手，简化场景，出了一道 chatroom ，看起来像一个web的奇怪题目。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ByteCTF2021 chatroom writeup">
-<meta property="og:url" content="http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/index.html">
+<meta property="og:url" content="https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/index.html">
 <meta property="og:site_name" content="o0xmuhe&#39;s blog">
 <meta property="og:description" content="前言  在今年的ByteCTF中，我出了一道pwn题目，距离上一次打比赛&#x2F;出题已经过去很久了，所以传统的 heap trick 就没有考虑，而是从我日常工作中挖掘的安全风险入手，简化场景，出了一道 chatroom ，看起来像一个web的奇怪题目。">
 <meta property="og:locale" content="en_US">
@@ -103,17 +103,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&text=ByteCTF2021 chatroom writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&is_video=false&description=ByteCTF2021 chatroom writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ByteCTF2021 chatroom writeup&body=Check out this article: http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&name=ByteCTF2021 chatroom writeup&description=&lt;h2 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;  在今年的ByteCTF中，我出了一道pwn题目，距离上一次打比赛/出题已经过去很久了，所以传统的 &lt;code&gt;heap trick&lt;/code&gt; 就没有考虑，而是从我日常工作中挖掘的安全风险入手，简化场景，出了一道 &lt;code&gt;chatroom&lt;/code&gt; ，看起来像一个web的奇怪题目。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&t=ByteCTF2021 chatroom writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&text=ByteCTF2021 chatroom writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&is_video=false&description=ByteCTF2021 chatroom writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ByteCTF2021 chatroom writeup&body=Check out this article: https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&name=ByteCTF2021 chatroom writeup&description=&lt;h2 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;  在今年的ByteCTF中，我出了一道pwn题目，距离上一次打比赛/出题已经过去很久了，所以传统的 &lt;code&gt;heap trick&lt;/code&gt; 就没有考虑，而是从我日常工作中挖掘的安全风险入手，简化场景，出了一道 &lt;code&gt;chatroom&lt;/code&gt; ，看起来像一个web的奇怪题目。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&t=ByteCTF2021 chatroom writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -165,7 +165,7 @@
     <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>  在今年的ByteCTF中，我出了一道pwn题目，距离上一次打比赛/出题已经过去很久了，所以传统的 <code>heap trick</code> 就没有考虑，而是从我日常工作中挖掘的安全风险入手，简化场景，出了一道 <code>chatroom</code> ，看起来像一个web的奇怪题目。</p>
  <span id="more"></span>
 
-<p>  这个题目其实背后是 <code>Headless Chrome</code> 相关的pwn，我早期的一篇博客其实已经阐述过相关风险，可以参考 <a target="_blank" rel="noopener" href="https://o0xmuhe.github.io/2021/05/26/Chrome-headless-exploit/">Exploit Headless Chrome</a>。 其实这个风险暴露出来的不仅仅是：低版本、误用参数 这两个显而易见的问题，其背后的原因是一些不好的编程习惯被错误地传播：大家都在用 <code>--no-sandbox</code> 参数，好像 <code>it works</code>就够了，但是在实际场景中，这是很危险的。</p>
+<p>  这个题目其实背后是 <code>Headless Chrome</code> 相关的pwn，我早期的一篇博客其实已经阐述过相关风险，可以参考 <a href="https://o0xmuhe.github.io/2021/05/26/Chrome-headless-exploit/">Exploit Headless Chrome</a>。 其实这个风险暴露出来的不仅仅是：低版本、误用参数 这两个显而易见的问题，其背后的原因是一些不好的编程习惯被错误地传播：大家都在用 <code>--no-sandbox</code> 参数，好像 <code>it works</code>就够了，但是在实际场景中，这是很危险的。</p>
 <h2 id="题目设计思路"><a href="#题目设计思路" class="headerlink" title="题目设计思路"></a>题目设计思路</h2><p>  我的本意是设计一个类似聊天室的场景，用户可以在聊天室内发送消息、多媒体文件、链接等，尽可能模拟一个真实场景。 处于风控考虑，对于非白名单的链接，需要进行检查（是否恶意，色流等）。对于URL 检查的逻辑，最好是服务端接收到内容之后，判断是否是URL，随后通过RPC调用走到URL检查的服务去。但是考虑到实际题目，我大大简化了这个场景，直接把检查放在前端了，而且我没有混淆JS，所以可以很直接看到一个HTTP请求。</p>
 <p>  解决了场景问题，聊天室部分直接用了github的开源项目 <a target="_blank" rel="noopener" href="https://github.com/cleverqin/node-websocket-Chatroom">node-websocket-Chatroom</a>，后端使用 puppeteer来抓取用户的URL。</p>
 <p>为了提升一些难度，同时这也是我曾经遇到过的问题：UA不可靠的情况下怎么判断Chrome版本？</p>
@@ -235,17 +235,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&text=ByteCTF2021 chatroom writeup"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&is_video=false&description=ByteCTF2021 chatroom writeup"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ByteCTF2021 chatroom writeup&body=Check out this article: http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&name=ByteCTF2021 chatroom writeup&description=&lt;h2 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;  在今年的ByteCTF中，我出了一道pwn题目，距离上一次打比赛/出题已经过去很久了，所以传统的 &lt;code&gt;heap trick&lt;/code&gt; 就没有考虑，而是从我日常工作中挖掘的安全风险入手，简化场景，出了一道 &lt;code&gt;chatroom&lt;/code&gt; ，看起来像一个web的奇怪题目。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://o0xmuhe.me/2021/10/17/ByteCTF2021-chatroom-writeup/&t=ByteCTF2021 chatroom writeup"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&text=ByteCTF2021 chatroom writeup"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&is_video=false&description=ByteCTF2021 chatroom writeup"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ByteCTF2021 chatroom writeup&body=Check out this article: https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&title=ByteCTF2021 chatroom writeup"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&name=ByteCTF2021 chatroom writeup&description=&lt;h2 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;  在今年的ByteCTF中，我出了一道pwn题目，距离上一次打比赛/出题已经过去很久了，所以传统的 &lt;code&gt;heap trick&lt;/code&gt; 就没有考虑，而是从我日常工作中挖掘的安全风险入手，简化场景，出了一道 &lt;code&gt;chatroom&lt;/code&gt; ，看起来像一个web的奇怪题目。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/&t=ByteCTF2021 chatroom writeup"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
