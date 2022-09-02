@@ -6,7 +6,7 @@
   <link href="http://o0xmuhe.me/atom.xml" rel="self"/>
   
   <link href="http://o0xmuhe.me/"/>
-  <updated>2022-08-24T15:25:22.963Z</updated>
+  <updated>2022-09-02T05:46:49.964Z</updated>
   <id>http://o0xmuhe.me/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>HW OTA unpack</title>
+    <link href="http://o0xmuhe.me/2022/09/02/HW-OTA-unpack/"/>
+    <id>http://o0xmuhe.me/2022/09/02/HW-OTA-unpack/</id>
+    <published>2022-09-02T05:43:15.000Z</published>
+    <updated>2022-09-02T05:46:49.964Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><h3 id="unzip解开OTA包"><a href="#unzip解开OTA包" class="headerlink" title="unzip解开OTA包"></a>unzip解开OTA包</h3><span id="more"></span><p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220825111641389.png" alt="image-20220825111641389"></p><p>我们的目标在 update_sd_base.zip里，其他部分咨询了是一些出厂带的APP，比如里面就看到了今日头条 抖音啥的。</p><p>直接解开 update_sd_base.zip 到下一步</p><h3 id="从UPDATE-APP提取SYSTEM"><a href="#从UPDATE-APP提取SYSTEM" class="headerlink" title="从UPDATE.APP提取SYSTEM"></a>从UPDATE.APP提取SYSTEM</h3><p>直接用  <a href="https://github.com/jenkins-84/split_updata.pl/blob/master/splitupdate">https://github.com/jenkins-84/split_updata.pl/blob/master/splitupdate</a> 来分割就行</p><p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220825111723396.png" alt="image-20220825111723396"></p><h3 id="unpack-erofs"><a href="#unpack-erofs" class="headerlink" title="unpack erofs"></a>unpack erofs</h3><h4 id="方法1-simg2img然后挂在erofs-kernel-5-4"><a href="#方法1-simg2img然后挂在erofs-kernel-5-4" class="headerlink" title="方法1: simg2img然后挂在erofs(kernel 5.4)"></a>方法1: simg2img然后挂在erofs(kernel 5.4)</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/android-simg2img/simg2img SYSTEM.img system1.img</span><br><span class="line">sudo mount -t erofs system1.img 1 -oloop</span><br></pre></td></tr></table></figure><p>尝试读文件的时候发现报错</p><p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220825111833524.png" alt="image-20220825111833524"></p><p>dmesg发现 : </p><p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220825111906816.png" alt="image-20220825111906816"></p><h4 id="方法2-直接使用-extractor里的-erofs-tools-py-来直接把system镜像解开"><a href="#方法2-直接使用-extractor里的-erofs-tools-py-来直接把system镜像解开" class="headerlink" title="方法2: 直接使用 extractor里的 erofs_tools.py 来直接把system镜像解开"></a>方法2: 直接使用 extractor里的 erofs_tools.py 来直接把system镜像解开</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/extracotr/erofs_tool.py extract --verify-zip system1.img harmony_system</span><br></pre></td></tr></table></figure><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://zhuanlan.zhihu.com/p/60617375">https://zhuanlan.zhihu.com/p/60617375</a></p><p><a href="https://github.com/jenkins-84/split_updata.pl">https://github.com/jenkins-84/split_updata.pl</a></p><p><a href="https://github.com/srlabs/extractor">https://github.com/srlabs/extractor</a></p>]]></content>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;步骤&quot;&gt;&lt;a href=&quot;#步骤&quot; class=&quot;headerlink&quot; title=&quot;步骤&quot;&gt;&lt;/a&gt;步骤&lt;/h2&gt;&lt;h3 id=&quot;unzip解开OTA包&quot;&gt;&lt;a href=&quot;#unzip解开OTA包&quot; class=&quot;headerlink&quot; title=&quot;unzip解开OTA包&quot;&gt;&lt;/a&gt;unzip解开OTA包&lt;/h3&gt;</summary>
+    
+    
+    
+    
+    <category term="EROFS" scheme="http://o0xmuhe.me/tags/EROFS/"/>
+    
+  </entry>
   
   <entry>
     <title>weggli debug</title>
@@ -462,29 +481,6 @@
     <category term="exploit" scheme="http://o0xmuhe.me/tags/exploit/"/>
     
     <category term="chrome" scheme="http://o0xmuhe.me/tags/chrome/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>crbug1051017 exploit</title>
-    <link href="http://o0xmuhe.me/2020/06/05/crbug1051017-exploit/"/>
-    <id>http://o0xmuhe.me/2020/06/05/crbug1051017-exploit/</id>
-    <published>2020-06-05T11:30:27.000Z</published>
-    <updated>2020-06-20T11:07:34.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="about"><a href="#about" class="headerlink" title="about"></a>about</h2><p>最近看到<a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1051017">crbug 1051017</a>公开了poc，这是一个品相很好的类型混淆，具体可以看原作者的漏洞报告，写得十分详细。</p><a id="more"></a><h2 id="how2exploit"><a href="#how2exploit" class="headerlink" title="how2exploit"></a>how2exploit</h2><p>因为<code>glazunov</code>的poc已经做到了oob array阶段了，所以通过布局一个BigUint64Array来任意地址读写即可，即利用方式参考<code>CVE-2020-6418</code>就可以了。</p><h2 id="full-exploit"><a href="#full-exploit" class="headerlink" title="full exploit"></a>full exploit</h2><p><a href="https://github.com/o0xmuhe/RealWorldPwn/tree/master/chrome_M80_crbug1051017">exploit</a></p><h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1051017">crbug 1051017</a><br><a href="https://ray-cp.github.io/archivers/browser-pwn-cve-2020-6418%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90">browser-pwn-cve-2020-6418漏洞分析</a></p>]]></content>
-    
-    
-    <summary type="html">&lt;h2 id=&quot;about&quot;&gt;&lt;a href=&quot;#about&quot; class=&quot;headerlink&quot; title=&quot;about&quot;&gt;&lt;/a&gt;about&lt;/h2&gt;&lt;p&gt;最近看到&lt;a href=&quot;https://bugs.chromium.org/p/chromium/issues/detail?id=1051017&quot;&gt;crbug 1051017&lt;/a&gt;公开了poc，这是一个品相很好的类型混淆，具体可以看原作者的漏洞报告，写得十分详细。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="漏洞分析" scheme="http://o0xmuhe.me/categories/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"/>
-    
-    
-    <category term="v8" scheme="http://o0xmuhe.me/tags/v8/"/>
-    
-    <category term="exploit" scheme="http://o0xmuhe.me/tags/exploit/"/>
     
   </entry>
   
