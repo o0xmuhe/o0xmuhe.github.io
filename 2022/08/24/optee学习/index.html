@@ -6,16 +6,35 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta property="og:type" content="article">
-<meta property="og:title" content="optee学习">
+    <meta name="description" content="环境配置本篇主要是环境配置、调试、流程梳理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="optee学习篇(1) 环境&amp;调试">
 <meta property="og:url" content="https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/index.html">
 <meta property="og:site_name" content="o0xmuhe&#39;s blog">
+<meta property="og:description" content="环境配置本篇主要是环境配置、调试、流程梳理">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220822175933034.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220824161556316.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220824163338069.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220824163032421.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220824174332829.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220824174546625.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220824175034184.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220924200021216.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220924200407393.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220924204537245.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220825135100483.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220825135607360.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220901215718045.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/from_atf_to_tee.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/tee.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/debug_linux_kernel.png">
 <meta property="article:published_time" content="2022-08-24T15:15:33.000Z">
-<meta property="article:modified_time" content="2022-08-24T15:25:57.616Z">
+<meta property="article:modified_time" content="2022-10-26T15:32:08.233Z">
 <meta property="article:author" content="muhe">
 <meta property="article:tag" content="optee">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220822175933034.png">
     
     
       
@@ -35,7 +54,7 @@
       
     
     <!-- title -->
-    <title>optee学习</title><meta name="robots" content="noindex">
+    <title>optee学习篇(1) 环境&amp;调试</title>
     <!-- styles -->
     
 <link rel="stylesheet" href="/css/style.css">
@@ -81,6 +100,10 @@
     <span id="actions">
       <ul>
         
+        <li><a class="icon" aria-label="Previous post" href="/2022/09/02/HW-OTA-unpack/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/07/24/weggli-debug/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -94,21 +117,21 @@
     <div id="share" style="display: none">
       <ul>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&text=optee学习"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&is_video=false&description=optee学习"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=optee学习&body=Check out this article: https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&name=optee学习&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&t=optee学习"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&text=optee学习篇(1) 环境&amp;调试"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习篇(1) 环境&amp;调试"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&is_video=false&description=optee学习篇(1) 环境&amp;调试"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=optee学习篇(1) 环境&amp;调试&body=Check out this article: https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习篇(1) 环境&amp;调试"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习篇(1) 环境&amp;调试"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习篇(1) 环境&amp;调试"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习篇(1) 环境&amp;调试"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&name=optee学习篇(1) 环境&amp;调试&description=&lt;h2 id=&#34;环境配置&#34;&gt;&lt;a href=&#34;#环境配置&#34; class=&#34;headerlink&#34; title=&#34;环境配置&#34;&gt;&lt;/a&gt;环境配置&lt;/h2&gt;&lt;p&gt;本篇主要是环境配置、调试、流程梳理&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&t=optee学习篇(1) 环境&amp;调试"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
     <div id="toc">
-      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">1.</span> <span class="toc-text">环境配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#qemu-v8%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.1.</span> <span class="toc-text">qemu_v8环境搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fvp%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.2.</span> <span class="toc-text">fvp可视化调试环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E8%8E%B7%E5%8F%96"><span class="toc-number">1.2.1.</span> <span class="toc-text">代码获取</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="toc-number">1.2.2.</span> <span class="toc-text">工具链</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E8%AF%91"><span class="toc-number">1.2.3.</span> <span class="toc-text">编译</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%80%E5%90%AF%E8%B0%83%E8%AF%95"><span class="toc-number">1.2.4.</span> <span class="toc-text">开启调试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C"><span class="toc-number">1.2.5.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ARM-Developer-Studio%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.2.6.</span> <span class="toc-text">ARM Developer Studio连接</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARM-%E5%AE%89%E5%85%A8%E6%9E%B6%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">ARM 安全架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OPTEE-%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">OPTEE 启动流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ads%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86"><span class="toc-number">3.1.</span> <span class="toc-text">ads可视化流程梳理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#bl1"><span class="toc-number">3.1.1.</span> <span class="toc-text">bl1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bl2"><span class="toc-number">3.1.2.</span> <span class="toc-text">bl2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bl31"><span class="toc-number">3.1.3.</span> <span class="toc-text">bl31</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bl32"><span class="toc-number">3.1.4.</span> <span class="toc-text">bl32</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bl33"><span class="toc-number">3.1.5.</span> <span class="toc-text">bl33</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#UEFI"><span class="toc-number">3.1.6.</span> <span class="toc-text">UEFI</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#GRUB"><span class="toc-number">3.1.7.</span> <span class="toc-text">GRUB</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Linux-Kernel"><span class="toc-number">3.1.8.</span> <span class="toc-text">Linux Kernel</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JVM%E8%AE%BE%E7%BD%AE"><span class="toc-number">3.1.9.</span> <span class="toc-text">JVM设置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -120,7 +143,7 @@
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
-        optee学习
+        optee学习篇(1) 环境&amp;调试
     </h1>
 
 
@@ -143,7 +166,7 @@
       
     <div class="article-tag">
         <i class="fas fa-tag"></i>
-        
+        <a class="tag-link-link" href="/tags/optee/" rel="tag">optee</a>
     </div>
 
 
@@ -152,7 +175,204 @@
   
 
   <div class="content" itemprop="articleBody">
-    <!-- flag of hidden posts -->
+    <h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><p>本篇主要是环境配置、调试、流程梳理</p>
+<span id="more"></span>
+
+<h3 id="qemu-v8环境搭建"><a href="#qemu-v8环境搭建" class="headerlink" title="qemu_v8环境搭建"></a>qemu_v8环境搭建</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://optee.readthedocs.io/en/latest/building/prerequisites.html">https://optee.readthedocs.io/en/latest/building/prerequisites.html</a></p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ repo init -u https://github.com/OP-TEE/manifest.git -m qemu_v8.xml</span><br><span class="line">$ repo sync -c -j8</span><br><span class="line">$ <span class="built_in">cd</span> build</span><br><span class="line">$ make toolchains</span><br><span class="line">$ make run</span><br></pre></td></tr></table></figure>
+
+<p>同步下来的仓库如下</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220822175933034.png" alt="image-20220822175933034"></p>
+<p>运行一下试试看:</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220824161556316.png" alt="image-20220824161556316"></p>
+<p>需要指定版本跑的话 : <code>make -f qemu_v8.mk run-only</code></p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://optee.readthedocs.io/en/latest/debug/index.html">https://optee.readthedocs.io/en/latest/debug/index.html</a></p>
+</blockquote>
+<p>这里以qemu-v8为例</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> build</span><br><span class="line">make  DEBUG=1  -f qemu_v8.mk all</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make DEBUG=1 -f qemu_v8.mk run-only</span><br></pre></td></tr></table></figure>
+
+<p>因为Makefile中启动的时候已经写了设置了 <code>-s -S</code>了 ，所以可以直接连接</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220824163338069.png" alt="image-20220824163338069"></p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220824163032421.png" alt="image-20220824163032421"></p>
+<p>可以从<a target="_blank" rel="noopener" href="https://developer.arm.com/downloads/-/gnu-a">这里</a>下载对应的gdb来用</p>
+<p>装了<code>libncurses5-dev</code>还是找不到so的话，可以参考 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/wanglouxiaozi/p/14987053.html">https://www.cnblogs.com/wanglouxiaozi/p/14987053.html</a></p>
+<p><code>gdb-multiarch</code> 也可以，更好用</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220824174332829.png" alt="image-20220824174332829"></p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220824174546625.png" alt="image-20220824174546625"></p>
+<p>符号加载</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bl1 --- /home/work/optee/trusted-firmware-a/build/qemu/debug/bl1/bl1.elf</span><br><span class="line">bl2 ---  /home/work/optee/trusted-firmware-a/build/qemu/debug/bl2/bl2.elf</span><br><span class="line">bl31 ---  /home/work/optee/trusted-firmware-a/build/qemu/debug/bl31/bl31.elf </span><br><span class="line">bl32(teeOS)  ----  /home/work/optee/optee_os/out/arm/core/tee.elf</span><br><span class="line">bl33(UEFI)  ---  /home/work/optee/edk2/Build/  </span><br></pre></td></tr></table></figure>
+
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220824175034184.png" alt="image-20220824175034184"></p>
+<h3 id="fvp可视化调试环境搭建"><a href="#fvp可视化调试环境搭建" class="headerlink" title="fvp可视化调试环境搭建"></a>fvp可视化调试环境搭建</h3><h4 id="代码获取"><a href="#代码获取" class="headerlink" title="代码获取"></a>代码获取</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ repo init -u https://github.com/OP-TEE/manifest.git -m fvp.xml </span><br><span class="line">$ repo sync -j4 -c</span><br><span class="line">Updating depot_tools...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="工具链"><a href="#工具链" class="headerlink" title="工具链"></a>工具链</h4><p>需要下载 <code>FVP_Base_RevC-2xAEMvA_11.18_16_Linux64.tgz</code>并解压到<code>optee-fvp</code>目录下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ tar -zxvf ../FVP_Base_RevC-2xAEMvA_11.18_16_Linux64.tgz -C .</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># work @ work-virtual-machine in ~/optee-fvp [23:34:36] </span></span><br><span class="line">$ ls -al</span><br><span class="line">total 72</span><br><span class="line">drwxrwxr-x 18 work work 4096 Sep 22 23:32 .</span><br><span class="line">drwx------ 70 work work 4096 Sep 22 23:34 ..</span><br><span class="line">drwxrwxr-x 10 work work 4096 Sep 22 23:32 Base_RevC_AEMvA_pkg</span><br><span class="line">drwxrwxr-x 12 work work 4096 Sep 22 23:26 build</span><br><span class="line">drwxrwxr-x 14 work work 4096 Sep 22 23:26 buildroot</span><br><span class="line">drwxrwxr-x 50 work work 4096 Sep 22 23:26 edk2</span><br><span class="line">drwxrwxr-x  4 work work 4096 Sep 22 23:26 edk2-platforms</span><br><span class="line">drwxrwxr-x 14 work work 4096 Sep 22 23:26 grub</span><br><span class="line">drwxr-xr-x  3 work work 4096 Jun 16 10:34 license_terms</span><br><span class="line">drwxrwxr-x 24 work work 4096 Sep 22 23:26 linux</span><br><span class="line">drwxrwxr-x 14 work work 4096 Sep 22 23:26 mbedtls</span><br><span class="line">drwxrwxr-x  5 work work 4096 Sep 22 23:26 ms-tpm-20-ref</span><br><span class="line">drwxrwxr-x  9 work work 4096 Sep 22 23:26 optee_client</span><br><span class="line">drwxrwxr-x 10 work work 4096 Sep 22 23:26 optee_examples</span><br><span class="line">drwxrwxr-x 10 work work 4096 Sep 22 23:26 optee_os</span><br><span class="line">drwxrwxr-x  7 work work 4096 Sep 22 23:26 optee_test</span><br><span class="line">drwxrwxr-x  7 work work 4096 Sep 22 23:26 .repo</span><br><span class="line">drwxrwxr-x 19 work work 4096 Sep 22 23:26 trusted-firmware-a</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h4><blockquote>
+<p>编译流程参考上面qemu_v8部分</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># work @ work-virtual-machine in ~/optee-fvp [23:35:06]</span></span><br><span class="line">$ cp -rf Base_RevC_AEMvA_pkg Foundation_Platformpkg <span class="comment"># build toolchains的时候文件夹名需要改一下</span></span><br><span class="line">$ <span class="built_in">cd</span> build</span><br><span class="line">$ make toolchains</span><br><span class="line">$ make DEBUG=1 FVP_USE_BASE_PLAT=y  -f fvp.mk all   </span><br></pre></td></tr></table></figure>
+
+<h4 id="开启调试"><a href="#开启调试" class="headerlink" title="开启调试"></a>开启调试</h4><p>修改build/fvp.mk ，以便启动时进入调试模式</p>
+<p>添加:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-I \</span><br><span class="line">--iris-allow-remote\</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">################################################################################</span></span><br><span class="line"><span class="comment"># Run targets</span></span><br><span class="line"><span class="comment">################################################################################</span></span><br><span class="line"><span class="comment"># This target enforces updating root fs etc</span></span><br><span class="line">run: all</span><br><span class="line">        $(MAKE) run-only</span><br><span class="line"></span><br><span class="line">ifeq ($(FVP_USE_BASE_PLAT),y)</span><br><span class="line">FVP_ARGS ?= \</span><br><span class="line">        -I \</span><br><span class="line">        --iris-allow-remote\</span><br><span class="line">        -C bp.ve_sysregs.exit_on_shutdown=1 \</span><br><span class="line">        -C cache_state_modelled=0 \</span><br><span class="line">        -C pctl.startup=0.0.0.0 \</span><br><span class="line">        -C cluster0.NUM_CORES=4 \</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> build </span><br><span class="line">make DEBUG=1 FVP_USE_BASE_PLAT=y  -f fvp.mk run-only</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="ARM-Developer-Studio连接"><a href="#ARM-Developer-Studio连接" class="headerlink" title="ARM Developer Studio连接"></a>ARM Developer Studio连接</h4><p>启动的时候需要license，注册个账号就行，先试用。</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220924200021216.png" alt="image-20220924200021216"></p>
+<p>启动之后，选择 : <code>File-&gt;New-&gt;Model Connection </code></p>
+<p>模型选择 :  Base_RevC_AEMvA  和 <code>Base_RevC_AEMvA</code> 都没法直接调试，好像是模型没装好 :(</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220924200407393.png" alt="image-20220924200407393"></p>
+<p>点Finish之后，需要手动选择，连接本地的模型 <code>localhost 7100</code></p>
+<p>加载了bl31的符号，然后对入口下断: </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">b *EL3:0x0000000004003000</span><br><span class="line"></span><br><span class="line">add-symbol-file /home/muhe/Study/optee-fvp/trusted-firmware-a/build/fvp/debug/bl31/bl31.elf</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220924204537245.png" alt="image-20220924204537245"></p>
+<p>芜湖 🛫️ </p>
+<h2 id="ARM-安全架构"><a href="#ARM-安全架构" class="headerlink" title="ARM 安全架构"></a>ARM 安全架构</h2><blockquote>
+<p>ARM v8 的文档</p>
+</blockquote>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220825135100483.png" alt="image-20220825135100483"></p>
+<ul>
+<li>分三个异常等级</li>
+<li>两个“世界”，non-secure 和 secure</li>
+</ul>
+<p><code>opteeos</code>跑在<code> secure world</code>，<code>ta</code>在<code>secure world</code>的上层(<code>el0</code>); <code>linux</code>在<code>non-secure world</code>，<code>ca</code>在<code>el0</code></p>
+<p><code>optee</code>项目中还有个``atf<code>，这个跑在</code>el3`。</p>
+<blockquote>
+<p>  该图来自<a target="_blank" rel="noopener" href="https://edu.csdn.net/lecturer/6964">周贺贺老师的OPTEE系列</a>课程中</p>
+</blockquote>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/image-20220825135607360.png" alt="image-20220825135607360"></p>
+<h2 id="OPTEE-启动流程"><a href="#OPTEE-启动流程" class="headerlink" title="OPTEE 启动流程"></a>OPTEE 启动流程</h2><p>这里我直接用了<a target="_blank" rel="noopener" href="https://edu.csdn.net/lecturer/6964">周贺贺老师OPTEE系列课程中</a>的图，我在对着代码分析的时候结合这个图感觉十分的清晰，有助于理解 :)</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20220901215718045.png" alt="image-20220901215718045"></p>
+<p>先来看大概的启动流程</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">bl31_entrypoint (trusted-firmware-a/bl31/aarch64/bl31_entrypoint.S)</span><br><span class="line">    bl31_main (trusted-firmware-a/bl31/bl31_main.c)</span><br><span class="line">        runtime_svc_init (trusted-firmware-a/common/runtime_svc.c)</span><br><span class="line">            opteed_setup (trusted-firmware-a/services/spd/opteed/opteed_main.c DECLARE_RT_SVC里定义)</span><br><span class="line">                bl31_plat_get_next_image_ep_info(SECURE) </span><br><span class="line">                opteed_init_optee_ep_state</span><br><span class="line">                bl31_register_bl32_init(&amp;opteed_init);</span><br><span class="line"></span><br><span class="line">        bl32_init // 这个函数就是opteed_init，在上面注册的    </span><br><span class="line">            // 进入tee</span><br><span class="line">            opteed_synchronous_sp_entry(optee_ctx);</span><br><span class="line">                opteed_enter_sp(&amp;optee_ctx-&gt;c_rt_ctx);</span><br><span class="line">            // 出tee</span><br><span class="line">    bl31_prepare_next_image_entry (进入uboot)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>下断点的時候注意，切换到对应的阶段之后再去 file xxx 加载符号</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">file /home/work/optee/trusted-firmware-a/build/qemu/debug/bl1/bl1.elf</span><br><span class="line">file /home/work/optee/trusted-firmware-a/build/qemu/debug/bl2/bl2.elf</span><br><span class="line">file /home/work/optee/trusted-firmware-a/build/qemu/debug/bl31/bl31.elf </span><br><span class="line">file /home/work/optee/optee_os/out/arm/core/tee.elf</span><br></pre></td></tr></table></figure>
+
+<p>比如下面要进入tee的时候</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/from_atf_to_tee.png" alt="ready_enter_tee"></p>
+<p>加载符号之后: </p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/tee.png" alt="tee"></p>
+<h3 id="ads可视化流程梳理"><a href="#ads可视化流程梳理" class="headerlink" title="ads可视化流程梳理"></a>ads可视化流程梳理</h3><blockquote>
+<p>  ads可视化调试记录</p>
+</blockquote>
+<h4 id="bl1"><a href="#bl1" class="headerlink" title="bl1"></a>bl1</h4><blockquote>
+<p>  add-symbol-file /home/muhe/Study/optee-fvp/trusted-firmware-a/build/fvp/debug/bl1/bl1.elf</p>
+</blockquote>
+<h4 id="bl2"><a href="#bl2" class="headerlink" title="bl2"></a>bl2</h4><blockquote>
+<p>  b *EL1S:0x0000000004022000 </p>
+</blockquote>
+<blockquote>
+<p>  add-symbol-file /home/muhe/Study/optee-fvp/trusted-firmware-a/build/fvp/debug/bl2/bl2.elf</p>
+</blockquote>
+<h4 id="bl31"><a href="#bl31" class="headerlink" title="bl31"></a>bl31</h4><blockquote>
+<p>  b *EL3:0x0000000004003000</p>
+</blockquote>
+<blockquote>
+<p>  add-symbol-file /home/muhe/Study/optee-fvp/trusted-firmware-a/build/fvp/debug/bl31/bl31.elf</p>
+</blockquote>
+<h4 id="bl32"><a href="#bl32" class="headerlink" title="bl32"></a>bl32</h4><blockquote>
+<p>  b *EL1S:0x6000000</p>
+<p>  add-symbol-file /home/muhe/Study/optee-fvp/optee_os/out/arm/core/tee.elf</p>
+</blockquote>
+<p>UEFI 的符号加载比较特殊， 这个部分是相对地址， 并且很多模块是动态加载的， 断点下到加载UEFI的地址， 也就是BL31 跳转到BL33时的地址。 断下后，</p>
+<p>commands下通过 cmd_load_symbols 加载， 执行前先要弄清楚几个参数  </p>
+<blockquote>
+<p>/home/muhe/Study/optee-fvp/edk2/ArmPlatformPkg/Scripts/Ds5/cmd_load_symbols.py</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def usage():</span><br><span class="line">    print &quot;-v,--verbose&quot;</span><br><span class="line">    print &quot;-a,--all: Load all symbols&quot;</span><br><span class="line">    print &quot;-l,--report=: Filename for the EDK2 report log&quot;</span><br><span class="line">    print &quot;-m,--sysmem=(base,size): System Memory region&quot;</span><br><span class="line">    print &quot;-f,--fv=(base,size): Firmware region&quot;</span><br><span class="line">    print &quot;-r,--rom=(base,size): ROM region&quot;</span><br></pre></td></tr></table></figure>
+
+<p>-m 参数在  </p>
+<blockquote>
+<p>  /home/muhe/Study/optee-fvp/edk2-platforms/Platform/ARM/VExpressPkg/ArmVExpress-FVP-AArch64.dsc</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># <span class="function">System <span class="title">Memory</span> <span class="params">(<span class="number">2</span>GB - <span class="number">16</span>MB of Trusted DRAM at the top of the <span class="number">32b</span>it address space)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">gArmTokenSpaceGuid.PcdSystemMemoryBase|0x80000000</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">gArmTokenSpaceGuid.PcdSystemMemorySize|0x7F000000</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>-f 参数在  </p>
+<blockquote>
+<p>  /home/muhe/Study/optee-fvp/edk2-platforms/Platform/ARM/VExpressPkg/ArmVExpress-FVP-AArch64.fdf </p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[FD.FVP_AARCH64_EFI]</span><br><span class="line"></span><br><span class="line">!ifdef ARM_FVP_RUN_NORFLASH</span><br><span class="line"></span><br><span class="line">BaseAddress   = <span class="number">0x08000000</span>|gArmTokenSpaceGuid.PcdFdBaseAddress  # The base address of the Firmware in Flash0.</span><br><span class="line"></span><br><span class="line">!<span class="keyword">else</span></span><br><span class="line"></span><br><span class="line">BaseAddress   = <span class="number">0x88000000</span>|gArmTokenSpaceGuid.PcdFdBaseAddress  # UEFI in DRAM + <span class="number">128</span>MB.</span><br><span class="line"></span><br><span class="line">!endif</span><br><span class="line"></span><br><span class="line">Size          = <span class="number">0x04000000</span>|gArmTokenSpaceGuid.PcdFdSize         # The size in bytes of the device (<span class="number">64</span>MiB).</span><br><span class="line"></span><br><span class="line">ErasePolarity = <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="bl33"><a href="#bl33" class="headerlink" title="bl33"></a>bl33</h4><h4 id="UEFI"><a href="#UEFI" class="headerlink" title="UEFI"></a>UEFI</h4><blockquote>
+<p>  b *EL2N:0x88000000</p>
+</blockquote>
+<p>断点触发后， 执行下面的命令加载符号。 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> /home/muhe/Study/optee-fvp/edk2/ArmPlatformPkg/Scripts/Ds5/cmd_load_symbols.py  -a  -m (0x80000000, 0x7F000000)  -f (0x88000000, 0x04000000) </span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">info files</span><br><span class="line">Symbols from <span class="string">&quot;/home/muhe/Study/optee-fvp/edk2-platforms/Build/ArmVExpress-FVP-AArch64/DEBUG_GCC49/AARCH64/ArmPlatformPkg/PrePi/PeiUniCore/DEBUG/ArmPlatformPrePiUniCore.dll&quot;</span>.</span><br><span class="line">Local <span class="built_in">exec</span> file:</span><br><span class="line">        <span class="string">&quot;/home/muhe/Study/optee-fvp/edk2-platforms/Build/ArmVExpress-FVP-AArch64/DEBUG_GCC49/AARCH64/ArmPlatformPkg/PrePi/PeiUniCore/DEBUG/ArmPlatformPrePiUniCore.dll&quot;</span>, file <span class="built_in">type</span> ELF64.</span><br><span class="line">        Entry point: EL2N:0x0000000088000800.</span><br><span class="line">        EL2N:0x0000000088000800 - EL2N:0x0000000088018AD7 is .text</span><br><span class="line">        EL2N:0x0000000088019000 - EL2N:0x000000008801916F is .data</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>DxeCore的加载这个脚本处理不了，还是要自己加载</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add-symbol-file /home/muhe/Study/optee-fvp/edk2-platforms/Build/ArmVExpress-FVP-AArch64/DEBUG_GCC49/AARCH64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/DxeCore.dll 0x00fe3d3000</span><br></pre></td></tr></table></figure>
+
+<p>现在就正常了:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Symbols from <span class="string">&quot;/home/muhe/Study/optee-fvp/edk2-platforms/Build/ArmVExpress-FVP-AArch64/DEBUG_GCC49/AARCH64/ArmPlatformPkg/PrePi/PeiUniCore/DEBUG/ArmPlatformPrePiUniCore.dll&quot;</span>.</span><br><span class="line">Local <span class="built_in">exec</span> file:</span><br><span class="line">        <span class="string">&quot;/home/muhe/Study/optee-fvp/edk2-platforms/Build/ArmVExpress-FVP-AArch64/DEBUG_GCC49/AARCH64/ArmPlatformPkg/PrePi/PeiUniCore/DEBUG/ArmPlatformPrePiUniCore.dll&quot;</span>, file <span class="built_in">type</span> ELF64.</span><br><span class="line">        Entry point: EL2N:0x0000000088000800.</span><br><span class="line">        EL2N:0x0000000088000800 - EL2N:0x0000000088018AD7 is .text</span><br><span class="line">        EL2N:0x0000000088019000 - EL2N:0x000000008801916F is .data</span><br><span class="line">Symbols from <span class="string">&quot;/home/muhe/Study/optee-fvp/edk2-platforms/Build/ArmVExpress-FVP-AArch64/DEBUG_GCC49/AARCH64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/DxeCore.dll&quot;</span>.</span><br><span class="line">Local <span class="built_in">exec</span> file:</span><br><span class="line">        <span class="string">&quot;/home/muhe/Study/optee-fvp/edk2-platforms/Build/ArmVExpress-FVP-AArch64/DEBUG_GCC49/AARCH64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/DxeCore.dll&quot;</span>, file <span class="built_in">type</span> ELF64.</span><br><span class="line">        Entry point: EL2N:0x00000000FE3D4000.</span><br><span class="line">        EL2N:0x00000000FE3D4000 - EL2N:0x00000000FE41AEBF is .text</span><br><span class="line">        EL2N:0x00000000FE41B000 - EL2N:0x00000000FE435860 is .data</span><br></pre></td></tr></table></figure>
+
+<h4 id="GRUB"><a href="#GRUB" class="headerlink" title="GRUB"></a>GRUB</h4><p>TODO，这部分一直没时间搞，先挂起了</p>
+<h4 id="Linux-Kernel"><a href="#Linux-Kernel" class="headerlink" title="Linux Kernel"></a>Linux Kernel</h4><blockquote>
+<p>  BL33是UEFl,其实UEFI 还会引导grub2, 这里grub2作为一个UEFl的driver(or 应用)被UEFl加载, grub执行完毕,引导linux时,其实linux 内核也打包作为一个UEFl的应用了,所以BL33的执行过程是, UEFI-＞ grub-&gt;linux内核的efi stub -＞ linux内核</p>
+</blockquote>
+<p>加载符号，注意EL1N：0，因为内核主要运行在EL1N</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add-symbol-file /home/muhe/Study/optee-fvp/linux/vmlinux EL1N:0</span><br></pre></td></tr></table></figure>
+
+<p>根据启动流程 : </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">__HEAD</span><br><span class="line">        primary_entry</span><br><span class="line">                __primary_switch</span><br><span class="line">                        __enable_mmu</span><br><span class="line">                        __primary_switched</span><br><span class="line">                                设置异常向量表 // `adr_l       x8, vectors`</span><br><span class="line">                                start_kernel()</span><br></pre></td></tr></table></figure>
+
+<p>我们可以对<code>__primary_switch</code> 下断，如果符号对不上，可以根据地址下断</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># muhe @ muhe-NUC11PAHi5 in ~/Study/optee-fvp/linux on git:29aee39cf x [23:24:42]</span></span><br><span class="line">$ cat System.map | grep <span class="string">&quot;primary_switched&quot;</span></span><br><span class="line">ffff80000919032c t __primary_switched</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/note_pic/debug_linux_kernel.png" alt="debug_linux_kernel"></p>
+<h4 id="JVM设置"><a href="#JVM设置" class="headerlink" title="JVM设置"></a>JVM设置</h4><p>修改ads的jvm，否则调试的时候容易oom影响体验</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://developer.arm.com/documentation/ka003567/latest">https://developer.arm.com/documentation/ka003567/latest</a></p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># muhe @ muhe-NUC11PAHi5 in /usr/arm/developmentstudio-2022.1/sw/ide [20:20:40]</span></span><br><span class="line">$ cat armds_ide.ini</span><br><span class="line">-startup</span><br><span class="line">plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar</span><br><span class="line">--launcher.library</span><br><span class="line">plugins/org.eclipse.equinox.launcher.gtk.linux.x86_64_1.2.400.v20211117-0650</span><br><span class="line">-vm</span><br><span class="line">../java/lib/server/libjvm.so</span><br><span class="line">-vmargs</span><br><span class="line">--add-opens=java.base/java.io=ALL-UNNAMED</span><br><span class="line">--add-opens=java.base/sun.nio.ch=ALL-UNNAMED</span><br><span class="line">--add-opens=java.base/java.lang=ALL-UNNAMED</span><br><span class="line">--add-opens=java.base/java.util=ALL-UNNAMED</span><br><span class="line">--add-opens=java.base/java.nio.charset=ALL-UNNAMED</span><br><span class="line">--add-opens=java.base/java.nio=ALL-UNNAMED</span><br><span class="line">--add-opens=java.base/java.lang.reflect=ALL-UNNAMED</span><br><span class="line">-Dnashorn.args=--no-deprecation-warning</span><br></pre></td></tr></table></figure>
+
+
+
+<p>添加参数 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-Xms4096m </span><br><span class="line">-Xmx4096m </span><br><span class="line">-Xmn256m</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://download.csdn.net/course/detail/37655">https://download.csdn.net/course/detail/37655</a></p>
+<p><a target="_blank" rel="noopener" href="https://optee.readthedocs.io/en/latest/">https://optee.readthedocs.io/en/latest/</a></p>
+<p><a target="_blank" rel="noopener" href="https://armv8-ref.codingbelief.com/zh/">https://armv8-ref.codingbelief.com/zh/</a></p>
+<p><a target="_blank" rel="noopener" href="https://edu.csdn.net/lecturer/6964">https://edu.csdn.net/lecturer/6964</a></p>
+
   </div>
 </article>
 
@@ -189,22 +409,22 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">1.</span> <span class="toc-text">环境配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#qemu-v8%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.1.</span> <span class="toc-text">qemu_v8环境搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fvp%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.2.</span> <span class="toc-text">fvp可视化调试环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E8%8E%B7%E5%8F%96"><span class="toc-number">1.2.1.</span> <span class="toc-text">代码获取</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="toc-number">1.2.2.</span> <span class="toc-text">工具链</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E8%AF%91"><span class="toc-number">1.2.3.</span> <span class="toc-text">编译</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%80%E5%90%AF%E8%B0%83%E8%AF%95"><span class="toc-number">1.2.4.</span> <span class="toc-text">开启调试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C"><span class="toc-number">1.2.5.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ARM-Developer-Studio%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.2.6.</span> <span class="toc-text">ARM Developer Studio连接</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARM-%E5%AE%89%E5%85%A8%E6%9E%B6%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">ARM 安全架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OPTEE-%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">OPTEE 启动流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ads%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86"><span class="toc-number">3.1.</span> <span class="toc-text">ads可视化流程梳理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#bl1"><span class="toc-number">3.1.1.</span> <span class="toc-text">bl1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bl2"><span class="toc-number">3.1.2.</span> <span class="toc-text">bl2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bl31"><span class="toc-number">3.1.3.</span> <span class="toc-text">bl31</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bl32"><span class="toc-number">3.1.4.</span> <span class="toc-text">bl32</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bl33"><span class="toc-number">3.1.5.</span> <span class="toc-text">bl33</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#UEFI"><span class="toc-number">3.1.6.</span> <span class="toc-text">UEFI</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#GRUB"><span class="toc-number">3.1.7.</span> <span class="toc-text">GRUB</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Linux-Kernel"><span class="toc-number">3.1.8.</span> <span class="toc-text">Linux Kernel</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JVM%E8%AE%BE%E7%BD%AE"><span class="toc-number">3.1.9.</span> <span class="toc-text">JVM设置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
       <ul>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&text=optee学习"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&is_video=false&description=optee学习"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=optee学习&body=Check out this article: https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&name=optee学习&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&t=optee学习"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&text=optee学习篇(1) 环境&amp;调试"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习篇(1) 环境&amp;调试"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&is_video=false&description=optee学习篇(1) 环境&amp;调试"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=optee学习篇(1) 环境&amp;调试&body=Check out this article: https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习篇(1) 环境&amp;调试"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习篇(1) 环境&amp;调试"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习篇(1) 环境&amp;调试"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&title=optee学习篇(1) 环境&amp;调试"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&name=optee学习篇(1) 环境&amp;调试&description=&lt;h2 id=&#34;环境配置&#34;&gt;&lt;a href=&#34;#环境配置&#34; class=&#34;headerlink&#34; title=&#34;环境配置&#34;&gt;&lt;/a&gt;环境配置&lt;/h2&gt;&lt;p&gt;本篇主要是环境配置、调试、流程梳理&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/&t=optee学习篇(1) 环境&amp;调试"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
