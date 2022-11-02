@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="背景  严格意义上来说本文应该叫做: &lt;&lt;我本来只是想救个砖，但是缺逆向了刷机工具尝试搞清楚android unlock的原理&gt;&gt; :D">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Qual+Android方案Unlock学习 以Oneplus7Pro为例">
+<meta property="og:url" content="https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/index.html">
+<meta property="og:site_name" content="o0xmuhe&#39;s blog">
+<meta property="og:description" content="背景  严格意义上来说本文应该叫做: &lt;&lt;我本来只是想救个砖，但是缺逆向了刷机工具尝试搞清楚android unlock的原理&gt;&gt; :D">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102220307918.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102220543055.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102220559725.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102221112067.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102221127781.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102221145363.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102221215657.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102221321664.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102222117218.png">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102222156841.png">
+<meta property="article:published_time" content="2022-11-01T14:56:50.000Z">
+<meta property="article:modified_time" content="2022-11-02T14:31:35.864Z">
+<meta property="article:author" content="muhe">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="Unlock">
+<meta property="article:tag" content="Qualcomm">
+<meta property="article:tag" content="EDL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102220307918.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Qual+Android方案Unlock学习 以Oneplus7Pro为例</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="o0xmuhe&#39;s blog" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search">Search</a></li><!--
+     --><!--
+       --><li><a href="/atom.xml">RSS</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/09/12/Paper-read-The-Convergence-of-Source-Code-and-Binary-Vulnerability-Discovery-%E2%80%93-A-Case-Study/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&text=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&title=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&is_video=false&description=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Qual+Android方案Unlock学习 以Oneplus7Pro为例&body=Check out this article: https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&title=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&title=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&title=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&title=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&name=Qual+Android方案Unlock学习 以Oneplus7Pro为例&description=&lt;h2 id=&#34;背景&#34;&gt;&lt;a href=&#34;#背景&#34; class=&#34;headerlink&#34; title=&#34;背景&#34;&gt;&lt;/a&gt;背景&lt;/h2&gt;&lt;p&gt;  严格意义上来说本文应该叫做: &amp;lt;&amp;lt;我本来只是想救个砖，但是缺逆向了刷机工具尝试搞清楚&lt;code&gt;android unlock&lt;/code&gt;的原理&amp;gt;&amp;gt; :D &lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&t=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Unpack-guacamole-21-H-04-190416-ops"><span class="toc-number">2.</span> <span class="toc-text">Unpack guacamole_21_H.04_190416.ops</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Unlock%E6%8E%A2%E7%A9%B6"><span class="toc-number">3.</span> <span class="toc-text">Unlock探究</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E8%80%85%E9%80%89%E9%A1%B9%E2%80%93%E5%85%81%E8%AE%B8%E8%A7%A3%E9%94%81"><span class="toc-number">3.1.</span> <span class="toc-text">开发者选项–允许解锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fastboot-oem-unlock"><span class="toc-number">3.2.</span> <span class="toc-text">fastboot oem unlock</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#extract-LinuxLoader-from-abl"><span class="toc-number">3.2.1.</span> <span class="toc-text">extract LinuxLoader from abl</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90"><span class="toc-number">3.2.2.</span> <span class="toc-text">过程分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FH%E8%AF%BB%E5%86%99%E5%88%86%E5%8C%BA"><span class="toc-number">4.</span> <span class="toc-text">FH读写分区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%86%E5%90%91MSM-Download"><span class="toc-number">5.</span> <span class="toc-text">逆向MSM Download</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#USB%E6%8A%93%E5%8C%85"><span class="toc-number">5.1.</span> <span class="toc-text">USB抓包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#token-amp-pk-%E9%80%86%E5%90%91%E7%BB%93%E6%9E%9C"><span class="toc-number">5.2.</span> <span class="toc-text">token &amp; pk 逆向结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%9D%E8%AF%95%E4%BF%AE%E6%94%B9%E5%88%86%E5%8C%BA%E5%AE%9E%E7%8E%B0unlock"><span class="toc-number">6.</span> <span class="toc-text">尝试修改分区实现unlock</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VerifiedBoot-Protocol-%E5%88%86%E6%9E%90"><span class="toc-number">7.</span> <span class="toc-text">VerifiedBoot Protocol 分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9D%9F"><span class="toc-number">8.</span> <span class="toc-text">结束</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">9.</span> <span class="toc-text">参考</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Qual+Android方案Unlock学习 以Oneplus7Pro为例
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">muhe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-11-01T14:56:50.000Z" itemprop="datePublished">2022-11-01</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Android/" rel="tag">Android</a>, <a class="tag-link-link" href="/tags/EDL/" rel="tag">EDL</a>, <a class="tag-link-link" href="/tags/Qualcomm/" rel="tag">Qualcomm</a>, <a class="tag-link-link" href="/tags/Unlock/" rel="tag">Unlock</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>  严格意义上来说本文应该叫做: &lt;&lt;我本来只是想救个砖，但是缺逆向了刷机工具尝试搞清楚<code>android unlock</code>的原理&gt;&gt; :D </p>
+<span id="more"></span>
+
+<p>前段时间因为一些工作需求想给手里的测试机(一加7Pro)刷个ColorOS，因为之前想体验Android12，机器是刷了个userdebug的lineageos，遂尝试了卡刷、sideload等之后机器被我搞坏了，开机直接recovery，报错信息是什么 mount fs的时候失败了 :( 没办法只能救转了，逛了一圈论坛发现有人提供<a target="_blank" rel="noopener" href="https://www.oneplusbbs.com/forum.php?mod=viewthread&tid=4730052">9008刷机工具</a>，通过万能的9008救回来之后，我就想做点别的: 把他的firehose“偷”出来玩玩。</p>
+<h2 id="Unpack-guacamole-21-H-04-190416-ops"><a href="#Unpack-guacamole-21-H-04-190416-ops" class="headerlink" title="Unpack guacamole_21_H.04_190416.ops"></a>Unpack guacamole_21_H.04_190416.ops</h2><p>刷机工具解压之后就几个文件，一个刷机工具 msmdownloadtoolv4.0.88，还有个<code>guacamole_21_H.04_190416.ops</code>，一看就是固件包，然后就是一些完整性校验用的文件。</p>
+<p>根据经验，这类刷机包里应该是内置了firehouse的，可以考虑两条路：</p>
+<ol>
+<li>  解包，直接把firehose提出来</li>
+<li>  内存dump，在刷机工具尝试给手机传输firehose的时候的时候内存dump，从内存里根据ELF文件头给截出来</li>
+</ol>
+<p>方法2是我最开始尝试的办法，但是dump了几次，发现了好几个ELF，但是都不对，所以尝试方法1 :D 很显然这个包是厂商自己搞得加密，不过网上已经有大佬分析了(早用方法1就少走弯路了)，所以根据 <a target="_blank" rel="noopener" href="https://www.droidwin.com/how-to-extract-oneplus-ops-firmware/">How to Extract/Decrypt OnePlus OPS Firmware</a> 提供的工具，可以成功吧固件包解开，获取到firehose</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># muhe @ muheMacBookAir in ~/Work/play_with_oneplus7pro on git:main x [22:01:37]</span></span><br><span class="line">$ ls -al prog_firehose_*</span><br><span class="line">-rw-r--r--@ 1 muhe  staff  726400 Oct 28 22:46 prog_firehose_ddr.elf</span><br><span class="line">-rw-r--r--@ 1 muhe  staff  726272 Oct 28 22:46 prog_firehose_lite.elf</span><br></pre></td></tr></table></figure>
+
+<p>随便试了一把读分区，是可以的，说明firehose是没问题的 :)</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102220307918.png" alt="image-20221102220307918"></p>
+<p>然后就想着顺手看点别的，研究研究Qual+Android平台的解锁BL是怎么实现的，遂有了后续的过程。</p>
+<h2 id="Unlock探究"><a href="#Unlock探究" class="headerlink" title="Unlock探究"></a>Unlock探究</h2><h3 id="开发者选项–允许解锁"><a href="#开发者选项–允许解锁" class="headerlink" title="开发者选项–允许解锁"></a>开发者选项–允许解锁</h3><blockquote>
+<p>   参考android-9-r1， 因为现在用的一加的系统的是Android9的</p>
+</blockquote>
+<blockquote>
+<p>  没在开发这里允许解锁BL的话，直接fastboot oem unlock是不行的</p>
+</blockquote>
+<ol>
+<li> onOemUnlockConfirmed</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://cs.android.com/android/platform/superproject/+/android-9.0.0_r1:packages/apps/Settings/src/com/android/settings/development/OemUnlockPreferenceController.java;l=132">https://cs.android.com/android/platform/superproject/+/android-9.0.0_r1:packages/apps/Settings/src/com/android/settings/development/OemUnlockPreferenceController.java;l=132</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onOemUnlockConfirmed</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    mOemLockManager.setOemUnlockAllowedByUser(<span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li> setOemUnlockAllowedByUser</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://cs.android.com/android/platform/superproject/+/android-9.0.0_r1:frameworks/base/core/java/android/service/oemlock/OemLockManager.java;drc=b45a2ea782074944f79fc388df20b06e01f265f7;l=114">https://cs.android.com/android/platform/superproject/+/android-9.0.0_r1:frameworks/base/core/java/android/service/oemlock/OemLockManager.java;drc=b45a2ea782074944f79fc388df20b06e01f265f7;l=114</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequiresPermission(android.Manifest.permission.MANAGE_USER_OEM_UNLOCK_STATE)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOemUnlockAllowedByUser</span><span class="params">(<span class="keyword">boolean</span> allowed)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            mService.setOemUnlockAllowedByUser(allowed);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> e.rethrowFromSystemServer();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li> setOemUnlockAllowedByUser</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://cs.android.com/android/platform/superproject/+/android-9.0.0_r1:frameworks/base/services/core/java/com/android/server/oemlock/OemLockService.java;l=156;drc=b45a2ea782074944f79fc388df20b06e01f265f7;bpv=0;bpt=1">https://cs.android.com/android/platform/superproject/+/android-9.0.0_r1:frameworks/base/services/core/java/com/android/server/oemlock/OemLockService.java;l=156;drc=b45a2ea782074944f79fc388df20b06e01f265f7;bpv=0;bpt=1</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The user has the final say so if they allow unlock, then the device allows the bootloader</span></span><br><span class="line"><span class="comment">// to OEM unlock it.</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOemUnlockAllowedByUser</span><span class="params">(<span class="keyword">boolean</span> allowedByUser)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ActivityManager.isUserAMonkey()) &#123;</span><br><span class="line">        <span class="comment">// Prevent a monkey from changing this</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    enforceManageUserOemUnlockPermission();</span><br><span class="line">    enforceUserIsAdmin();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">long</span> token = Binder.clearCallingIdentity();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!isOemUnlockAllowedByAdmin()) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SecurityException(<span class="string">&quot;Admin does not allow OEM unlock&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!mOemLock.isOemUnlockAllowedByCarrier()) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SecurityException(<span class="string">&quot;Carrier does not allow OEM unlock&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        mOemLock.setOemUnlockAllowedByDevice(allowedByUser);</span><br><span class="line">        setPersistentDataBlockOemUnlockAllowedBit(allowedByUser);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        Binder.restoreCallingIdentity(token);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li> setPersistentDataBlockOemUnlockAllowedBit</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://cs.android.com/android/platform/superproject/+/android-9.0.0_r1:frameworks/base/services/core/java/com/android/server/oemlock/OemLockService.java;drc=b45a2ea782074944f79fc388df20b06e01f265f7;bpv=0;bpt=1;l=232">https://cs.android.com/android/platform/superproject/+/android-9.0.0_r1:frameworks/base/services/core/java/com/android/server/oemlock/OemLockService.java;drc=b45a2ea782074944f79fc388df20b06e01f265f7;bpv=0;bpt=1;l=232</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Always synchronize the OemUnlockAllowed bit to the FRP partition, which</span></span><br><span class="line"><span class="comment"> * is used to erase FRP information on a unlockable device.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setPersistentDataBlockOemUnlockAllowedBit</span><span class="params">(<span class="keyword">boolean</span> allowed)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> PersistentDataBlockManagerInternal pdbmi</span><br><span class="line">            = LocalServices.getService(PersistentDataBlockManagerInternal.class);</span><br><span class="line">    <span class="comment">// if mOemLock is PersistentDataBlockLock, then the bit should have already been set</span></span><br><span class="line">    <span class="keyword">if</span> (pdbmi != <span class="keyword">null</span> &amp;&amp; !(mOemLock <span class="keyword">instanceof</span> PersistentDataBlockLock)) &#123;</span><br><span class="line">        Slog.i(TAG, <span class="string">&quot;Update OEM Unlock bit in pst partition to &quot;</span> + allowed);</span><br><span class="line">        pdbmi.forceOemUnlockEnabled(allowed);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li> pdbmi.forceOemUnlockEnabled(allowed);</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://cs.android.com/android/platform/superproject/+/android-9.0.0_r1:frameworks/base/services/core/java/com/android/server/PersistentDataBlockService.java;l=677;bpv=0;bpt=1">https://cs.android.com/android/platform/superproject/+/android-9.0.0_r1:frameworks/base/services/core/java/com/android/server/PersistentDataBlockService.java;l=677;bpv=0;bpt=1</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">forceOemUnlockEnabled</span><span class="params">(<span class="keyword">boolean</span> enabled)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (mLock) &#123;</span><br><span class="line">        doSetOemUnlockEnabledLocked(enabled);</span><br><span class="line">        computeAndWriteDigestLocked();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li> doSetOemUnlockEnabledLocked</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://cs.android.com/android/platform/superproject/+/android-9.0.0_r1:frameworks/base/services/core/java/com/android/server/PersistentDataBlockService.java;drc=b45a2ea782074944f79fc388df20b06e01f265f7;bpv=0;bpt=1;l=421">https://cs.android.com/android/platform/superproject/+/android-9.0.0_r1:frameworks/base/services/core/java/com/android/server/PersistentDataBlockService.java;drc=b45a2ea782074944f79fc388df20b06e01f265f7;bpv=0;bpt=1;l=421</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doSetOemUnlockEnabledLocked</span><span class="params">(<span class="keyword">boolean</span> enabled)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        FileChannel channel = getBlockOutputChannel();</span><br><span class="line">    </span><br><span class="line">        channel.position(getBlockDeviceSize() - <span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">        ByteBuffer data = ByteBuffer.allocate(<span class="number">1</span>);</span><br><span class="line">        data.put(enabled ? (<span class="keyword">byte</span>) <span class="number">1</span> : (<span class="keyword">byte</span>) <span class="number">0</span>);</span><br><span class="line">        data.flip();</span><br><span class="line">        channel.write(data);</span><br><span class="line">        channel.force(<span class="keyword">true</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        Slog.e(TAG, <span class="string">&quot;unable to access persistent partition&quot;</span>, e);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        SystemProperties.set(OEM_UNLOCK_PROP, enabled ? <span class="string">&quot;1&quot;</span> : <span class="string">&quot;0&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>设备文件的某个位置写1，看起来是修改配置了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PERSISTENT_DATA_BLOCK_PROP = <span class="string">&quot;ro.frp.pst&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>在一加上看是 :</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">130</span>|OnePlus7Pro:/ $ getprop ro.frp.pst</span><br><span class="line">/dev/block/bootdevice/by-name/config</span><br></pre></td></tr></table></figure>
+
+<p>那么操作就是写这个分区了，把enbale标志位写进去，尝试进edl把config读出来看看</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\Admin&gt; adb reboot edl</span><br><span class="line">PS C:\Users\Admin&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102220543055.png" alt="image-20221102220543055"></p>
+<p>设置了这个标志位之后：</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102220559725.png" alt="image-20221102220559725"></p>
+<p>发现设备已经是允许unlock操作了(这里的允许是允许你去 <code>fastboot oem unlock</code>)</p>
+<h3 id="fastboot-oem-unlock"><a href="#fastboot-oem-unlock" class="headerlink" title="fastboot oem unlock"></a>fastboot oem unlock</h3><h4 id="extract-LinuxLoader-from-abl"><a href="#extract-LinuxLoader-from-abl" class="headerlink" title="extract LinuxLoader from abl"></a>extract LinuxLoader from abl</h4><ol>
+<li><p>  把<code>UEFI PI Firmware Volume</code>从abl.elf里切出来</p>
+</li>
+<li><p>  uefi-firmware-parser 解析</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">$ uefi-firmware-parser -e test</span><br><span class="line">/usr/local/bin/uefi-firmware-parser:38: SyntaxWarning: &quot;is not&quot; with a literal. Did you mean &quot;!=&quot;?</span><br><span class="line">  if parser.type() is not &#x27;unknown&#x27;:</span><br><span class="line">/usr/local/bin/uefi-firmware-parser:141: SyntaxWarning: &quot;is&quot; with a literal. Did you mean &quot;==&quot;?</span><br><span class="line">  if parser.type() is &#x27;unknown&#x27;:</span><br><span class="line">Firmware Volume: 8c8ce578-8a3d-4f1c-9935-896185c32dd3 attr 0x0003feff, rev 2, cksum 0xd3be, size 0x22000 (139264 bytes)</span><br><span class="line">  Firmware Volume Blocks: (272, 0x200)</span><br><span class="line">  File 0: 9e21fd93-9c72-4c15-8c4b-e77f1db2d792 type 0x0b, attr 0x00, state 0x07, size 0x204c2 (132290 bytes), (firmware volume image)</span><br><span class="line">    Section 0: type 0x02, size 0x204aa (132266 bytes) (Guid Defined section)</span><br><span class="line">      Guid-Defined: ee4e5898-3914-4259-9d6e-dc7bd79403cf offset= 0x18 attrs= 0x1 (PROCESSING_REQUIRED)</span><br><span class="line">        Section 0: type 0x19, size 0x4 (4 bytes) (Raw section)</span><br><span class="line">        Section 1: type 0x17, size 0x6d0c4 (446660 bytes) (Firmware volume image section)</span><br><span class="line">          Firmware Volume: 8c8ce578-8a3d-4f1c-9935-896185c32dd3 attr 0x0003feff, rev 2, cksum 0xa27, size 0x6d0c0 (446656 bytes)</span><br><span class="line">            Firmware Volume Blocks: (6979, 0x40)</span><br><span class="line">            File 0: ffffffff-ffff-ffff-ffff-ffffffffffff type 0xf0, attr 0x00, state 0x07, size 0x2c (44 bytes), (ffs padding)</span><br><span class="line">            File 1: f536d559-459f-48fa-8bbc-43b554ecae8d type 0x09, attr 0x00, state 0x07, size 0x6d038 (446520 bytes), (application)</span><br><span class="line">              Section 0: type 0x15, size 0x1c (28 bytes) (User interface name section)</span><br><span class="line">              Name: LinuxLoader</span><br><span class="line">              Section 1: type 0x10, size 0x6d004 (446468 bytes) (PE32 image section)</span><br><span class="line">Dumping...</span><br><span class="line">Wrote: ./volume-0.fv</span><br><span class="line">Wrote: ./volume-0/filesystem.ffs</span><br><span class="line">Wrote: ./volume-0/file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/file.obj</span><br><span class="line">Wrote: ./volume-0/file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0.guid</span><br><span class="line">Wrote: ./volume-0/file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0/section0.raw</span><br><span class="line">Wrote: ./volume-0/file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0/section1.fv</span><br><span class="line">Wrote: ./volume-0/file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0/section1/volume-ee4e5898-3914-4259-9d6e-dc7bd79403cf.fv</span><br><span class="line">Wrote: ./volume-0/file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0/section1/volume-ee4e5898-3914-4259-9d6e-dc7bd79403cf/filesystem.ffs</span><br><span class="line">Wrote: ./volume-0/file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0/section1/volume-ee4e5898-3914-4259-9d6e-dc7bd79403cf/file-ffffffff-ffff-ffff-ffff-ffffffffffff/file.obj</span><br><span class="line">Wrote: ./volume-0/file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0/section1/volume-ee4e5898-3914-4259-9d6e-dc7bd79403cf/file-f536d559-459f-48fa-8bbc-43b554ecae8d/file.obj</span><br><span class="line">Wrote: ./volume-0/file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0/section1/volume-ee4e5898-3914-4259-9d6e-dc7bd79403cf/file-f536d559-459f-48fa-8bbc-43b554ecae8d/section0.ui</span><br><span class="line">Wrote: ./volume-0/file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0/section1/volume-ee4e5898-3914-4259-9d6e-dc7bd79403cf/file-f536d559-459f-48fa-8bbc-43b554ecae8d/section1.pe</span><br><span class="line">Wrote: ./volume-0/file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0/guided.preamble</span><br><span class="line">Wrote: ./volume-0/file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0/guided.certs</span><br></pre></td></tr></table></figure>
+
+
+
+<p><code>./volume-0/file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0/section1/volume-ee4e5898-3914-4259-9d6e-dc7bd79403cf/file-f536d559-459f-48fa-8bbc-43b554ecae8d/section1.pe </code> 就是我们需要的LinuxLoader</p>
+<h4 id="过程分析"><a href="#过程分析" class="headerlink" title="过程分析"></a>过程分析</h4><blockquote>
+<p>   这算是UEFI的一个应用程序</p>
+</blockquote>
+<p>然后就去找 fastboot oem unlock 对应的处理逻辑 : </p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102221112067.png" alt="image-20221102221112067"></p>
+<p>如果没有在设置-开发者选项中点击允许解锁BL，直接oem unlock是不行的，</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102221127781.png" alt="image-20221102221127781"></p>
+<p>在abl中也找到了对应的报错信息:</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102221145363.png" alt="image-20221102221145363"></p>
+<p>这里没符号不太好理解，要么找edk2的源码做参考辅助分析，要么某个基线代码build一份带符号的abl出来，这里因为没有在设置中 “允许解锁boot loader” 所以可以结合上面AOSP中的代码做辅助分析。</p>
+<p>看看LinuxLoader的源码会更好理解</p>
+<p>这里其实是判断了两个标志位:</p>
+<ul>
+<li>  unlock: 解锁，不验证BL了</li>
+<li>  unlock_critical: 设置后了之后才能刷对应的敏感分区</li>
+</ul>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102221215657.png" alt="image-20221102221215657"></p>
+<p>edk2开源实现中默认的保护分区，这个是可以修改的</p>
+<p>结合LinuxLoader的源码，网上可以找到一些leak的实现，能用于辅助分析</p>
+<p>在入口 <code>LinuxLoaderEntry</code> 开始的时候，会初始化一个Deviceinfo的结构体</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Initialize verified boot &amp; Read Device Info</span></span><br><span class="line">Status = DeviceInfoInit ();</span><br><span class="line"><span class="keyword">if</span> (Status != EFI_SUCCESS) &#123;</span><br><span class="line">  DEBUG ((EFI_D_ERROR, <span class="string">&quot;Initialize the device info failed: %r\\n&quot;</span>, Status));</span><br><span class="line">  <span class="keyword">goto</span> stack_guard_update_default;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结构体如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEVICE_MAGIC <span class="meta-string">&quot;ANDROID-BOOT!&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEVICE_MAGIC_SIZE 13</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_VERSION_LEN 64</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_VB_PARTITIONS 32</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_USER_KEY_SIZE 2048</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">unlock_type</span> &#123;</span></span><br><span class="line">  UNLOCK = <span class="number">0</span>,</span><br><span class="line">  UNLOCK_CRITICAL,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">device_info</span> &#123;</span></span><br><span class="line">  CHAR8 magic[DEVICE_MAGIC_SIZE];</span><br><span class="line">  BOOLEAN is_unlocked;</span><br><span class="line">  BOOLEAN is_unlock_critical;</span><br><span class="line">  BOOLEAN is_charger_screen_enabled;</span><br><span class="line">  CHAR8 bootloader_version[MAX_VERSION_LEN];</span><br><span class="line">  CHAR8 radio_version[MAX_VERSION_LEN];</span><br><span class="line">  BOOLEAN verity_mode; <span class="comment">// TRUE = enforcing, FALSE = logging</span></span><br><span class="line">  UINT32 user_public_key_length;</span><br><span class="line">  CHAR8 user_public_key[MAX_USER_KEY_SIZE];</span><br><span class="line">  UINT64 rollback_index[MAX_VB_PARTITIONS];</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">usb_composition</span> <span class="title">usb_comp</span>;</span></span><br><span class="line">&#125; DeviceInfo;</span><br><span class="line"><span class="function">EFI_STATUS</span></span><br><span class="line"><span class="function"><span class="title">ReadWriteDeviceInfo</span> <span class="params">(<span class="keyword">vb_device_state_op_t</span> Mode, <span class="keyword">void</span> *DevInfo, UINT32 Sz)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  EFI_STATUS Status = EFI_INVALID_PARAMETER;</span><br><span class="line">  QCOM_VERIFIEDBOOT_PROTOCOL *VbIntf;</span><br><span class="line"></span><br><span class="line">  Status = gBS-&gt;LocateProtocol (&amp;gEfiQcomVerifiedBootProtocolGuid, <span class="literal">NULL</span>,</span><br><span class="line">                                (VOID **)&amp;VbIntf);</span><br><span class="line">  <span class="keyword">if</span> (Status != EFI_SUCCESS) &#123;</span><br><span class="line">    DEBUG ((EFI_D_ERROR, <span class="string">&quot;Unable to locate VB protocol: %r\\n&quot;</span>, Status));</span><br><span class="line">    <span class="keyword">return</span> Status;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Status = VbIntf-&gt;VBRwDeviceState (VbIntf, Mode, DevInfo, Sz);</span><br><span class="line">  <span class="keyword">if</span> (Status != EFI_SUCCESS) &#123;</span><br><span class="line">    DEBUG ((EFI_D_ERROR, <span class="string">&quot;VBRwDevice failed with: %r\\n&quot;</span>, Status));</span><br><span class="line">    <span class="keyword">return</span> Status;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> Status;</span><br><span class="line">&#125;</span><br><span class="line"># VerifiedBoot Protocol</span><br><span class="line">gEfiQcomVerifiedBootProtocolGuid =    &#123; <span class="number">0x8e5eff91</span>, <span class="number">0x21b6</span>, <span class="number">0x47d3</span>, &#123; <span class="number">0xaf</span>, <span class="number">0x2b</span>, <span class="number">0xc1</span>, <span class="number">0x5a</span>, <span class="number">0x1</span>, <span class="number">0xe0</span>, <span class="number">0x20</span>, <span class="number">0xec</span> &#125; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以根据这个<code>gEfiQcomVerifiedBootProtocol</code> 去基线中搜到对应的实现，这里就无法展示了。</p>
+<p>结合利用FH读出来的devinfo分区:</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102221321664.png" alt="image-20221102221321664"></p>
+<p>看来</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BOOLEAN is_unlocked;</span><br><span class="line">BOOLEAN is_unlock_critical;</span><br></pre></td></tr></table></figure>
+
+<p>都是0，这个和目前未解锁的状态是符合的。</p>
+<h2 id="FH读写分区"><a href="#FH读写分区" class="headerlink" title="FH读写分区"></a>FH读写分区</h2><p>这里我本来想用QFIL的，但是一加的firehose显然是自己改过的，只能读，写的话有个认证token，所以考虑了开源实现 <a target="_blank" rel="noopener" href="https://github.com/bkerler/edl">edl</a>，这个工具我发现对xiaomi和oneplus有支持，</p>
+<p>就在我想着能一把梭实现 <code>r/w</code>的时候，悲剧发生了 :</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># jiazhenjie @ mbp in ~/tools/edl on git:01f84bf o [16:54:13] C:1</span></span><br><span class="line">$ python3 edl.py  w devinfo  /Users/jiazhenjie/Downloads/devinfo.bin  --loader=/Users/jiazhenjie/Downloads/prog_firehose_ddr.elf --memory=UFS --lun=4</span><br><span class="line">Qualcomm Sahara / Firehose Client V3.52 (c) B.Kerler 2018-2021.</span><br><span class="line">main - Using loader /Users/jiazhenjie/Downloads/prog_firehose_ddr.elf ...</span><br><span class="line">main - Waiting <span class="keyword">for</span> the device</span><br><span class="line">main - Device detected :)</span><br><span class="line">main - Mode detected: firehose</span><br><span class="line">firehose - Chip serial num: 2360036966 (0x8cab4e66)</span><br><span class="line">firehose - Supported Functions: program,<span class="built_in">read</span>,nop,patch,configure,setbootablestoragedrive,erase,power,firmwarewrite,getstorageinfo,benchmark,emmc,ufs,fixgpt,getsha256digest,gethwversion,getrfversion,getprjversion,setprojmodel,sha256init,sha256final</span><br><span class="line">firehose -</span><br><span class="line">firehose</span><br><span class="line">firehose - [LIB]: Couldn<span class="string">&#x27;t detect MaxPayloadSizeFromTargetinBytes</span></span><br><span class="line"><span class="string">firehose</span></span><br><span class="line"><span class="string">firehose - [LIB]: Couldn&#x27;</span>t detect TargetName</span><br><span class="line">firehose - TargetName=Unknown</span><br><span class="line">firehose - MemoryName=UFS</span><br><span class="line">firehose - Version=1</span><br><span class="line">firehose_client - Supported <span class="built_in">functions</span>:</span><br><span class="line">-----------------</span><br><span class="line">program,<span class="built_in">read</span>,nop,patch,configure,setbootablestoragedrive,erase,power,firmwarewrite,getstorageinfo,benchmark,emmc,ufs,fixgpt,getsha256digest,gethwversion,getrfversion,getprjversion,setprojmodel,sha256init,sha256final</span><br><span class="line">firehose -</span><br><span class="line">Writing to physical partition 4, sector 962718, sectors 1</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;/Users/jiazhenjie/tools/edl/edl.py&quot;</span>, line 358, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    base.run()</span><br><span class="line">  File <span class="string">&quot;/Users/jiazhenjie/tools/edl/edl.py&quot;</span>, line 340, <span class="keyword">in</span> run</span><br><span class="line">    fh.handle_firehose(cmd, options)</span><br><span class="line">  File <span class="string">&quot;/Users/jiazhenjie/tools/edl/edl/Library/firehose_client.py&quot;</span>, line 651, <span class="keyword">in</span> handle_firehose</span><br><span class="line">    <span class="keyword">if</span> self.firehose.cmd_program(lun, startsector, filename):</span><br><span class="line">  File <span class="string">&quot;/Users/jiazhenjie/tools/edl/edl/Library/firehose.py&quot;</span>, line 438, <span class="keyword">in</span> cmd_program</span><br><span class="line">    data += self.modules.addprogram()</span><br><span class="line">  File <span class="string">&quot;/Users/jiazhenjie/tools/edl/edl/Library/Modules/init.py&quot;</span>, line 64, <span class="keyword">in</span> addprogram</span><br><span class="line">    <span class="built_in">return</span> self.ops.addprogram()</span><br><span class="line">  File <span class="string">&quot;/Users/jiazhenjie/tools/edl/edl/Library/Modules/oneplus.py&quot;</span>, line 233, <span class="keyword">in</span> addprogram</span><br><span class="line">    pk, token = self.ops.generatetoken(True)</span><br><span class="line">AttributeError: <span class="string">&#x27;NoneType&#x27;</span> object has no attribute <span class="string">&#x27;generatetoken&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>这个需要逆向刷机工具来分析了</p>
+<h2 id="逆向MSM-Download"><a href="#逆向MSM-Download" class="headerlink" title="逆向MSM Download"></a>逆向MSM Download</h2><blockquote>
+<p>  喜闻乐见的逆向环节</p>
+</blockquote>
+<h3 id="USB抓包"><a href="#USB抓包" class="headerlink" title="USB抓包"></a>USB抓包</h3><p>因为每次都会发token，所以想着抓个包，如果固定，那就万事大吉，结果发现不固定</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">data</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">setprojmodel</span> <span class="attr">token</span>=<span class="string">&quot;C5DB7CFB89D7A9DBB005388A52F8622FC20BDDD89F5CAD8ED42DEA046DE93F079F47021C7C2A8033300F437881B8FA799FE634A0B7876819DC612799A7B2822A4674B4312FC04FFB20CFE4F40CB487FBD8FDA78A9492E8B1AE0FEEBB0A88802497336B98A1DE35B0691AF563F2DED6837333AAAFE62AB576A73667AFA61E874FC0380223C9CFE3360ED9775014F0E921BE2C101DD979132412CB4E196A1CD05BEDFA19B13419F3DC722ECBA7CB54A9EE67930DE7EADCB0A31E272415A5DBF9948C2EB656D9925D35CE66B60ADFB7F66249319F2ABA9050D0C8019090214D595F59D23EEB2D6C65E8218B66134393A350EFAE4DC3030A6B4F7FC7AC576D07FFF2&quot;</span> <span class="attr">pk</span>=<span class="string">&quot;Yc9vlwu65U6PvhYO&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">data</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>这两个值并不是固定的，应该是固定算法+一些随机数算出来的</p>
+<p>核心逻辑还是在计算这两个值，算是在刷写分区之前的验证工作，根据edl中的代码可知大概的逻辑，辅助逆向就方便多了</p>
+<h3 id="token-amp-pk-逆向结果"><a href="#token-amp-pk-逆向结果" class="headerlink" title="token &amp; pk 逆向结果"></a>token &amp; pk 逆向结果</h3><blockquote>
+<p>  先把结论放前面</p>
+</blockquote>
+<ul>
+<li>  prodkey固定 b2fad511325185e5</li>
+<li>  random_postfix 是随机字符串 // 这个可以写成固定值，反正是刷机工具生成的</li>
+<li>  时间戳 随机</li>
+<li>  pk 随机</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">head = c4b95538c57df231 </span><br><span class="line">tail = 5b0217457e49381b </span><br><span class="line">cf = <span class="number">0</span></span><br><span class="line">soc_sn = <span class="number">2360036966</span></span><br><span class="line">ModelVerifyPrjName = <span class="number">18821</span></span><br><span class="line">Version = guacamole_21_H<span class="number">.04_190416</span></span><br><span class="line">prodkey = b2fad511325185e5</span><br><span class="line">random_postfix = 随机的<span class="number">16</span>字节字符串</span><br><span class="line"></span><br><span class="line">ModelVerifyHashToken = sha256(prodkey + ModelVerifyPrjName + random_postfix)</span><br><span class="line">secret = sha256(head + ModelVerifyPrjName + cf + soc_sn + Version + 时间戳 + ModelVerifyHashToken + tail)</span><br><span class="line">items = [ModelVerifyPrjName, random_postfix, ModelVerifyHashToken, Version, cf, soc_sn, timestamp, secret]</span><br><span class="line"></span><br><span class="line">pk = 随机<span class="number">16</span>字节字符串 </span><br><span class="line">aeskey = <span class="string">b&quot;\x10\x45\x63\x87\xE3\x7E\x23\x71&quot;</span> + <span class="built_in">bytes</span>(pk, <span class="string">&#x27;utf-8&#x27;</span>) + <span class="string">b&quot;\xA2\xD4\xA0\x74\x0f\xD3\x28\x96&quot;</span></span><br><span class="line">aesiv = <span class="string">b&quot;\x9D\x61\x4A\x1E\xAC\x81\xC9\xB2\xD3\x76\xD7\x49\x31\x03\x63\x79&quot;</span></span><br><span class="line">pdata = <span class="string">&quot;FEF0FFDA0CEF3E6C50E187E4A37D1B7DB860877A5F0ABFEC491DAC8DD5FD7F77D5D2859ADCDABED5B3018929CA10A00E786A675CD19184BB9BF2EF66A19AC234E4FD7EDFA8EB19E039B0FDD7BE0D3BC8DEA2453A6058D5370C923C9C4E632F3DEB1DA9F66F7BEA5B6D050B88C202BD5EEAA654DBF7AF410A14F5CB7DD481AEFAA6175685D565005D21CBBC2D62F860143FFE971F2845B2BD93A03ABDF6EE61F93E35740D8E2A09F89EB702D7E604914F0EDCE86F754FB994C1F82A20A094C8814EAD18FA6F24396A62A9C83D5412A53D740E662B7A9699ACA4352773B2F79374FF764EBC16143578481C0AD01135AE4BBA477C056320F690F4427E0635E91CEE&quot;</span></span><br><span class="line"></span><br><span class="line">token = <span class="built_in">hex</span>(aes_cbc(items, key, iv))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>为什么edl直接刷会失败呢?</p>
+<ol>
+<li>  没获取到prjid(18821)，所以我在patch里直接硬编码了</li>
+<li>  prodkey不对</li>
+</ol>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">     def getprodkey(self, projid):</span><br><span class="line"><span class="deletion">-        if projid in [&quot;18825&quot;, &quot;18801&quot;]:  # key_guacamoles, fajiita</span></span><br><span class="line"><span class="addition">+        if projid in [&quot;18825&quot;, &quot;18801&quot;, &quot;18821&quot;]:  # key_guacamoles, fajiita, guacamole</span></span><br><span class="line">             prodkey = &quot;b2fad511325185e5&quot;</span><br><span class="line">         else:  # key_op7t/op8/N10</span><br><span class="line">             prodkey = &quot;7016147d58e8c038&quot;</span><br><span class="line"><span class="meta">@@ -164,7 +165,6 @@</span> class oneplus(metaclass=LogBase):</span><br><span class="line">             rand = int(random.randint(0, 0x100))</span><br><span class="line">             nr = (rand &amp; 0xFF) % 0x3E</span><br><span class="line">             pk += chr(val[nr])</span><br></pre></td></tr></table></figure>
+
+
+
+<p>其他地方这个工具都是对的，逆向过程的笔记没整理，也比较简单，没壳没混淆的，找到关键位置慢慢看就行了。</p>
+<h2 id="尝试修改分区实现unlock"><a href="#尝试修改分区实现unlock" class="headerlink" title="尝试修改分区实现unlock"></a>尝试修改分区实现unlock</h2><blockquote>
+<p>  想模拟一下把ufs吹下来修改后焊回去的操作</p>
+</blockquote>
+<p>修改了edl之后发现是可以正常写分区的</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102222117218.png" alt="image-20221102222117218"></p>
+<p>修改devinfo之后刷回去，发现还是locked，看来只改这里是不行的， GG~</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221102222156841.png" alt="image-20221102222156841"></p>
+<h2 id="VerifiedBoot-Protocol-分析"><a href="#VerifiedBoot-Protocol-分析" class="headerlink" title="VerifiedBoot Protocol 分析"></a>VerifiedBoot Protocol 分析</h2><blockquote>
+<p>  abl分析的时候提到了这个protocol，所以想搞清楚为什么失败就要看看这里</p>
+</blockquote>
+<p>根据<code>boot_images/QcomPkg/Drivers/VerifiedBootDxe/VerifiedBootDxe.inf</code></p>
+<p>可知对应的实现在同目录的 <code>VerifiedBootDxe.c</code> 中</p>
+<p>这里注册了这个protocol</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">EFI_STATUS</span></span><br><span class="line"><span class="function">EFIAPI</span></span><br><span class="line"><span class="function"><span class="title">VerifiedBootDxeEntryPoint</span><span class="params">(IN EFI_HANDLE ImageHandle,</span></span></span><br><span class="line"><span class="params"><span class="function">                          IN EFI_SYSTEM_TABLE *SystemTable)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  EFI_STATUS Status;</span><br><span class="line">  EFI_HANDLE Handle = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">  Status = gBS-&gt;InstallMultipleProtocolInterfaces(</span><br><span class="line">      &amp;Handle, &amp;gEfiQcomVerifiedBootProtocolGuid,</span><br><span class="line">      (VOID **)&amp;QCOMVerifiedBootProtocol, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> Status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要看的方法是 <code>VBRwDeviceState</code> 对应的是 <code>QCOM_VB_RWDeviceState</code>，这个代码很长就不贴了，只放关键的一部分:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* We use devinfo partition when the device is not secure */</span></span><br><span class="line"> AsciiStrnCpy((CHAR8 *)img_name, <span class="string">&quot;devinfo&quot;</span>, AsciiStrLen(<span class="string">&quot;devinfo&quot;</span>));</span><br><span class="line"> <span class="keyword">if</span> (convert_char8_to_char16(img_name, img_label, AsciiStrLen(<span class="string">&quot;devinfo&quot;</span>)) != EFI_SUCCESS) &#123;</span><br><span class="line">   status = RETURN_INVALID_PARAMETER;</span><br><span class="line">   <span class="keyword">goto</span> <span class="built_in">exit</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>显然，只有没烧efuse的时候才会用devinfo作为存放是否unlock的标志，这一点也符合预期，至此这次探索基本上就结束了。</p>
+<h2 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h2><p>我也把firehose和对edl的patch放到了<a target="_blank" rel="noopener" href="https://github.com/o0xmuhe/play_with_oneplus7pro">github</a>，过程也确实好玩:) 不过还是有不少没研究到的地方，比如他的verifyboot实现是否安全啥的 -。-</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://www.droidwin.com/how-to-extract-oneplus-ops-firmware/">https://www.droidwin.com/how-to-extract-oneplus-ops-firmware/</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/427390226">https://zhuanlan.zhihu.com/p/427390226</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/theopolis/uefi-firmware-parser">https://github.com/theopolis/uefi-firmware-parser</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.omitol.com/2017/09/30/Bypass-QCOM-Secure-Boot">https://blog.omitol.com/2017/09/30/Bypass-QCOM-Secure-Boot</a></p>
+<p><a target="_blank" rel="noopener" href="https://tjtech.me/analyze-oem-unlocking-under-android.html">https://tjtech.me/analyze-oem-unlocking-under-android.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.oneplusbbs.com/forum.php?mod=viewthread&amp;tid=4730052">https://www.oneplusbbs.com/forum.php?mod=viewthread&amp;tid=4730052</a></p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/categories/">Categories</a></li>
+         
+          <li><a href="/tags/">Tags</a></li>
+         
+          <li><a href="/search">Search</a></li>
+         
+          <li><a href="/atom.xml">RSS</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Unpack-guacamole-21-H-04-190416-ops"><span class="toc-number">2.</span> <span class="toc-text">Unpack guacamole_21_H.04_190416.ops</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Unlock%E6%8E%A2%E7%A9%B6"><span class="toc-number">3.</span> <span class="toc-text">Unlock探究</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E8%80%85%E9%80%89%E9%A1%B9%E2%80%93%E5%85%81%E8%AE%B8%E8%A7%A3%E9%94%81"><span class="toc-number">3.1.</span> <span class="toc-text">开发者选项–允许解锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fastboot-oem-unlock"><span class="toc-number">3.2.</span> <span class="toc-text">fastboot oem unlock</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#extract-LinuxLoader-from-abl"><span class="toc-number">3.2.1.</span> <span class="toc-text">extract LinuxLoader from abl</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90"><span class="toc-number">3.2.2.</span> <span class="toc-text">过程分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FH%E8%AF%BB%E5%86%99%E5%88%86%E5%8C%BA"><span class="toc-number">4.</span> <span class="toc-text">FH读写分区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%86%E5%90%91MSM-Download"><span class="toc-number">5.</span> <span class="toc-text">逆向MSM Download</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#USB%E6%8A%93%E5%8C%85"><span class="toc-number">5.1.</span> <span class="toc-text">USB抓包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#token-amp-pk-%E9%80%86%E5%90%91%E7%BB%93%E6%9E%9C"><span class="toc-number">5.2.</span> <span class="toc-text">token &amp; pk 逆向结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%9D%E8%AF%95%E4%BF%AE%E6%94%B9%E5%88%86%E5%8C%BA%E5%AE%9E%E7%8E%B0unlock"><span class="toc-number">6.</span> <span class="toc-text">尝试修改分区实现unlock</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VerifiedBoot-Protocol-%E5%88%86%E6%9E%90"><span class="toc-number">7.</span> <span class="toc-text">VerifiedBoot Protocol 分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9D%9F"><span class="toc-number">8.</span> <span class="toc-text">结束</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">9.</span> <span class="toc-text">参考</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&text=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&title=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&is_video=false&description=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Qual+Android方案Unlock学习 以Oneplus7Pro为例&body=Check out this article: https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&title=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&title=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&title=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&title=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&name=Qual+Android方案Unlock学习 以Oneplus7Pro为例&description=&lt;h2 id=&#34;背景&#34;&gt;&lt;a href=&#34;#背景&#34; class=&#34;headerlink&#34; title=&#34;背景&#34;&gt;&lt;/a&gt;背景&lt;/h2&gt;&lt;p&gt;  严格意义上来说本文应该叫做: &amp;lt;&amp;lt;我本来只是想救个砖，但是缺逆向了刷机工具尝试搞清楚&lt;code&gt;android unlock&lt;/code&gt;的原理&amp;gt;&amp;gt; :D &lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/&t=Qual+Android方案Unlock学习 以Oneplus7Pro为例"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2015-2022
+    muhe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search">Search</a></li><!--
+     --><!--
+       --><li><a href="/atom.xml">RSS</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-170118462-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-170118462-1');
+    </script>
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'o0xmuhe';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+
+</body>
+</html>
