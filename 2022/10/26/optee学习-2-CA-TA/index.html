@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="o0xmuhe&#39;s blog">
 <meta property="og:description" content="环境   ubuntu22.04    ADS + optee-fvp  调用流程梳理  这里直接从optee-examples中最简单的hello world入手来看的，从宏观上来看整个调用流程是 : 1CA --&gt; optee client --&gt; tee driver --&gt; ATF --&gt;  TEE --&gt; TA">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/%E6%9C%AA%E5%91%BD%E5%90%8D%E7%BB%98%E5%9B%BE.jpg">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/optee_ca_ta.png">
 <meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221112203936455.png">
 <meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221112204128044.png">
 <meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221112204311537.png">
@@ -28,12 +28,12 @@
 <meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221112205228983.png">
 <meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221112205413157.png">
 <meta property="article:published_time" content="2022-10-26T15:33:52.000Z">
-<meta property="article:modified_time" content="2022-11-12T14:32:46.382Z">
+<meta property="article:modified_time" content="2022-11-13T03:24:24.793Z">
 <meta property="article:author" content="muhe">
 <meta property="article:tag" content="debug">
 <meta property="article:tag" content="optee">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/%E6%9C%AA%E5%91%BD%E5%90%8D%E7%BB%98%E5%9B%BE.jpg">
+<meta name="twitter:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/optee_ca_ta.png">
     
     
       
@@ -188,8 +188,8 @@
 
 <span id="more"></span>
 
-<p>根据个人的理解画了个省流版本的图:</p>
-<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/%E6%9C%AA%E5%91%BD%E5%90%8D%E7%BB%98%E5%9B%BE.jpg" alt="未命名绘图"></p>
+<p>根据个人的理解画了个省流版本的图，省略了部分调用</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/optee_ca_ta.png" alt="optee_ca_ta"></p>
 <h3 id="CA-amp-TA-的工作流程"><a href="#CA-amp-TA-的工作流程" class="headerlink" title="CA &amp; TA 的工作流程"></a>CA &amp; TA 的工作流程</h3><ul>
 <li>  CA</li>
 </ul>

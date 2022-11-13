@@ -6458,8 +6458,8 @@ osrloaderv30</code></pre>
 
 <span id="more"></span>
 
-<p>根据个人的理解画了个省流版本的图:</p>
-<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/%E6%9C%AA%E5%91%BD%E5%90%8D%E7%BB%98%E5%9B%BE.jpg" alt="未命名绘图"></p>
+<p>根据个人的理解画了个省流版本的图，省略了部分调用</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/optee_ca_ta.png" alt="optee_ca_ta"></p>
 <h3 id="CA-amp-TA-的工作流程"><a href="#CA-amp-TA-的工作流程" class="headerlink" title="CA &amp; TA 的工作流程"></a>CA &amp; TA 的工作流程</h3><ul>
 <li>  CA</li>
 </ul>
