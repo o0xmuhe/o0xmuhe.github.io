@@ -14,7 +14,7 @@
 <meta property="og:description" content="0x00 : 需求主要是Ghidra这个东西，每次启动都要命令行 GhidraRun，太麻烦了，所以就想把这个启动脚本封装成一个macOS的APP，方便使用。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-08-07T04:46:24.000Z">
-<meta property="article:modified_time" content="2020-08-07T04:56:04.000Z">
+<meta property="article:modified_time" content="2022-11-13T07:57:45.021Z">
 <meta property="article:author" content="muhe">
 <meta property="article:tag" content="tools">
 <meta name="twitter:card" content="summary">
@@ -147,7 +147,7 @@
       
     <div class="article-category">
         <i class="fas fa-archive"></i>
-        <a class="category-link" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">环境配置</a>
+        <a class="category-link" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E8%B8%A9%E5%9D%91/">环境配置踩坑</a>
     </div>
 
 
@@ -164,12 +164,12 @@
 
   <div class="content" itemprop="articleBody">
     <h2 id="0x00-需求"><a href="#0x00-需求" class="headerlink" title="0x00 : 需求"></a>0x00 : 需求</h2><p>主要是Ghidra这个东西，每次启动都要命令行 <code>GhidraRun</code>，太麻烦了，所以就想把这个启动脚本封装成一个macOS的APP，方便使用。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 
 
 <h2 id="0x01-过程"><a href="#0x01-过程" class="headerlink" title="0x01 : 过程"></a>0x01 : 过程</h2><p>直接使用了 <a target="_blank" rel="noopener" href="https://gist.github.com/mathiasbynens/674099">别人写好的appfiy.sh</a> ，我用的是原作者的，链接里的是二次开发的，其实本质是一样的。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"></span><br><span class="line">APPNAME=<span class="variable">$&#123;2:-$(basename &quot;<span class="variable">$&#123;1&#125;</span>&quot; &#x27;.sh&#x27;)&#125;</span>;</span><br><span class="line">DIR=<span class="string">&quot;<span class="variable">$&#123;APPNAME&#125;</span>.app/Contents/MacOS&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ -a <span class="string">&quot;<span class="variable">$&#123;APPNAME&#125;</span>.app&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$&#123;PWD&#125;</span>/<span class="variable">$&#123;APPNAME&#125;</span>.app already exists :(&quot;</span>;</span><br><span class="line">	<span class="built_in">exit</span> 1;</span><br><span class="line"><span class="keyword">fi</span>;</span><br><span class="line"></span><br><span class="line">mkdir -p <span class="string">&quot;<span class="variable">$&#123;DIR&#125;</span>&quot;</span>;</span><br><span class="line">cp <span class="string">&quot;<span class="variable">$&#123;1&#125;</span>&quot;</span> <span class="string">&quot;<span class="variable">$&#123;DIR&#125;</span>/<span class="variable">$&#123;APPNAME&#125;</span>&quot;</span>;</span><br><span class="line">chmod +x <span class="string">&quot;<span class="variable">$&#123;DIR&#125;</span>/<span class="variable">$&#123;APPNAME&#125;</span>&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$&#123;PWD&#125;</span>/<span class="variable">$APPNAME</span>.app&quot;</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"></span><br><span class="line">APPNAME=<span class="variable">$&#123;2:-$(basename &quot;<span class="variable">$&#123;1&#125;</span>&quot; &#x27;.sh&#x27;)&#125;</span>;</span><br><span class="line">DIR=<span class="string">&quot;<span class="variable">$&#123;APPNAME&#125;</span>.app/Contents/MacOS&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ -a <span class="string">&quot;<span class="variable">$&#123;APPNAME&#125;</span>.app&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">4<span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$&#123;PWD&#125;</span>/<span class="variable">$&#123;APPNAME&#125;</span>.app already exists :(&quot;</span>;</span><br><span class="line">4<span class="built_in">exit</span> 1;</span><br><span class="line"><span class="keyword">fi</span>;</span><br><span class="line"></span><br><span class="line">mkdir -p <span class="string">&quot;<span class="variable">$&#123;DIR&#125;</span>&quot;</span>;</span><br><span class="line">cp <span class="string">&quot;<span class="variable">$&#123;1&#125;</span>&quot;</span> <span class="string">&quot;<span class="variable">$&#123;DIR&#125;</span>/<span class="variable">$&#123;APPNAME&#125;</span>&quot;</span>;</span><br><span class="line">chmod +x <span class="string">&quot;<span class="variable">$&#123;DIR&#125;</span>/<span class="variable">$&#123;APPNAME&#125;</span>&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$&#123;PWD&#125;</span>/<span class="variable">$APPNAME</span>.app&quot;</span>;</span><br></pre></td></tr></table></figure>
 
 
 

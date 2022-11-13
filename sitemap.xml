@@ -2,7 +2,56 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://o0xmuhe.github.io/2022/10/26/optee%E5%AD%A6%E4%B9%A0-2-CA-TA/</loc>
+    <loc>https://o0xmuhe.github.io/2020/08/27/exploit-for-crbug1086890/</loc>
+    
+    <lastmod>2022-11-13</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/2021/12/08/Android-Native-Fuzz-Demo/</loc>
+    
+    <lastmod>2022-11-13</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/</loc>
+    
+    <lastmod>2022-11-13</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/2021/05/26/Chrome-headless-exploit/</loc>
+    
+    <lastmod>2022-11-13</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/2021/10/04/Expand-Chrome-From-client-to-server/</loc>
+    
+    <lastmod>2022-11-13</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/2022/09/02/HW-OTA-unpack/</loc>
+    
+    <lastmod>2022-11-13</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/2022/03/05/MTK-Preloader-%E8%B8%A9%E5%9D%91/</loc>
+    
+    <lastmod>2022-11-13</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/2022/09/12/Paper-read-The-Convergence-of-Source-Code-and-Binary-Vulnerability-Discovery-%E2%80%93-A-Case-Study/</loc>
     
     <lastmod>2022-11-13</lastmod>
     
@@ -11,28 +60,49 @@
   <url>
     <loc>https://o0xmuhe.github.io/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/</loc>
     
-    <lastmod>2022-11-03</lastmod>
+    <lastmod>2022-11-13</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/2021/07/24/iOS-RE-4-beginners-3-fishhook/</loc>
+    
+    <lastmod>2022-11-13</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/2020/08/07/make-script-to-macOS-App/</loc>
+    
+    <lastmod>2022-11-13</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/2022/10/26/optee%E5%AD%A6%E4%B9%A0-2-CA-TA/</loc>
+    
+    <lastmod>2022-11-13</lastmod>
     
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/2022/08/24/optee%E5%AD%A6%E4%B9%A0/</loc>
     
-    <lastmod>2022-10-26</lastmod>
+    <lastmod>2022-11-13</lastmod>
     
   </url>
   
   <url>
-    <loc>https://o0xmuhe.github.io/2022/09/12/Paper-read-The-Convergence-of-Source-Code-and-Binary-Vulnerability-Discovery-%E2%80%93-A-Case-Study/</loc>
+    <loc>https://o0xmuhe.github.io/2022/07/24/weggli-debug/</loc>
     
-    <lastmod>2022-09-12</lastmod>
+    <lastmod>2022-11-13</lastmod>
     
   </url>
   
   <url>
-    <loc>https://o0xmuhe.github.io/2022/09/02/HW-OTA-unpack/</loc>
+    <loc>https://o0xmuhe.github.io/2021/12/15/%E5%B0%86Android-iOS%E4%B8%8A%E7%9A%84%E6%B5%81%E9%87%8F%E8%BD%AC%E5%8F%91%E5%88%B0Wireshark%E5%88%86%E6%9E%90/</loc>
     
-    <lastmod>2022-09-02</lastmod>
+    <lastmod>2022-11-13</lastmod>
     
   </url>
   
@@ -40,48 +110,6 @@
     <loc>https://o0xmuhe.github.io/about/index.html</loc>
     
     <lastmod>2022-09-02</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://o0xmuhe.github.io/2022/07/24/weggli-debug/</loc>
-    
-    <lastmod>2022-08-24</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://o0xmuhe.github.io/2021/10/04/Expand-Chrome-From-client-to-server/</loc>
-    
-    <lastmod>2022-08-24</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://o0xmuhe.github.io/2021/12/08/Android-Native-Fuzz-Demo/</loc>
-    
-    <lastmod>2022-08-24</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://o0xmuhe.github.io/2022/03/05/MTK-Preloader-%E8%B8%A9%E5%9D%91/</loc>
-    
-    <lastmod>2022-03-05</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://o0xmuhe.github.io/2021/12/15/%E5%B0%86Android-iOS%E4%B8%8A%E7%9A%84%E6%B5%81%E9%87%8F%E8%BD%AC%E5%8F%91%E5%88%B0Wireshark%E5%88%86%E6%9E%90/</loc>
-    
-    <lastmod>2021-12-15</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://o0xmuhe.github.io/2021/10/17/ByteCTF2021-chatroom-writeup/</loc>
-    
-    <lastmod>2021-10-18</lastmod>
     
   </url>
   
@@ -128,13 +156,6 @@
   </url>
   
   <url>
-    <loc>https://o0xmuhe.github.io/2021/07/24/iOS-RE-4-beginners-3-fishhook/</loc>
-    
-    <lastmod>2021-07-23</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://o0xmuhe.github.io/2021/07/14/iOS-RE-4-beginners-2/</loc>
     
     <lastmod>2021-07-20</lastmod>
@@ -145,13 +166,6 @@
     <loc>https://o0xmuhe.github.io/2021/07/11/ql-query-for-CVE-2021-30660-XNU-Kernel-Memory-Disclosure/</loc>
     
     <lastmod>2021-07-11</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://o0xmuhe.github.io/2021/05/26/Chrome-headless-exploit/</loc>
-    
-    <lastmod>2021-06-23</lastmod>
     
   </url>
   
@@ -341,20 +355,6 @@
     <loc>https://o0xmuhe.github.io/frinds/index.html</loc>
     
     <lastmod>2020-11-03</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://o0xmuhe.github.io/2020/08/27/exploit-for-crbug1086890/</loc>
-    
-    <lastmod>2020-08-27</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://o0xmuhe.github.io/2020/08/07/make-script-to-macOS-App/</loc>
-    
-    <lastmod>2020-08-07</lastmod>
     
   </url>
   
@@ -1686,13 +1686,6 @@
   </url>
   
   <url>
-    <loc>https://o0xmuhe.github.io/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/</loc>
-    <lastmod>2022-11-13</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://o0xmuhe.github.io/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</loc>
     <lastmod>2022-11-13</lastmod>
     <changefreq>daily</changefreq>
@@ -1715,6 +1708,27 @@
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/XNU/</loc>
+    <lastmod>2022-11-13</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/categories/Browser/</loc>
+    <lastmod>2022-11-13</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/categories/Android/</loc>
+    <lastmod>2022-11-13</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/categories/optee/</loc>
     <lastmod>2022-11-13</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
