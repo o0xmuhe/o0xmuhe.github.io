@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221112205228983.png">
 <meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221112205413157.png">
 <meta property="article:published_time" content="2022-10-26T15:33:52.000Z">
-<meta property="article:modified_time" content="2022-11-13T03:24:24.793Z">
+<meta property="article:modified_time" content="2022-11-13T03:27:58.058Z">
 <meta property="article:author" content="muhe">
 <meta property="article:tag" content="debug">
 <meta property="article:tag" content="optee">
@@ -203,7 +203,7 @@
 <ul>
 <li>  CA 和 TA的对应关系</li>
 </ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">TEEC_OpenSession    -&gt;   TA_CreateEntryPoint</span><br><span class="line">                                               TA_OpenSessionEntryPoint</span><br><span class="line"></span><br><span class="line">TEEC_InvokeCommand  -&gt;   TA_InvokeCommandEntryPoint</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">TEEC_CloseSession   -&gt;   TA_CloseSessionEntryPoint</span><br><span class="line">                                               TA_DestroyEntryPoint</span><br><span class="line">                                                                        </span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">TEEC_OpenSession    -&gt;   TA_CreateEntryPoint</span><br><span class="line">                         TA_OpenSessionEntryPoint</span><br><span class="line"></span><br><span class="line">TEEC_InvokeCommand  -&gt;   TA_InvokeCommandEntryPoint</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">TEEC_CloseSession   -&gt;   TA_CloseSessionEntryPoint</span><br><span class="line">                         TA_DestroyEntryPoint</span><br><span class="line">                                                                        </span><br></pre></td></tr></table></figure>
 
 
 
