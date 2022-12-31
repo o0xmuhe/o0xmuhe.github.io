@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://o0xmuhe.github.io/2022/11/23/%E8%AE%AE%E9%A2%98%E8%A7%A3%E8%AF%BB-MOSEC2022-MediAttack-break-the-boot-chain-of-MediaTek-SoC/</loc>
+    
+    <lastmod>2022-12-31</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/</loc>
     
     <lastmod>2022-12-31</lastmod>
@@ -1607,6 +1614,13 @@
   </url>
   
   <url>
+    <loc>https://o0xmuhe.github.io/tags/BootROM/</loc>
+    <lastmod>2022-12-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://o0xmuhe.github.io/tags/Bootloader/</loc>
     <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
@@ -1750,6 +1764,13 @@
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/optee/</loc>
+    <lastmod>2022-12-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/categories/Hackcon/</loc>
     <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>

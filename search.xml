@@ -6621,6 +6621,269 @@ osrloaderv30</code></pre>
       </tags>
   </entry>
   <entry>
+    <title>议题学习:MOSEC2022 MediAttack - break the boot chain of MediaTek SoC</title>
+    <url>/2022/11/23/%E8%AE%AE%E9%A2%98%E8%A7%A3%E8%AF%BB-MOSEC2022-MediAttack-break-the-boot-chain-of-MediaTek-SoC/</url>
+    <content><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>  前段时间MOSEC上盘古关于MTK BootROM Exploit的议题非常精彩，所以我画了一些时间对议题内容进行分析，并结合手边能找到的一些材料做了逆向分析，也感谢同事<a href="https://twitter.com/CossackWang">@C0ss4ck</a>在会场拍下了完整的Slide :) </p>
+<span id="more"></span>
+
+<p>配合MOSEC官方的微博食用更佳 :)</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221130141500497.png" alt="image-20221130141500497"></p>
+<h2 id="议题学习"><a href="#议题学习" class="headerlink" title="议题学习"></a>议题学习</h2><h3 id="MTK-Based-Boot-flow"><a href="#MTK-Based-Boot-flow" class="headerlink" title="MTK Based Boot flow"></a>MTK Based Boot flow</h3><p>在进行研究之前需要搞明白MTK方案的设备的冷启动流程，议题中提供的图简洁明了：</p>
+<table>
+<thead>
+<tr>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221123141303601.png" alt="image-20221123141303601"></th>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/mtk_boot.png" alt="boot_flow"></th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p>  按照ARM的标准流程preloader应该是bl2</p>
+</blockquote>
+<p>因为后面使用了preloader的洞把BROM dump出来了，所以我判断MTK的preloader应该是和BROM跑在同一个Exception Level的，即EL3，后来也找了一些资料确认了这个说法，<strong>但是不确定现在最新的SoC还是不是这样的。</strong></p>
+<h3 id="Preloader部分"><a href="#Preloader部分" class="headerlink" title="Preloader部分"></a>Preloader部分</h3><p>  出漏洞的模块在preloader的USB Download模式，MTK自定义了一些命令，在这个模式下USB handshake之后可以发送DA，然后加载DA，随后就可以和DA通信读写分区什么的，类似高通的9008(进edl模式后加载FH)，当然如果开启了SecurityBoot，公版的DA无法使用，需要对应签名的DA才可以。</p>
+<p>  根据大佬的议题内容可知，漏洞是一个整数溢出，是在判断读/写命令地址范围的时候出现的:</p>
+<table>
+<thead>
+<tr>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221123142404496.png" alt="image-20221123142404496"></th>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221123142423007.png" alt="image-20221123142423007"></th>
+</tr>
+</thead>
+</table>
+<p>因为MTK的方案有很多开发板，所以基线代码基本上都很容易找到，比如使用了MT6737的香橙派-4G-IOT这个开发板(好像停产了，现存的巨贵)，有个大哥把代码放github了</p>
+<blockquote>
+<p>  <a href="https://github.com/SoCXin/MT6737/tree/master/linux">https://github.com/SoCXin/MT6737/tree/master/linux</a></p>
+</blockquote>
+<p>根据这份代码，分析这个漏洞其实很简单了</p>
+<p><code>/home/muhe/Code/MT6737/linux/bootloader/preloader/platform/mt6735/src/core/download.c</code></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">usbdl_handler</span><span class="params">(struct bldr_comport *comport, u32 hshk_tmo_ms)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    u8 cmd;</span><br><span class="line">    u32 cnt = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (usbdl_check_start_command(comport, hshk_tmo_ms) == FALSE) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s start cmd handshake timeout (%dms)\n&quot;</span>, MOD, hshk_tmo_ms);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s PASS Tool Sync Seq.\n&quot;</span>, MOD);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* if log is disabled, re-init log port and enable it */</span></span><br><span class="line">    <span class="keyword">if</span> (comport-&gt;type == COM_USB &amp;&amp; log_status() == <span class="number">0</span>) &#123;</span><br><span class="line">        mtk_uart_init(UART_SRC_CLK_FRQ, CFG_LOG_BAUDRATE);</span><br><span class="line">        log_ctrl(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    dlcomport = comport;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        platform_wdt_kick();</span><br><span class="line"></span><br><span class="line">        usbdl_get_byte(&amp;cmd);</span><br><span class="line">        <span class="keyword">if</span> (cmd != CMD_GET_BL_VER)</span><br><span class="line">            usbdl_put_byte(cmd);    <span class="comment">/* echo cmd */</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (cmd) &#123;</span><br><span class="line">        <span class="keyword">case</span> CMD_GET_BL_VER:</span><br><span class="line">        ....</span><br><span class="line">        </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">     ...</span><br><span class="line">     </span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>支持的命令也很多:</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221123142910268.png" alt="image-20221123142910268"></p>
+<p>直接定位到 <code>static u32 usbdl_read16(bool legacy)</code> </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> u32 <span class="title">usbdl_read16</span><span class="params">(<span class="keyword">bool</span> legacy)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    u32 index;</span><br><span class="line">    u32 base_addr=<span class="number">0</span>;</span><br><span class="line">    u32 len16=<span class="number">0</span>;</span><br><span class="line">    u32 len8=<span class="number">0</span>;</span><br><span class="line">    u16 data=<span class="number">0</span>;</span><br><span class="line">    u32 status=<span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    usbdl_get_dword(&amp;base_addr); <span class="comment">// [1]获取地址</span></span><br><span class="line">    usbdl_put_dword(base_addr);</span><br><span class="line"></span><br><span class="line">    usbdl_get_dword(&amp;len16);     <span class="comment">// [2] 获取长度</span></span><br><span class="line">    usbdl_put_dword(len16);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* check addr alignment */</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="number">0</span> != (base_addr &amp; (<span class="number">2</span><span class="number">-1</span>))) &#123;</span><br><span class="line">        status = <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">goto</span> end;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* check len */</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="number">0</span> == len16) &#123;</span><br><span class="line">        status = <span class="number">-2</span>;</span><br><span class="line">        <span class="keyword">goto</span> end;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* convert half-word(2B) length to byte length */</span></span><br><span class="line">    len8 = (len16 &lt;&lt; <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* overflow attack check */</span></span><br><span class="line">    <span class="keyword">if</span> (len16 &gt;= len8) &#123;</span><br><span class="line">        status = <span class="number">-3</span>;</span><br><span class="line">        <span class="keyword">goto</span> end;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* check if addr range is valid */</span></span><br><span class="line">    sec_region_check(base_addr,len8);    <span class="comment">// [3] 安全检查</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!legacy) &#123;</span><br><span class="line">        <span class="comment">/* return status */</span></span><br><span class="line">        usbdl_put_word(status);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (index = <span class="number">0</span>; index &lt; len16; index++) &#123;  <span class="comment">// [4] 执行读操作并返回数据</span></span><br><span class="line">        data = *(u16*)(base_addr + (index &lt;&lt; <span class="number">1</span>));</span><br><span class="line">        usbdl_put_word(data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">end:</span><br><span class="line">    <span class="keyword">if</span>(!legacy) &#123;</span><br><span class="line">        <span class="comment">/* return status */</span></span><br><span class="line">        usbdl_put_word(status);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>核心逻辑还是 <code>sec_region_check(base_addr,len8);  </code></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sec_region_check</span> <span class="params">(U32 addr, U32 len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    U32 ret = SEC_OK;</span><br><span class="line">    U32 tmp = addr + len;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* check if it does access AHB/APB register */</span></span><br><span class="line">    <span class="keyword">if</span> ((IO_PHYS != (addr &amp; REGION_MASK)) || (IO_PHYS != (tmp &amp; REGION_MASK))) &#123;</span><br><span class="line">        SMSG(<span class="string">&quot;[%s] 0x%x Not AHB/APB Address\n&quot;</span>, MOD, addr);</span><br><span class="line">        ASSERT(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (len &gt;= REGION_BANK) &#123;</span><br><span class="line">        SMSG(<span class="string">&quot;[%s] Overflow\n&quot;</span>,MOD);</span><br><span class="line">        ASSERT(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (blacklist_check(addr, len)) &#123;</span><br><span class="line">        SMSG(<span class="string">&quot;[%s] Not Allowed\n&quot;</span>, MOD);</span><br><span class="line">        ASSERT(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> MTK_SECURITY_SW_SUPPORT</span></span><br><span class="line">    <span class="comment">/* check platform security region */</span></span><br><span class="line">    <span class="keyword">if</span> (SEC_OK != (ret = seclib_region_check(addr,len))) &#123;</span><br><span class="line">        SMSG(<span class="string">&quot;[%s] ERR &#x27;0x%x&#x27; ADDR: 0x%x, LEN: %d\n&quot;</span>, MOD, ret, addr, len);</span><br><span class="line">        ASSERT(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这里执行了两个检查：</p>
+<ol>
+<li>  判断你要操作的是不是物理外设所在的内存</li>
+<li>  判断你要操作的外设是不是在黑名单里，有部分外设不能操作</li>
+<li>  这里可能是因为方案不同，大佬PPT里的那个方案是白名单的操作，只允许操作xxx，不过不影响理解。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">REGION g_blacklist[] = &#123;</span><br><span class="line">    &#123;MSDC0_BASE, <span class="number">0x10000</span>&#125;,</span><br><span class="line">    &#123;MSDC1_BASE, <span class="number">0x10000</span>&#125;,</span><br><span class="line">    &#123;MSDC2_BASE, <span class="number">0x10000</span>&#125;,</span><br><span class="line">    &#123;MSDC3_BASE, <span class="number">0x10000</span>&#125;,</span><br><span class="line">    &#123;NFI_BASE, <span class="number">0x1000</span>&#125;,</span><br><span class="line">    &#123;NFIECC_BASE, <span class="number">0x1000</span>&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">blacklist_check</span><span class="params">(U32 addr, U32 len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> blacklist_size = <span class="keyword">sizeof</span>(g_blacklist) / <span class="keyword">sizeof</span>(REGION);</span><br><span class="line">    REGION region;</span><br><span class="line">    region.start = (<span class="keyword">unsigned</span> <span class="keyword">int</span>)addr;</span><br><span class="line">    region.size = (<span class="keyword">unsigned</span> <span class="keyword">int</span>)len;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; blacklist_size; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (is_region_overlap(&amp;region, &amp;(g_blacklist[i]))) &#123;</span><br><span class="line">            ret = <span class="number">-1</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">is_region_overlap</span><span class="params">(REGION *region1, REGION *region2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> overlap = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (region1-&gt;start + region1-&gt;size &lt;= region2-&gt;start)</span><br><span class="line">        overlap = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (region2-&gt;start + region2-&gt;size &lt;= region1-&gt;start)</span><br><span class="line">        overlap = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        overlap = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> overlap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221123143717115.png" alt="image-20221123143717115"></p>
+<blockquote>
+<p>  这里就要祭出datasheet里的memory map</p>
+</blockquote>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221123143410104.png" alt="image-20221123143410104"></p>
+<p>根据memory map，利用这漏洞就可以把BROM dump出来了</p>
+<h3 id="BROM部分"><a href="#BROM部分" class="headerlink" title="BROM部分"></a>BROM部分</h3><h4 id="基本分析"><a href="#基本分析" class="headerlink" title="基本分析"></a>基本分析</h4><p>  MTK的话BROM Exp满天飞，多搜一搜可以找到，或者按照<a href="https://tinyhack.com/2021/01/31/dissecting-a-mediatek-bootrom-exploit/">dissecting-a-mediatek-bootrom-exploit</a>中的办法，应该也可以，或者对于没开SecurityBoot的设备搞个mini DA进去也可以(参考这里 <code>https://github.com/MTK-bypass/bypass_utility/blob/master/main.py#L111</code> )。</p>
+<p>这里以某个SoC的BROM为例作分析，推荐使用Ghirda来做，选ARMv7就行。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DECIMAL       HEXADECIMAL     DESCRIPTION</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">67676         0x1085C         Mediatek bootloader</span><br><span class="line">72020         0x11954         SHA256 hash constants, little endian</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221130133517456.png" alt="image-20221130133517456"></p>
+<p>前面还是喜闻乐见的中断向量表，根据reset handler，能定位到类似main的位置，但是我们的目的是分析usb dl的逻辑，这里我看了下已知的文章，可以通过handshake来确定，直接暴搜一波 <code>A0 0A 50 05</code>，但是这里需要注意，有两个handshake，uart和usb的，需要做好区分，然后就可以定位到 process_cmd() 里了。</p>
+<table>
+<thead>
+<tr>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221130133720683.png" alt="image-20221130133720683"></th>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221130133745944.png" alt="image-20221130133745944"></th>
+</tr>
+</thead>
+</table>
+<p>然后可以还原出来 相关标志位，如 security boot &amp; SLA &amp; DAA。</p>
+<p>不过这显然不是这次的目的，这次是想找到盘古议题中提到的两个BROM的漏洞 :)</p>
+<h4 id="议题中的漏洞"><a href="#议题中的漏洞" class="headerlink" title="议题中的漏洞"></a>议题中的漏洞</h4><h5 id="vuln1"><a href="#vuln1" class="headerlink" title="vuln1"></a>vuln1</h5><p>根据MTK的公告可知和议题内容，这个应该是那个Issue1，即 <code>Endpoint processing vulnerability</code> 的这枚漏洞 :)</p>
+<p>我这里根据几个地方来确认函数位置的</p>
+<ul>
+<li>  少的可怜的两个字符串 <code>[USBDL]</code> 开头的，和timeout相关</li>
+<li>  根据<code>https://github.com/chaosmaster/bypass_payloads</code> 中，我目前这个方案的一些寄存器、函数地址来确定的，比如可以确定 </li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> (*send_usb_response)(<span class="keyword">int</span>, <span class="keyword">int</span>, <span class="keyword">int</span>) = (<span class="keyword">void</span>*)******;</span><br><span class="line"><span class="keyword">int</span> (*(*usbdl_ptr))() = (<span class="keyword">void</span>*)******;</span><br><span class="line">*(<span class="keyword">volatile</span> <span class="keyword">uint32_t</span> *)(usbdl_ptr[<span class="number">0</span>] + <span class="number">8</span>) = (<span class="keyword">uint32_t</span>)usbdl_ptr[<span class="number">2</span>];</span><br><span class="line"><span class="keyword">void</span> (*usbdl_get_data)() = usbdl_ptr[<span class="number">1</span>];</span><br><span class="line"><span class="keyword">void</span> (*usbdl_put_data)() = usbdl_ptr[<span class="number">2</span>];</span><br><span class="line"><span class="keyword">void</span> (*usbdl_flush_data)() = usbdl_ptr[<span class="number">3</span>];</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221124194300872.png" alt="image-20221124194300872"></p>
+<ul>
+<li>  议题中漏洞特征</li>
+</ul>
+<p>最终让我找到了这个漏洞，和我最开始预想的差不多，处理USB协议相关的逻辑，不过是在标准的流程后面</p>
+<table>
+<thead>
+<tr>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221124194448445.png" alt="image-20221124194448445"></th>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221124194503152.png" alt="image-20221124194503152"></th>
+</tr>
+</thead>
+</table>
+<h5 id="TBD-vuln2"><a href="#TBD-vuln2" class="headerlink" title="[TBD]vuln2"></a>[TBD]vuln2</h5><p>说来也比较巧合，rrr拍的图里似乎没有标题为<code>MTK BootROM Vul #2</code> 的slide，所以我目前还没有分析出来，只找到了一些相关的资料辅助分析:</p>
+<ul>
+<li>  <a href="https://www.usbzh.com/article/detail-842.html">https://www.usbzh.com/article/detail-842.html</a></li>
+<li>  <code>https://yhsnlkm.github.io/2019/08/14/USB相关/应用层遍历所有接入的USB设备-1/</code></li>
+<li>  <code>https://github.com/mtek-hack-hack/mtktest/blob/master/%20mtktest%20--username%20qq413187589/N65/N65_V1/usb/src/usbacm_drv.c</code></li>
+<li>  <a href="https://shequ.stmicroelectronics.cn/thread-612750-1-1.html">https://shequ.stmicroelectronics.cn/thread-612750-1-1.html</a></li>
+</ul>
+<p>比较有意思的是链接3里面的这份代码，看着很像古早时期的BROM源码 -.-</p>
+<p>在usb相关的目录也找到了一些议题中提到的信息，比如CDC、<code>data_ep_in_info</code>，以及议题截图中一些变量命名，基本上都对的上，我猜测这应该是因为这是一种标准实现，所以延用这些命名方便分析，那么找洞的方向就有了:</p>
+<ul>
+<li>  继续了解USB CDC </li>
+<li>  找一些标准实现看看，找一些特征+已知的USB相关的一些符号判断出来相关的处理逻辑大概在哪里</li>
+<li>  结合MTK的公告描述来尝试找这个漏洞(<code>Character-formatting command vulnerability</code>)</li>
+</ul>
+<p>看了几个地方还不是很确定- -. 失败</p>
+<h3 id="攻击思路"><a href="#攻击思路" class="headerlink" title="攻击思路"></a>攻击思路</h3><h4 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h4><ul>
+<li>  SLA (Serial Link Authorization): 未授权是没办法加载DA的</li>
+<li>  DAA (Download agent authentication): 对加载的DA做验证</li>
+</ul>
+<blockquote>
+<p>  当然，如果能绕过SLA，加载自定义的DA，那DAA也是可以绕过的</p>
+</blockquote>
+<p>通过SP Flash Tool可以对设备进行读写</p>
+<ul>
+<li>  Download-Agent: 一小段程序，加载到SRAM中和Host交互，类比高通的FH</li>
+<li>  Scatter: 可以理解成flash的内存布局，描述每个分区的情况，如起始地址、大小、属性等</li>
+<li>  Authentication File &amp; Cert File: 开启了SecurityBoot的设备需要提供，用于验证DownloadAgent是否合法</li>
+</ul>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221124195803394.png" alt="image-20221124195803394"></p>
+<p>所以，对于开了SecurityBoot的设备，就不能用公版DA了，大佬的议题中也是以开了SecurityBoot的设备为例讲的，通过前面的漏洞disable sla &amp; daa，从而实现加载自定义的DA，然后通过这个DA来读写任意分区，从而实现加载任意代码的目的 :)</p>
+<h4 id="Attacking-DA"><a href="#Attacking-DA" class="headerlink" title="Attacking DA"></a>Attacking DA</h4><p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221130231704274.png" alt="image-20221130231704274"></p>
+<p>大佬在议题中对MTK的DA做了详细的介绍，这里主要涉及了</p>
+<ul>
+<li>  DA如何被加载</li>
+<li>DA的执行阶段<ul>
+<li>  stage1</li>
+<li>  stage2</li>
+</ul>
+</li>
+<li>  如何攻击DA实现任意分区读写</li>
+</ul>
+<p>MTK的SP Flash Tool里带的这个公版DA其实是个DA的合集，SP FlashTool根据读到的chip id选对应的DA用来交互</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221208231817640.png" alt="image-20221208231817640"></p>
+<h5 id="DA-stage1"><a href="#DA-stage1" class="headerlink" title="DA stage1"></a>DA stage1</h5><table>
+<thead>
+<tr>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221208231856888.png" alt="image-20221208231856888"></th>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221208231928842.png" alt="image-20221208231928842"></th>
+</tr>
+</thead>
+</table>
+<p>这里提到了一个EMI file，stage1会根据这个EMI file来初始化DRAM，既然可以从preloader里后去，那么前面的基线代码里妥妥也会有了</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221208231959205.png" alt="image-20221208231959205"></p>
+<p>当然也可以借助工具来解析出来，比如这个 <code>https://github.com/mr-m96/MTKPreloaderParser</code>， 相关内容就不展开了，为了理解议题内容的话，只需要了解这个东西的作用以及在哪里就行了:)</p>
+<h5 id="DA-stage2"><a href="#DA-stage2" class="headerlink" title="DA stage2"></a>DA stage2</h5><p>stage2是比较关键的内容了，它被stage1加载到了dram里执行(前面初始化dram这里要用)</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221208232056511.png" alt="image-20221208232056511"></p>
+<p>这里列举了secure enable的情况，DA的能力将受到限制，即一部分功能无法使用，作者通过之前的BROM exploit disable了daa，然后加载自己patch过的da，从而使用这个patch过的da来实现全分区的读写，以及使用da中全部的功能。</p>
+<h5 id="policy-part-map？"><a href="#policy-part-map？" class="headerlink" title="policy_part_map？"></a><strong>policy_part_map？</strong></h5><p>这部分感觉PPT顺序有点问题，不过也不是特别影响理解吧，主要是启动过程中对加载的镜像完整性校验相关的介绍，这块和后面大佬讲攻击流程能对上。</p>
+<p>github随便搜了下，就能看明白这个东西了 :)</p>
+<table>
+<thead>
+<tr>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221208232133500.png" alt="image-20221208232133500"></th>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221208232141320.png" alt="image-20221208232141320"></th>
+</tr>
+</thead>
+</table>
+<p>主要是有这么个结构体来描述对应的镜像的安全配置，是否受到保护、能不能刷这个分区等等啥的。</p>
+<p>相关的部分代码，这是在加载镜像之前，加载这个policy，然后根据结果去对镜像做对应的操作，比如 是否应该做校验</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">char</span> <span class="title">get_sec_policy</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> policy_entry_idx)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">4<span class="keyword">unsigned</span> <span class="keyword">int</span> sboot_state = <span class="number">0</span>;</span><br><span class="line">4<span class="keyword">unsigned</span> <span class="keyword">int</span> lock_state = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">4<span class="keyword">unsigned</span> <span class="keyword">char</span> sec_policy = <span class="number">0</span>;</span><br><span class="line">4<span class="keyword">unsigned</span> <span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">4ret = get_sec_state(&amp;sboot_state, &amp;lock_state);</span><br><span class="line">4<span class="comment">/* this API won&#x27;t return error, so we don&#x27;t process it here */</span></span><br><span class="line"></span><br><span class="line">4<span class="keyword">if</span> (sboot_state == <span class="number">0</span> &amp;&amp; lock_state == LKS_UNLOCK)</span><br><span class="line">44sec_policy = g_policy_map[policy_entry_idx].sec_sbcdis_unlock_policy;</span><br><span class="line">4<span class="keyword">else</span> <span class="keyword">if</span> (sboot_state == <span class="number">0</span> &amp;&amp; lock_state != LKS_UNLOCK)</span><br><span class="line">44sec_policy = g_policy_map[policy_entry_idx].sec_sbcdis_lock_policy;</span><br><span class="line">4<span class="keyword">else</span> <span class="keyword">if</span> (sboot_state == <span class="number">1</span> &amp;&amp; lock_state == LKS_UNLOCK)</span><br><span class="line">44sec_policy = g_policy_map[policy_entry_idx].sec_sbcen_unlock_policy;</span><br><span class="line">4<span class="keyword">else</span> <span class="keyword">if</span> (sboot_state == <span class="number">1</span> &amp;&amp; lock_state != LKS_UNLOCK)</span><br><span class="line">44sec_policy = g_policy_map[policy_entry_idx].sec_sbcen_lock_policy;</span><br><span class="line"></span><br><span class="line">4<span class="keyword">return</span> sec_policy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="BROM-EXPLOIT"><a href="#BROM-EXPLOIT" class="headerlink" title="BROM EXPLOIT"></a>BROM EXPLOIT</h4><p>这里的话，参考<a href="https://tinyhack.com/2021/01/31/dissecting-a-mediatek-bootrom-exploit/">dissecting-a-mediatek-bootrom-exploit</a> 的介绍会了解的更清楚，简化一下描述就是:</p>
+<ul>
+<li><p>需要找到需要的函数、全局变量的地址</p>
+<ul>
+<li>  <code>send_usb_response</code></li>
+<li>  <code>usbdl_put_dword</code></li>
+<li>  <code>usbdl_put_data</code></li>
+<li>  <code>usbdl_get_data</code></li>
+<li>  <code>uart_reg0</code></li>
+<li>  <code>uart_reg1</code></li>
+<li>  <code>sla_passed</code></li>
+<li>  <code>skip_auth_1</code></li>
+<li>  <code>skip_auth_2</code></li>
+</ul>
+</li>
+<li><p>exp工作流程参考 <a href="https://github.com/MTK-bypass/exploit_common/blob/f158851273fec965f673af8647f01257fc9dea38/main.c">common exp</a>，类似议题中的Vuln1</p>
+<p>  <img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221130140148909.png" alt="image-20221130140148909"></p>
+</li>
+</ul>
+<p>当然，所需要覆盖的变量也比较好找，把cmd是 <code>0xd8</code>的 <code>CMD_GET_TARGET_CONFIG</code>为入口就可以找到需要的东西了</p>
+<table>
+<thead>
+<tr>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221130134354668.png" alt="image-20221130134354668"></th>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221130134410683.png" alt="image-20221130134410683"></th>
+</tr>
+</thead>
+</table>
+<h5 id="common-exp"><a href="#common-exp" class="headerlink" title="common exp"></a>common exp</h5><p>直接参考  <a href="https://github.com/MTK-bypass/exploit_common/blob/f158851273fec965f673af8647f01257fc9dea38/main.c">common exp</a>，就行，利用漏洞获得的任意地址读写能力去覆盖</p>
+<ul>
+<li>  <code>sla_passed</code></li>
+<li>  <code>skip_auth_1</code></li>
+<li>  <code>skip_auth_2</code></li>
+</ul>
+<p>这三个变量，然后就可以加载任意da，并且禁用了daa</p>
+<p><code>start.S</code> 直接跳main函数，里面逻辑也很简单，覆盖变量，然后接收下个阶段的交互(usb handshake)，方便后续加载DA啥的，交互完毕，就正常进入usbdl模式去了</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    send_usb_response(<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    print(<span class="string">&quot;Sending pattern\n&quot;</span>);</span><br><span class="line">    usbdl_put_dword(<span class="number">0xA1A2A3A4</span>);</span><br><span class="line"></span><br><span class="line">    *sla_passed = <span class="number">1</span>;</span><br><span class="line">    *skip_auth_1 = <span class="number">1</span>;</span><br><span class="line">    *skip_auth_2 = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    print(<span class="string">&quot;Waiting for handshake\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> sequence[] = &#123;<span class="number">0xA0</span>, <span class="number">0x0A</span>, <span class="number">0x50</span>, <span class="number">0x05</span>&#125;;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> hs = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">uint32_t</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++, hs = <span class="number">0</span>) &#123;</span><br><span class="line">        usbdl_get_data(&amp;hs, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (sequence[i] == hs) &#123;</span><br><span class="line">            hs = ~hs;</span><br><span class="line">            usbdl_put_data(&amp;hs, <span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          i = <span class="number">0</span>;</span><br><span class="line">          print(<span class="string">&quot;Handshake failed\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        print(<span class="string">&quot;Handshake..\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    print(<span class="string">&quot;Handshake completed\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="MTE-mode"><a href="#MTE-mode" class="headerlink" title="MTE mode"></a>MTE mode</h4><p>这个模式看描述是MTK的一个特殊的测试模式，也算是一个之前没见过的攻击面</p>
+<table>
+<thead>
+<tr>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221124201408856.png" alt="image-20221124201408856"></th>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221124222151110.png" alt="image-20221124222151110"></th>
+</tr>
+</thead>
+</table>
+<p>在这个模式下，可以做很多事情:</p>
+<ul>
+<li>  Obtain/Modify EFUSE/RPMB Info </li>
+<li>  Load Customized OS </li>
+<li>  USERDATA Decrypt</li>
+<li>  Obtain/Modify Hardware Key </li>
+<li>  Unlock Bootloader</li>
+<li>  …</li>
+</ul>
+<p>巧了，咱手里正好有个某个MTK方案的设备的完整镜像 :-) 根据PPT中的信息，可以check下相关的逻辑</p>
+<table>
+<thead>
+<tr>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221124210054040.png" alt="image-20221124210054040"></th>
+<th><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221124221837757.png" alt="image-20221124221837757"></th>
+</tr>
+</thead>
+</table>
+<p>我这个设备没有找到相关的逻辑，应该是删除了这个模式，不过幸运的是 <code>meta_tst</code> 没有删除:)，而且根据PPT里的内容，这个服务应该是比较核心的，MTK设计了私有协议做一些交互</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221124212759107.png" alt="image-20221124212759107"></p>
+<p>分析的难度也不大，而且有趣的是如果你在github上搜一些特定的字符串，会发现很多有意思的repo :) 这对理解一些逻辑很有帮助</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221124221704268.png" alt="image-20221124221704268"></p>
+<h4 id="more-exploit"><a href="#more-exploit" class="headerlink" title="more exploit"></a>more exploit</h4><p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221208232231058.png" alt="image-20221208232231058"></p>
+<p>这没什么可说的，既然从源头破坏掉了信任链，那么自然可以做任何事 😎</p>
+<p>基本上一些很成熟的“取证”工具都能干- 。- 比如这一篇</p>
+<p><a href="https://blog.oxygen-forensic.com/support-for-mediatek-devices-in-oxygen-forensic-detective/">support-for-mediatek-devices-in-oxygen-forensic-detective</a></p>
+<p>感兴趣的话可以阅读一下</p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>  这次虽然过程艰辛又带着一些遗憾，不过个人起码了解了MTK方案BROM Exploit的思路，vuln#2还没找到，后面等不忙了时间多了再尝试看看好了 :) </p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://github.com/SoCXin/MT6737/tree/master/linux">https://github.com/SoCXin/MT6737/tree/master/linux</a></p>
+<p><a href="https://github.com/chaosmaster/bypass_payloads">https://github.com/chaosmaster/bypass_payloads</a></p>
+<p><a href="https://tinyhack.com/2021/01/31/dissecting-a-mediatek-bootrom-exploit/">https://tinyhack.com/2021/01/31/dissecting-a-mediatek-bootrom-exploit/</a></p>
+<p><a href="https://www.cnblogs.com/wen123456/p/14034493.html">https://www.cnblogs.com/wen123456/p/14034493.html</a></p>
+<p><a href="https://blog.csdn.net/u011784994/article/details/104898430">https://blog.csdn.net/u011784994/article/details/104898430</a></p>
+<p><a href="https://github.com/rn2/ven/blob/db95d7f096/hardware/meta/common/README">https://github.com/rn2/ven/blob/db95d7f096/hardware/meta/common/README</a></p>
+<p><a href="https://blog.oxygen-forensic.com/support-for-mediatek-devices-in-oxygen-forensic-detective/">https://blog.oxygen-forensic.com/support-for-mediatek-devices-in-oxygen-forensic-detective/</a></p>
+]]></content>
+      <categories>
+        <category>Hackcon</category>
+      </categories>
+      <tags>
+        <tag>MTK</tag>
+        <tag>preloader</tag>
+        <tag>BootROM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>最近看过的议题&amp;文章(Bootloader/TZ)</title>
     <url>/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/</url>
     <content><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>  最近看了一些<code>Bootloader&amp;TZ</code>以及相关的议题，主要是ARM架构下的内容；正好这几个月我的<code>Leader</code>领着我们组一起学习<code>ARMv8&amp;v9</code>架构相关的知识，在阅读这些材料的时候给我提供了不少的帮助，让我理解起来更加容易，也算是变相检验学习成果咯。</p>
