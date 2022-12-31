@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="背景  最近看了一些Bootloader&amp;TZ以及相关的议题，主要是ARM架构下的内容；正好这几个月我的Leader领着我们组一起学习ARMv8&amp;v9架构相关的知识，在阅读这些材料的时候给我提供了不少的帮助，让我理解起来更加容易，也算是变相检验学习成果咯。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="最近看过的议题&amp;文章(Bootloader&#x2F;TZ)">
+<meta property="og:url" content="https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/index.html">
+<meta property="og:site_name" content="o0xmuhe&#39;s blog">
+<meta property="og:description" content="背景  最近看了一些Bootloader&amp;TZ以及相关的议题，主要是ARM架构下的内容；正好这几个月我的Leader领着我们组一起学习ARMv8&amp;v9架构相关的知识，在阅读这些材料的时候给我提供了不少的帮助，让我理解起来更加容易，也算是变相检验学习成果咯。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221231181650825.png">
+<meta property="article:published_time" content="2022-12-31T08:27:16.000Z">
+<meta property="article:modified_time" content="2022-12-31T11:35:44.446Z">
+<meta property="article:author" content="muhe">
+<meta property="article:tag" content="Bootloader">
+<meta property="article:tag" content="TZ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221231181650825.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>最近看过的议题&amp;文章(Bootloader/TZ)</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="o0xmuhe&#39;s blog" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search">Search</a></li><!--
+     --><!--
+       --><li><a href="/atom.xml">RSS</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/11/01/Qual-Android%E6%96%B9%E6%A1%88Unlock%E5%AD%A6%E4%B9%A0-%E4%BB%A5Oneplus7Pro%E4%B8%BA%E4%BE%8B/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&text=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&title=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&is_video=false&description=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=最近看过的议题&amp;文章(Bootloader/TZ)&body=Check out this article: https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&title=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&title=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&title=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&title=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&name=最近看过的议题&amp;文章(Bootloader/TZ)&description=&lt;h2 id=&#34;背景&#34;&gt;&lt;a href=&#34;#背景&#34; class=&#34;headerlink&#34; title=&#34;背景&#34;&gt;&lt;/a&gt;背景&lt;/h2&gt;&lt;p&gt;  最近看了一些&lt;code&gt;Bootloader&amp;amp;TZ&lt;/code&gt;以及相关的议题，主要是ARM架构下的内容；正好这几个月我的&lt;code&gt;Leader&lt;/code&gt;领着我们组一起学习&lt;code&gt;ARMv8&amp;amp;v9&lt;/code&gt;架构相关的知识，在阅读这些材料的时候给我提供了不少的帮助，让我理解起来更加容易，也算是变相检验学习成果咯。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&t=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Security-Boot-amp-Bootloader%E7%9B%B8%E5%85%B3"><span class="toc-number">2.</span> <span class="toc-text">Security Boot &amp; Bootloader相关</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TZ%E7%9B%B8%E5%85%B3"><span class="toc-number">3.</span> <span class="toc-text">TZ相关</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96"><span class="toc-number">4.</span> <span class="toc-text">其他</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%84%9F%E6%83%B3"><span class="toc-number">5.</span> <span class="toc-text">感想</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        最近看过的议题&amp;文章(Bootloader/TZ)
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">muhe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-12-31T08:27:16.000Z" itemprop="datePublished">2022-12-31</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">阅读笔记</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Bootloader/" rel="tag">Bootloader</a>, <a class="tag-link-link" href="/tags/TZ/" rel="tag">TZ</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>  最近看了一些<code>Bootloader&amp;TZ</code>以及相关的议题，主要是ARM架构下的内容；正好这几个月我的<code>Leader</code>领着我们组一起学习<code>ARMv8&amp;v9</code>架构相关的知识，在阅读这些材料的时候给我提供了不少的帮助，让我理解起来更加容易，也算是变相检验学习成果咯。</p>
+<span id="more"></span>
+
+<p>于是我便有了这样的感慨 :)</p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image-20221231181650825.png" alt="image-20221231181650825"></p>
+<h2 id="Security-Boot-amp-Bootloader相关"><a href="#Security-Boot-amp-Bootloader相关" class="headerlink" title="Security Boot &amp; Bootloader相关"></a>Security Boot &amp; Bootloader相关</h2><p>没看完的材料就是TBD的状态 :(</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/hhj4ck/BLUnlock/blob/master/ISC2017.pdf">没钥匙也要拧开BOOTLOADER的锁</a> - Guanxing Wen, ISC, 2017</p>
+<blockquote>
+<p>  厂商在ABL里增加unlock bl验证逻辑，针对这部分的安全性研究</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/hhj4ck/BLUnlock/blob/master/ISC2018.pdf">启动链脆弱性分析</a>  - Guanxing Wen, ISC, 2018</p>
+<blockquote>
+<p>  三星的安全启动分析，攻击TZ实现绕过锁屏码; reference里 <code>@NWMonster 三星的分析和利⽤</code> 我也没找到:( 可惜</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://speakerdeck.com/hhj4ck/el3-tour-get-the-ultimate-privilege-of-android-phone">EL3 Tour: Get The Ultimate Privilege of Android Phone</a> - Guanxing Wen, Infiltrate, 2019</p>
+<blockquote>
+<p>  华为的安全启动探究，利用bootrom漏洞实现打破信任链，从而实现拿到EL1、EL3的权限，然后攻击TEE，非常精彩的议题；需要ARMv8架构相关的知识，理解起来会更轻松 :)</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/hhj4ck/checkm30/master/checkm30.pdf">Checkmate Mate30</a> - Slipper &amp; Guanxing Wen, <em>MOSEC</em>, 2021</p>
+<blockquote>
+<p>  华为Mate30的BootROM漏洞挖掘&amp;利用，和之前EL3 Tour那个类似；但是华为通过OTA修了这个洞也是很神奇，<del>不知道是不是用的ARM FPB特性做的</del></p>
+</blockquote>
+</li>
+<li><p><a href="">MediAttack - break the boot chain of MediaTek SoC</a> - neoni, MOSEC, 2022</p>
+<blockquote>
+<p>  MTK安全启动分析以及BootROM漏洞挖掘&amp;利用，打破信任链后可以实现对任意分区读写、解密数据等，配合<a target="_blank" rel="noopener" href="https://github.com/MTK-bypass/bypass_utility_">mtk-bypass</a>阅读体验更好</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/TaszkSecLabs/presentations/main/US-21-Komaromy-How-To-Tame-Your-Unicorn.pdf">How To Tame Your Unicorn</a> - Daniel Komaromy &amp; Lorant Szabo, <em>Black Hat USA</em>, 2021</p>
+<blockquote>
+<p>  打华为的基带，顺带BootROM的漏洞，配合白皮书阅读体验更佳</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://labs.taszk.io/articles/post/huawei_kirin990_bootrom_patch/">Test Point Break: Analysis of Huawei’s OTA Fix For BootROM Vulnerabilities</a> - Taszk Lab, 2021</p>
+<blockquote>
+<p>  <code>How to Tame Your Unicorn</code>BH议题中BootROM漏洞 OTA fix后的分析，探究华为的修复手法。</p>
+</blockquote>
+<ul>
+<li>  <a target="_blank" rel="noopener" href="https://labs.taszk.io/blog/post/bootrom_head_resend/">CVE-2021-22434: Huawei Arbitrary Write in BootROM USB Stack</a></li>
+<li>  <a target="_blank" rel="noopener" href="https://labs.taszk.io/blog/post/bootrom_usb/">CVE-2021-22429: Huawei Buffer Overflow in BootROM USB Stack</a></li>
+</ul>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=0_E2NxpCAfw">Your Peripheral Has Planted Malware — An Exploit of NXP SOCs Vulnerability</a> - Yuwei ZHENG, Shaokun CAO, Yunding JIAN, Mingchuang QIN, Defcon26</p>
+<blockquote>
+<p>  NXP SOC安全启动的错误实现导致可以打破信任链植入恶意程序</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://hardwear.io/usa-2019/presentations/Top-10-Secure-Boot-Mistakes-v1.1-hardwear-io-usa-2019-jasper-van-woudenberg.pdf">Top 10 Secure Boot mistakes</a> - Jasper van Woudenberg, hardware.io, 2019</p>
+<blockquote>
+<p>  这个算是一个总结性质的分享，总结了常见的安全启动的错误实现，已经相关的例子，对于BSP来说是个不错的参考材料？</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/windknown/presentations/master/Attack_Secure_Boot_of_SEP.pdf">Attack Secure Boot of SEP</a> - Xu Hao of Team Pangu, MOSEC, 2020</p>
+<blockquote>
+<p>  TBD</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="TZ相关"><a href="#TZ相关" class="headerlink" title="TZ相关"></a>TZ相关</h2><p>没看完的材料就是TBD的状态 :(</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://www.blackhat.com/docs/us-15/materials/us-15-Shen-Attacking-Your-Trusted-Core-Exploiting-Trustzone-On-Android.pdf">Attacking your “Trusted Core” Exploiting TrustZone on Android</a> - Di Shen (@returnsme), BH USA, 2015</p>
+<blockquote>
+<p>  华为Mate7的安全研究，从REE打到TEE</p>
+</blockquote>
+</li>
+<li><p><a href="">Blue Pill for Your Phone</a> - Oleksandr Bazhaniuk &amp; Yuriy Bulygin, BH USA, 2017</p>
+<blockquote>
+<p>  TBD</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://i.blackhat.com/USA-19/Thursday/us-19-Peterlin-Breaking-Samsungs-ARM-TrustZone.pdf">BREAKING SAMSUNG’S ARM TRUSTZONE</a> - Maxime Peterlin &amp; Alexandre Adamski &amp; Joffrey Guilbon, BH USA, 2019</p>
+<blockquote>
+<p>TBD</p>
+</blockquote>
+</li>
+<li><p><a href="">暗涌2020-小米5c中国产自研手机芯片澎湃S1</a> - Slipper, MOSEC, 2020</p>
+<blockquote>
+<p>  没找到Slide :( 只能结合<a target="_blank" rel="noopener" href="https://evilpan.com/2020/07/25/mosec2020/">evilpan</a>的博客来理解了:)  一套fullchain exploit，从EL0一路打到S-EL1</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>涉及底层的内容，也是上面学习上面内容的时候找到的，归类到这里 :)</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://blog.impalabs.com/2212_huawei-security-hypervisor.html">2212_huawei-security-hypervisor</a></p>
+<blockquote>
+<p>  详细地分析了华为的EL2实现，这篇详细到什么程度呢？我认为这是一篇生动形象的计算机体系结构课程 :) 非常值得阅读，全搞明白对ARM体系的理解要求很高。</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://blog.impalabs.com/2111_attacking-samsung-rkp.html">Attacking Samsung RKP</a></p>
+<blockquote>
+<p>  TBD</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://blog.impalabs.com/2101_samsung-rkp-compendium.html">A Samsung RKP Compendium</a></p>
+<blockquote>
+<p>  TBD</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><ol>
+<li><p>  这些内容基本上都是围绕ARM架构做的安全研究，在学习的过程中会不自觉的拿optee来做对比，好让自己更容易理解这些内容 </p>
+</li>
+<li><p>  看了这些材料以及大佬分享的时间，这些研究真的太有意思了，我怎么没有早点看到 </p>
+</li>
+<li><p>  行业原因自然形成的壁垒，在做底层的研究的时候真的很明显，比如BootROM，如果有个手册的话…MTK那个BootROM我看过，这要没手册也太难分析了😭</p>
+</li>
+<li><p>  持续学习非常重要，正反馈让人觉得很爽 😄</p>
+</li>
+</ol>
+<hr>
+<p>恰好今天正好是2022年最后一天，转到IoT组也一年多了，能感受到自己在一点一点进步:</p>
+<ul>
+<li><p>  技术</p>
+</li>
+<li><p>  软技能(沟通协作、写文档)</p>
+</li>
+</ul>
+<p>非常感谢玉伟对我的帮助和指导，在对本篇文章中资料的学习过程中，总能和之前我学习or工作中遇到的东西呼应起来，我也想起了和玉伟<code>one on one</code>的时候他给我讲学习方法、以及他个人是怎么做阅读的，醍醐灌顶来形容我现在的感受可能会比较恰当 :) </p>
+<p><strong>希望23年可以进步更多一些，日拱一卒，功不唐捐。</strong></p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/categories/">Categories</a></li>
+         
+          <li><a href="/tags/">Tags</a></li>
+         
+          <li><a href="/search">Search</a></li>
+         
+          <li><a href="/atom.xml">RSS</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Security-Boot-amp-Bootloader%E7%9B%B8%E5%85%B3"><span class="toc-number">2.</span> <span class="toc-text">Security Boot &amp; Bootloader相关</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TZ%E7%9B%B8%E5%85%B3"><span class="toc-number">3.</span> <span class="toc-text">TZ相关</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96"><span class="toc-number">4.</span> <span class="toc-text">其他</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%84%9F%E6%83%B3"><span class="toc-number">5.</span> <span class="toc-text">感想</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&text=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&title=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&is_video=false&description=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=最近看过的议题&amp;文章(Bootloader/TZ)&body=Check out this article: https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&title=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&title=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&title=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&title=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&name=最近看过的议题&amp;文章(Bootloader/TZ)&description=&lt;h2 id=&#34;背景&#34;&gt;&lt;a href=&#34;#背景&#34; class=&#34;headerlink&#34; title=&#34;背景&#34;&gt;&lt;/a&gt;背景&lt;/h2&gt;&lt;p&gt;  最近看了一些&lt;code&gt;Bootloader&amp;amp;TZ&lt;/code&gt;以及相关的议题，主要是ARM架构下的内容；正好这几个月我的&lt;code&gt;Leader&lt;/code&gt;领着我们组一起学习&lt;code&gt;ARMv8&amp;amp;v9&lt;/code&gt;架构相关的知识，在阅读这些材料的时候给我提供了不少的帮助，让我理解起来更加容易，也算是变相检验学习成果咯。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/&t=最近看过的议题&amp;文章(Bootloader/TZ)"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2015-2022
+    muhe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search">Search</a></li><!--
+     --><!--
+       --><li><a href="/atom.xml">RSS</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-170118462-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-170118462-1');
+    </script>
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'o0xmuhe';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+
+</body>
+</html>

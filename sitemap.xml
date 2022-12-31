@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://o0xmuhe.github.io/2022/12/31/%E6%9C%80%E8%BF%91%E7%9C%8B%E8%BF%87%E7%9A%84%E8%AE%AE%E9%A2%98-%E6%96%87%E7%AB%A0-Bootloader-TZ/</loc>
+    
+    <lastmod>2022-12-31</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://o0xmuhe.github.io/2022/10/26/optee%E5%AD%A6%E4%B9%A0-2-CA-TA/</loc>
     
     <lastmod>2022-11-14</lastmod>
@@ -872,7 +879,7 @@
 
   <url>
     <loc>https://o0xmuhe.github.io/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -880,721 +887,735 @@
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/ctf/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/writeup/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Adobe/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/PoC/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/linux-kernel/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/UaF/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Apple/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/MacOS/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/ctf-writeup/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Antlr/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Adobe-Reader/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/1day/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/IDA/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Bindiff/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/CTF-Writeup/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/pwn/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/webkit/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/macOS/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Adobe-Acrobat-Reader/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/IE/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/office/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/vbs/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/v8/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/exploit/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/chrome/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/CDP/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Cisco/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/life/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/PANDA/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/RE/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Study/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/C/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Linux/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/%E5%85%B6%E4%BB%96/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/%E5%B7%A5%E5%85%B7/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Python/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Snell/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Surge/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Symbolic-Execution/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/%E6%84%9F%E6%83%B3/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/vuln-analysis/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/uaf/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/study/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/unicorn-engine/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/tools/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Webkit/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/windows-kernel/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/angr/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/compiler/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/fuzz/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/peach/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/winafl/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/gdb/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/CTF/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/linux/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/IPC/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Mach/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/ESXi/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/debug/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/mips/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/wargame/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/ret-2-dl-resolve/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/env/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/config/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/python/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Tools/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Frida/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/CVE/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/android/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Compilers/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/paper/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/%E6%84%9F%E6%82%9F/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/LLVM/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/frida/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/glibc%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/shellcode/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/XNU/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/CodeQL/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/iOS/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Chrome/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/%E9%80%86%E5%90%91/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/fishhook/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Exploit/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Android/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Wireshark/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/MTK/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/preloader/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/boot/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/weggli/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/native/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/jni/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/honggfuzz/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/trapfuzz/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/optee/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/EROFS/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Paper/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Unlock/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/Qualcomm/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/tags/EDL/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/tags/Bootloader/</loc>
+    <lastmod>2022-12-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/tags/TZ/</loc>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1603,133 +1624,140 @@
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/CTF/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/POC/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/%E5%B7%A5%E5%85%B7/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/PoC/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E8%B8%A9%E5%9D%91/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/%E7%BC%96%E7%A8%8B/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E8%B8%A9%E5%9D%91/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/%E5%85%B6%E4%BB%96/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/exploit/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/Fuzz/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/%E7%AC%94%E8%AE%B0/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/iOS/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/XNU/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/Browser/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/Android/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://o0xmuhe.github.io/categories/optee/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://o0xmuhe.github.io/categories/%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2022-12-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
