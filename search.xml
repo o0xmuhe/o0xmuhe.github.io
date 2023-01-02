@@ -6947,6 +6947,8 @@ osrloaderv30</code></pre>
 <p>  TBD</p>
 </blockquote>
 </li>
+<li><p>  <a href="https://i.blackhat.com/USA21/Wednesday-Handouts/us-21-Breaking-Secure-Bootloaders.pdf">Breaking Secure Bootloaders</a> Iskuri1, BH USA, 2021</p>
+</li>
 </ul>
 <h2 id="TZ相关"><a href="#TZ相关" class="headerlink" title="TZ相关"></a>TZ相关</h2><p>没看完的材料就是TBD的状态 :(</p>
 <ul>
@@ -6986,6 +6988,16 @@ osrloaderv30</code></pre>
 <li><p><a href="https://blog.impalabs.com/2101_samsung-rkp-compendium.html">A Samsung RKP Compendium</a></p>
 <blockquote>
 <p>  TBD</p>
+</blockquote>
+</li>
+<li><p><a href="https://blog.impalabs.com/2212_advisory_huawei-secure-monitor.html">2212_advisory_huawei-secure-monitor</a></p>
+<blockquote>
+<p>  华为EL3 漏洞挖掘&amp;利用，可以配合闻观行的 <code>EL3 Tour </code> 议题阅读</p>
+</blockquote>
+</li>
+<li><p><a href="https://fredericb.info/archives.html">fred’s notes</a></p>
+<blockquote>
+<p>  bootloader、security boot相关的博客都值得阅读</p>
 </blockquote>
 </li>
 </ul>
