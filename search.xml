@@ -5252,7 +5252,7 @@ osrloaderv30</code></pre>
 </blockquote>
 <p>  关注客户端安全的同学应该会发现Electron&amp;CEF的应用越来越广泛了，从早些的时候某音乐播放器的xss2rce到后面被关注到内置浏览器本身，当然大佬可能更早的时候就这么玩了 :D </p>
 <p>其实是用浏览器框架来开发客户端是一直以来就有的东西，比如下面这张图(可能不完全): </p>
-<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/image.png" alt="image"></p>
+<p><img src="https://my-own-image.oss-cn-beijing.aliyuncs.com/img/t013239e0facc311d64.png"></p>
 <blockquote>
 <p>也有直接从chromium做定制开发的，即原生的方式开发，比如某先进IM</p>
 </blockquote>
